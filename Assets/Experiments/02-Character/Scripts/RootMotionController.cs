@@ -69,10 +69,12 @@ public class RootMotionController : MonoBehaviour
         if (!isForwardFrozen)
         {
             Vector3 target = new Vector3(transform.forward.x, 0f, transform.forward.z);
-            logicalForward = Vector3.Slerp(logicalForward, target, forwardSmoothing * Time.deltaTime);
+            // logicalForward = Vector3.Slerp(logicalForward, target, forwardSmoothing * Time.deltaTime);
+            logicalForward = target;
         }
 
         Debug.DrawLine(transform.position, transform.position + logicalForward, Color.red);
+        Debug.DrawLine(transform.position, transform.position + currentDirection, Color.blue);
 
         // Ensure y component is zero for 2D rotation on the XZ plane
         Vector3 flatLogicalForward = logicalForward;
