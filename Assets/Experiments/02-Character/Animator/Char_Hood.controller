@@ -8,7 +8,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Pivot
-  m_Speed: 4
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 9126795904908557506}
@@ -187,7 +187,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Soft Turn
-  m_Speed: 2
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -2513483852300934841}
@@ -266,12 +266,12 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: 75bbec81d302a470f96731617173f67b, type: 3}
     m_Threshold: -1
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 2
+    m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: rotation
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 91a5d7ecd9bb449d8826c94808b5aeb1, type: 3}
+    m_Motion: {fileID: -203655887218126122, guid: 02a849e33e897427a83910f410125240, type: 3}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -282,7 +282,7 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: b93a44daba3ac4c15919b6d45550611c, type: 3}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 2
+    m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: rotation
     m_Mirror: 0
