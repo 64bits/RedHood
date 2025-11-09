@@ -6,17 +6,20 @@ using UnityEngine.InputSystem;
 /// Reads input from the new Unity Input System's "Move" action, calculates
 /// the world-space direction relative to the camera, and passes it to the
 /// RootMotionController.
+/// This version uses standard camera-relative movement.
+/// Logic is in Update() to avoid feedback loops with camera systems like Cinemachine.
 /// </summary>
 public class UserInputSource : MonoBehaviour
 {
     // The Input Action Reference for the movement vector (usually WASD/Left Stick)
-    // You must assign your "Move" Action asset here in the Inspector.
     [Tooltip("Assign the Input System Action used for 2D movement (e.g., 'Move').")]
     public InputActionReference moveActionReference;
 
     private RootMotionController motionController;
     private Transform mainCameraTransform;
     private Vector2 rawInputVector = Vector2.zero;
+
+    // --- No state for locked directions is needed ---
 
     private void Awake()
     {
@@ -69,14 +72,22 @@ public class UserInputSource : MonoBehaviour
         // Stop movement when keys are released
         rawInputVector = Vector2.zero;
     }
+    
+    // --- No CacheDirectionVectors() needed ---
 
     // --- Movement Processing ---
 
-    private void LateUpdate()
+    /// <summary>
+    /// Changed from LateUpdate to Update.
+    /// This ensures we read the camera's state *before* it is updated by
+    /// systems like Cinemachine, which typically run after Update() or in LateUpdate().
+    /// This breaks the "chasing" feedback loop that causes infinite rotation.
+    /// </summary>
+    private void Update()
     {
         if (motionController == null || mainCameraTransform == null) return;
-
-        // 1. Get the camera's forward and right vectors, flattened to the XZ plane
+        
+        // 1. Get the camera's *current* forward and right vectors, flattened to the XZ plane
         Vector3 forward = mainCameraTransform.forward;
         Vector3 right = mainCameraTransform.right;
 
