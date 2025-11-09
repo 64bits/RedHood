@@ -73,6 +73,11 @@ public class RootMotionController : MonoBehaviour
         else rotationValue = Mathf.Clamp(angle / 45f, -1f, 1f);
         float fineRotation = Mathf.Clamp(angle / 180f, -1f, 1f);
 
+        if  (rotationValue < 0.25f && rotationValue > -0.25f) {
+            // Just consider it 0
+            rotationValue = 0f;
+        }
+
         animator.SetFloat("rotation", rotationValue);
         animator.SetFloat("absRotation", Mathf.Abs(rotationValue));
         animator.SetFloat("fineRotation", fineRotation);
