@@ -540,7 +540,7 @@ Transform:
   m_GameObject: {fileID: 1932217449}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.3192, y: -0, z: -4.33336}
+  m_LocalPosition: {x: -0.16, y: -0.5, z: -0.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4403,23 +4403,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[0].duration
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[1].duration
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[2].duration
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[3].duration
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[4].duration
@@ -4439,7 +4439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[1].direction.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[2].direction.x
@@ -4447,15 +4447,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[2].direction.z
-      value: 0.5
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[3].direction.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[3].direction.z
-      value: -0.5
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7670990678616098944, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[4].direction.x

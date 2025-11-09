@@ -104,7 +104,7 @@ public class RootMotionController : MonoBehaviour
     /// </summary>
     public void FreezeForward()
     {
-        isForwardFrozen = true;
+        //isForwardFrozen = true;
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ public class RootMotionController : MonoBehaviour
     public void ResumeForward()
     {
         // Snap logicalForward to current direction
-        logicalForward = currentDirection; // new Vector3(transform.forward.x, 0f, transform.forward.z);
-        isForwardFrozen = false;
+        //logicalForward = new Vector3(transform.forward.x, 0f, transform.forward.z);
+        //isForwardFrozen = false;
     }
 }
