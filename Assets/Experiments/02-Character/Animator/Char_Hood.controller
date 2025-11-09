@@ -132,6 +132,12 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: fineRotation
+    m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -241,7 +247,7 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: rotation
     m_Mirror: 0
-  m_BlendParameter: rotation
+  m_BlendParameter: fineRotation
   m_BlendParameterY: rotation
   m_MinThreshold: -1
   m_MaxThreshold: 1

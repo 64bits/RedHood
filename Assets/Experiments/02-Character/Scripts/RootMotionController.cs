@@ -92,9 +92,11 @@ public class RootMotionController : MonoBehaviour
         else if (angle > 135f) rotationValue = 1f;     // Hood_180_Right
         else if (angle > 45f) rotationValue = 0.5f;    // Hood_90_Right
         else rotationValue = Mathf.Clamp(angle / 45f, -1f, 1f); // Soft adjustments
+        float fineRotation = Mathf.Clamp(angle / 180f, -1f, 1f);
 
         animator.SetFloat("rotation", rotationValue);
         animator.SetFloat("absRotation", Mathf.Abs(rotationValue));
+        animator.SetFloat("fineRotation", fineRotation);
     }
 
     // PUBLIC METHODS - Called by Animation Events
