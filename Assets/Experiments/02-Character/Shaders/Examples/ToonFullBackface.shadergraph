@@ -225,6 +225,9 @@
         },
         {
             "m_Id": "801c6a2dcd4b4049bf495e326e164de7"
+        },
+        {
+            "m_Id": "5caa9d46396e48fca6a7ed8843bf329c"
         }
     ],
     "m_GroupDatas": [
@@ -591,6 +594,20 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
+                    "m_Id": "5caa9d46396e48fca6a7ed8843bf329c"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "f24b5280998472879f86cbdddac767d8"
+                },
+                "m_SlotId": 1
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
                     "m_Id": "5dabc9346662481f9600eb3c71c4fe88"
                 },
                 "m_SlotId": 1
@@ -600,20 +617,6 @@
                     "m_Id": "cc021b20268b488eacc518c9d2372b9b"
                 },
                 "m_SlotId": 0
-            }
-        },
-        {
-            "m_OutputSlot": {
-                "m_Node": {
-                    "m_Id": "66244f5696a35a869b136c6b3d6a3d31"
-                },
-                "m_SlotId": 1
-            },
-            "m_InputSlot": {
-                "m_Node": {
-                    "m_Id": "f24b5280998472879f86cbdddac767d8"
-                },
-                "m_SlotId": 1
             }
         },
         {
@@ -1543,7 +1546,7 @@
     "m_ObjectId": "097f9f8a1b984454978b5bbc64570946",
     "m_Title": "Ramp Texture",
     "m_Position": {
-        "x": -672.0001831054688,
+        "x": -672.0,
         "y": 461.0
     }
 }
@@ -1939,8 +1942,8 @@
     "m_ObjectId": "146345151fa543cf816e8e34b0ec7e72",
     "m_Title": "Apply Light Colour",
     "m_Position": {
-        "x": -799.0000610351563,
-        "y": -285.99993896484377
+        "x": -799.0,
+        "y": -286.0
     }
 }
 
@@ -2098,8 +2101,8 @@
     "m_ObjectId": "19f30dbdbc684771a63b9422924274a0",
     "m_Title": "Apply Albedo (ambient)",
     "m_Position": {
-        "x": 569.9998168945313,
-        "y": -553.9999389648438
+        "x": 570.0,
+        "y": -554.0
     }
 }
 
@@ -2587,8 +2590,8 @@
     "m_ObjectId": "276717f8744e4cfd98d6d66b1a471d4c",
     "m_Title": "Combine Diffuse + Specular",
     "m_Position": {
-        "x": 990.999755859375,
-        "y": 136.00006103515626
+        "x": 991.0,
+        "y": 136.0
     }
 }
 
@@ -2720,7 +2723,7 @@
     "m_Title": "Light Layer Test",
     "m_Position": {
         "x": 1248.0,
-        "y": -233.99993896484376
+        "y": -234.0
     }
 }
 
@@ -2960,7 +2963,7 @@
     "m_Title": "Shadows",
     "m_Position": {
         "x": -1971.0,
-        "y": 514.0000610351563
+        "y": 514.0
     }
 }
 
@@ -3069,8 +3072,8 @@
     "m_ObjectId": "45d36482ab444f869f5edb7b25113a27",
     "m_Title": "+ Additional Lights",
     "m_Position": {
-        "x": 1750.999755859375,
-        "y": -96.99995422363281
+        "x": 1751.0,
+        "y": -97.0
     }
 }
 
@@ -3301,7 +3304,7 @@
     "m_Title": "Ramp Texture",
     "m_Position": {
         "x": -2147.0,
-        "y": -37.99995803833008
+        "y": -38.0
     }
 }
 
@@ -3685,6 +3688,50 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.ColorNode",
+    "m_ObjectId": "5caa9d46396e48fca6a7ed8843bf329c",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Color",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": -1221.0,
+            "y": -340.0,
+            "width": 207.99993896484376,
+            "height": 125.00001525878906
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "b01677fd720b4b6085b38b8d6fc1ab4b"
+        }
+    ],
+    "synonyms": [
+        "rgba"
+    ],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_Color": {
+        "color": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 0.0
+        },
+        "mode": 0
+    }
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.SubGraphNode",
     "m_ObjectId": "5dabc9346662481f9600eb3c71c4fe88",
@@ -4051,7 +4098,7 @@
     "m_Title": "Combine Ramp with Shadows",
     "m_Position": {
         "x": -1452.0,
-        "y": -100.99993896484375
+        "y": -101.0
     }
 }
 
@@ -4262,8 +4309,8 @@
     "m_ObjectId": "7142348eaaa346d5a25d0d6d14c52666",
     "m_Title": "Ambient + Main Light",
     "m_Position": {
-        "x": 1535.9998779296875,
-        "y": -360.99993896484377
+        "x": 1536.0,
+        "y": -361.0
     }
 }
 
@@ -4547,8 +4594,8 @@
     "m_ObjectId": "7c88845d502b4085af23e7952f3f7522",
     "m_Title": "Albedo",
     "m_Position": {
-        "x": -200.00015258789063,
-        "y": -226.99993896484376
+        "x": -200.0,
+        "y": -227.0
     }
 }
 
@@ -4867,8 +4914,8 @@
     "m_ObjectId": "864ca1d9054c4703b644d2fa6b52a760",
     "m_Title": "Apply Albedo (diffuse)",
     "m_Position": {
-        "x": 576.9998779296875,
-        "y": 136.00006103515626
+        "x": 577.0,
+        "y": 136.0
     }
 }
 
@@ -5777,8 +5824,8 @@
     "m_ObjectId": "a3e656127c1049da9890a8b3220c7032",
     "m_Title": "Apply Light Color & Shadows",
     "m_Position": {
-        "x": -229.00003051757813,
-        "y": 369.00006103515627
+        "x": -229.0,
+        "y": 369.0
     }
 }
 
@@ -6090,7 +6137,7 @@
     "m_Title": "Ambient / Baked",
     "m_Position": {
         "x": -516.0,
-        "y": -551.9999389648438
+        "y": -552.0
     }
 }
 
@@ -6131,6 +6178,31 @@
         "z": 0.0,
         "w": 0.0
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
+    "m_ObjectId": "b01677fd720b4b6085b38b8d6fc1ab4b",
+    "m_Id": 0,
+    "m_DisplayName": "Out",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_Labels": []
 }
 
 {
@@ -6222,7 +6294,7 @@
     "m_Title": "Diffuse, N Dot L",
     "m_Position": {
         "x": -2688.0,
-        "y": -311.99993896484377
+        "y": -312.0
     }
 }
 
@@ -6372,8 +6444,8 @@
     "m_ObjectId": "b57f5ced9e504dc8bc6cdb49b3744685",
     "m_Title": "Culling Mask",
     "m_Position": {
-        "x": -979.0001831054688,
-        "y": -261.99993896484377
+        "x": -979.0,
+        "y": -262.0
     }
 }
 
@@ -7737,8 +7809,8 @@
     "m_ObjectId": "d05ee2f3810f446fbabf30a5e25a65d5",
     "m_Title": "Additional Lights (Toon)",
     "m_Position": {
-        "x": -58.000091552734378,
-        "y": 813.9999389648438
+        "x": -58.0,
+        "y": 814.0
     }
 }
 
@@ -7881,7 +7953,7 @@
     "m_Title": "Main Light Cookie",
     "m_Position": {
         "x": -1904.0,
-        "y": -398.99993896484377
+        "y": -399.0
     }
 }
 
@@ -8441,8 +8513,8 @@
     "m_ObjectId": "e55cb56e639245c4b510115fc4273ac8",
     "m_Title": "Specular Colour",
     "m_Position": {
-        "x": 143.9999542236328,
-        "y": 369.00006103515627
+        "x": 144.0,
+        "y": 369.0
     }
 }
 
@@ -8800,7 +8872,7 @@
     "m_ObjectId": "f8709b9010d045249e88f5948d9a686e",
     "m_Title": "Apply Fog",
     "m_Position": {
-        "x": 1937.999755859375,
+        "x": 1938.0,
         "y": 137.0
     }
 }

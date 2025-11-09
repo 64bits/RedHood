@@ -765,9 +765,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 9
-  m_Height: 36.213398
+  m_Height: 40.818974
   m_Direction: 1
-  m_Center: {x: -0.00000954102, y: 9.210831, z: -0.0000010227249}
+  m_Center: {x: -0.000009574958, y: 6.908046, z: -0.00000076455734}
 --- !u!43 &1099023480
 Mesh:
   m_ObjectHideFlags: 0
@@ -951,7 +951,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: -8139853090755257685, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
   m_PrefabInstance: {fileID: 1718815558}
   m_PrefabAsset: {fileID: 0}
---- !u!136 &1167009994
+--- !u!136 &1167009996
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -971,9 +971,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 9
-  m_Height: 36.213398
+  m_Height: 40.818974
   m_Direction: 1
-  m_Center: {x: -0.00000954102, y: 9.210831, z: -0.0000010227249}
+  m_Center: {x: -0.000009574958, y: 6.908046, z: -0.00000076455734}
 --- !u!1 &1217615154 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1033859536177898853, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
@@ -1168,7 +1168,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 6a3fe3173912a4300b795f6c70d9af66, type: 2}
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_ApplyRootMotion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -5596858767202016720, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
@@ -1207,7 +1207,7 @@ PrefabInstance:
       addedObject: {fileID: 1354398725}
     - targetCorrespondingSourceObject: {fileID: -8139853090755257685, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1167009994}
+      addedObject: {fileID: 1167009996}
   m_SourcePrefab: {fileID: 100100000, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
 --- !u!1 &1932217449
 GameObject:
@@ -2095,7 +2095,7 @@ Cloth:
   - {fileID: 305656893}
   - {fileID: 265393572}
   - {fileID: 1354398725}
-  - {fileID: 1167009994}
+  - {fileID: 1167009996}
   - {fileID: 1217615156}
   - {fileID: 1586980936}
   m_SphereColliders: []
