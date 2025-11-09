@@ -1,25 +1,25 @@
-using System.Collections;
+// RootMotionController.cs
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
+/// <summary>
+/// Handles the movement/animation processing based on a target direction
+/// set externally (e.g., by a MovementInputSource).
+/// </summary>
 public class RootMotionController : MonoBehaviour
 {
-    [System.Serializable]
-    public struct MoveCommand
-    {
-        public Vector3 direction; // World-space direction
-        public float duration;    // Duration to hold this movement
-    }
-
     public float forwardSmoothing = 3f;
-    public MoveCommand[] commands;
 
     private Animator animator;
-    private int currentCommandIndex = 0;
-    private Vector3 currentDirection;
-    private bool isMoving = false;
-    private Vector3 logicalForward; // Smoothed forward vector for rotation
+    private Vector3 currentDirection; // Target direction, set by external script
+    private Vector3 logicalForward;   // Smoothed forward vector for rotation
     private bool isForwardFrozen = false; // Flag to freeze forward during pivots
+    
+    // PUBLIC ACCESSOR: The ONLY way for external scripts to influence movement
+    public void SetTargetDirection(Vector3 direction)
+    {
+        currentDirection = direction;
+    }
 
     private void Awake()
     {
@@ -29,32 +29,12 @@ public class RootMotionController : MonoBehaviour
     private void Start()
     {
         logicalForward = new Vector3(transform.forward.x, 0f, transform.forward.z);
-        if (commands.Length > 0)
-            StartCoroutine(ProcessCommands());
-    }
-
-    private IEnumerator ProcessCommands()
-    {
-        while (true) // Loop indefinitely
-        {
-            MoveCommand cmd = commands[currentCommandIndex];
-            currentDirection = cmd.direction.normalized;
-            isMoving = currentDirection.sqrMagnitude > 0;
-
-            float timer = 0f;
-            while (timer < cmd.duration)
-            {
-                timer += Time.deltaTime;
-                yield return null;
-            }
-
-            // Advance to next command, wrap around if at end
-            currentCommandIndex = (currentCommandIndex + 1) % commands.Length;
-        }
     }
 
     private void LateUpdate()
     {
+        bool isMoving = currentDirection.sqrMagnitude > 0;
+
         if (!isMoving)
         {
             animator.SetBool("isMoving", false);
@@ -73,8 +53,7 @@ public class RootMotionController : MonoBehaviour
             logicalForward = target;
         }
 
-        Debug.DrawLine(transform.position, transform.position + logicalForward, Color.red);
-        Debug.DrawLine(transform.position, transform.position + currentDirection, Color.blue);
+        // --- Rotation Calculation and Animation Parameter Setting ---
 
         // Ensure y component is zero for 2D rotation on the XZ plane
         Vector3 flatLogicalForward = logicalForward;
@@ -87,16 +66,20 @@ public class RootMotionController : MonoBehaviour
 
         // Map angle to -1 to 1 for blend tree
         float rotationValue = 0f;
-        if (angle < -135f) rotationValue = -1f;        // Hood_180_Left
-        else if (angle < -45f) rotationValue = -0.5f;  // Hood_90_Left
-        else if (angle > 135f) rotationValue = 1f;     // Hood_180_Right
-        else if (angle > 45f) rotationValue = 0.5f;    // Hood_90_Right
-        else rotationValue = Mathf.Clamp(angle / 45f, -1f, 1f); // Soft adjustments
+        if (angle < -135f) rotationValue = -1f;
+        else if (angle < -45f) rotationValue = -0.5f;
+        else if (angle > 135f) rotationValue = 1f;
+        else if (angle > 45f) rotationValue = 0.5f;
+        else rotationValue = Mathf.Clamp(angle / 45f, -1f, 1f);
         float fineRotation = Mathf.Clamp(angle / 180f, -1f, 1f);
 
         animator.SetFloat("rotation", rotationValue);
         animator.SetFloat("absRotation", Mathf.Abs(rotationValue));
         animator.SetFloat("fineRotation", fineRotation);
+
+        // Debug visualization (optional, for development)
+        // Debug.DrawLine(transform.position, transform.position + logicalForward, Color.red);
+        // Debug.DrawLine(transform.position, transform.position + currentDirection, Color.blue);
     }
 
     // PUBLIC METHODS - Called by Animation Events
