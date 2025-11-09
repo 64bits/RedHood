@@ -111,8 +111,8 @@ public class RootMotionController : MonoBehaviour
     /// </summary>
     public void ResumeForward()
     {
-        // Snap logicalForward to current transform.forward
-        logicalForward = new Vector3(transform.forward.x, 0f, transform.forward.z);
+        // Snap logicalForward to current direction
+        logicalForward = currentDirection; // new Vector3(transform.forward.x, 0f, transform.forward.z);
         isForwardFrozen = false;
     }
 }
