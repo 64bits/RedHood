@@ -18,8 +18,8 @@ public class RootMotionController : MonoBehaviour
     private int currentCommandIndex = 0;
     private Vector3 currentDirection;
     private bool isMoving = false;
-
     private Vector3 logicalForward; // Smoothed forward vector for rotation
+    private bool isForwardFrozen = false; // Flag to freeze forward during pivots
 
     private void Awake()
     {
@@ -29,7 +29,6 @@ public class RootMotionController : MonoBehaviour
     private void Start()
     {
         logicalForward = new Vector3(transform.forward.x, 0f, transform.forward.z);
-
         if (commands.Length > 0)
             StartCoroutine(ProcessCommands());
     }
@@ -66,9 +65,12 @@ public class RootMotionController : MonoBehaviour
 
         animator.SetBool("isMoving", true);
 
-        // Smoothly update logical forward vector
-        Vector3 target = new Vector3(transform.forward.x, 0f, transform.forward.z);
-        logicalForward = Vector3.Slerp(logicalForward, target, forwardSmoothing * Time.deltaTime);
+        // Only smooth logical forward if not frozen (i.e., not during pivot)
+        if (!isForwardFrozen)
+        {
+            Vector3 target = new Vector3(transform.forward.x, 0f, transform.forward.z);
+            logicalForward = Vector3.Slerp(logicalForward, target, forwardSmoothing * Time.deltaTime);
+        }
 
         Debug.DrawLine(transform.position, transform.position + logicalForward, Color.red);
 
@@ -83,7 +85,6 @@ public class RootMotionController : MonoBehaviour
 
         // Map angle to -1 to 1 for blend tree
         float rotationValue = 0f;
-
         if (angle < -135f) rotationValue = -1f;        // Hood_180_Left
         else if (angle < -45f) rotationValue = -0.5f;  // Hood_90_Left
         else if (angle > 135f) rotationValue = 1f;     // Hood_180_Right
@@ -92,5 +93,26 @@ public class RootMotionController : MonoBehaviour
 
         animator.SetFloat("rotation", rotationValue);
         animator.SetFloat("absRotation", Mathf.Abs(rotationValue));
+    }
+
+    // PUBLIC METHODS - Called by Animation Events
+    
+    /// <summary>
+    /// Call this at the START of a pivot animation to freeze logicalForward
+    /// </summary>
+    public void FreezeForward()
+    {
+        isForwardFrozen = true;
+    }
+
+    /// <summary>
+    /// Call this at the END of a pivot animation to resume smoothing.
+    /// This snaps logicalForward to the current transform.forward.
+    /// </summary>
+    public void ResumeForward()
+    {
+        // Snap logicalForward to current transform.forward
+        logicalForward = new Vector3(transform.forward.x, 0f, transform.forward.z);
+        isForwardFrozen = false;
     }
 }
