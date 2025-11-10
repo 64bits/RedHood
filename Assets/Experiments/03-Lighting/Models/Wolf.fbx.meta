@@ -138,7 +138,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Gallop
+      name: wolf_gallop
       takeName: Gallop
       internalID: -7180914814543497415
       firstFrame: 0
@@ -149,7 +149,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -167,7 +167,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Gallop_Jump
+      name: wolf_pounce
       takeName: Gallop_Jump
       internalID: 1485581873647467237
       firstFrame: 0
