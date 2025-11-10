@@ -231,4 +231,12 @@ public class StalkTarget : MonoBehaviour
             }
         }
     }
+
+    public void JumpOffsetOn() {
+      transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
+    }
+
+    public void JumpOffsetOff() {
+      transform.position = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
+    }
 }
