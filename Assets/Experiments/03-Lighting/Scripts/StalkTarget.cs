@@ -2,6 +2,15 @@ using UnityEngine;
 
 public class StalkTarget : MonoBehaviour
 {
+    public enum BehaviorMode
+    {
+        Orbit,
+        Linear
+    }
+
+    [Header("Behavior Settings")]
+    [SerializeField] private BehaviorMode behaviorMode = BehaviorMode.Orbit;
+
     [Header("Target Settings")]
     [SerializeField] private Transform target;  // The object to orbit around
 
@@ -9,13 +18,21 @@ public class StalkTarget : MonoBehaviour
     [SerializeField] private float orbitSpeed = 30f;  // Degrees per second
     [SerializeField] private bool clockwise = true;   // Orbit direction
 
+    [Header("Linear Settings")]
+    [SerializeField] private float linearSpeed = 5f;  // Units per second in XZ plane
+
     [Header("Look Settings")]
-    [SerializeField] private bool lookAtTangent = true;  // Look along orbit path
+    [SerializeField] private bool lookAtTangent = true;  // Look along orbit path (orbit mode) or movement direction (linear mode)
     [SerializeField] private float lookSmoothing = 5f;   // Smooth rotation speed
 
+    // Orbit mode variables
     private float currentAngle = 0f;
     private float orbitRadius;
     private Vector3 orbitCenter;
+
+    // Linear mode variables
+    private Vector3 movementDirection;
+    private bool hasPassedTarget = false;
 
     void Start()
     {
@@ -29,24 +46,17 @@ public class StalkTarget : MonoBehaviour
             }
         }
 
-        // Initialize position if target exists
+        // Initialize based on behavior mode
         if (target != null)
         {
-            orbitCenter = target.position;
-
-            // --- FIX IS HERE ---
-            // Calculate the vector from the target to this object
-            Vector3 offset = transform.position - target.position;
-
-            // Calculate initial orbit radius ignoring Y-axis
-            Vector3 flatOffset = offset;
-            flatOffset.y = 0f; // Ignore Y-axis
-            orbitRadius = flatOffset.magnitude;
-
-            // Calculate initial angle from the flat offset
-            // We use Atan2(z, x) to get the angle in the XZ plane
-            currentAngle = Mathf.Atan2(flatOffset.z, flatOffset.x) * Mathf.Rad2Deg;
-            // --- END OF FIX ---
+            if (behaviorMode == BehaviorMode.Orbit)
+            {
+                InitializeOrbitMode();
+            }
+            else if (behaviorMode == BehaviorMode.Linear)
+            {
+                InitializeLinearMode();
+            }
         }
         else
         {
@@ -54,10 +64,47 @@ public class StalkTarget : MonoBehaviour
         }
     }
 
+    void InitializeOrbitMode()
+    {
+        orbitCenter = target.position;
+
+        // Calculate the vector from the target to this object
+        Vector3 offset = transform.position - target.position;
+
+        // Calculate initial orbit radius ignoring Y-axis
+        Vector3 flatOffset = offset;
+        flatOffset.y = 0f; // Ignore Y-axis
+        orbitRadius = flatOffset.magnitude;
+
+        // Calculate initial angle from the flat offset
+        currentAngle = Mathf.Atan2(flatOffset.z, flatOffset.x) * Mathf.Rad2Deg;
+    }
+
+    void InitializeLinearMode()
+    {
+        // Calculate direction to target in XZ plane
+        Vector3 toTarget = target.position - transform.position;
+        toTarget.y = 0f;
+        movementDirection = toTarget.normalized;
+        hasPassedTarget = false;
+    }
+
     void Update()
     {
         if (target == null) return;
 
+        if (behaviorMode == BehaviorMode.Orbit)
+        {
+            UpdateOrbitMode();
+        }
+        else if (behaviorMode == BehaviorMode.Linear)
+        {
+            UpdateLinearMode();
+        }
+    }
+
+    void UpdateOrbitMode()
+    {
         orbitCenter = target.position;
 
         // Update orbit angle
@@ -71,7 +118,33 @@ public class StalkTarget : MonoBehaviour
         UpdateOrbitPosition();
 
         // Update rotation
-        UpdateRotation();
+        UpdateOrbitRotation();
+    }
+
+    void UpdateLinearMode()
+    {
+        // Check if we've passed the target
+        if (!hasPassedTarget)
+        {
+            Vector3 toTarget = target.position - transform.position;
+            toTarget.y = 0f;
+
+            // Check if we're very close or if the dot product shows we've passed
+            float distanceToTarget = toTarget.magnitude;
+            float dotProduct = Vector3.Dot(movementDirection, toTarget.normalized);
+
+            if (distanceToTarget < 0.1f || dotProduct < 0f)
+            {
+                hasPassedTarget = true;
+            }
+        }
+
+        // Move in the direction (same whether we've passed target or not)
+        Vector3 movement = movementDirection * linearSpeed * Time.deltaTime;
+        transform.position += movement;
+
+        // Update rotation
+        UpdateLinearRotation();
     }
 
     void UpdateOrbitPosition()
@@ -86,12 +159,11 @@ public class StalkTarget : MonoBehaviour
         transform.position = newPosition;
     }
 
-    void UpdateRotation()
+    void UpdateOrbitRotation()
     {
         if (lookAtTangent)
         {
             // Calculate tangent direction (perpendicular to radius)
-            // Note: Vector from self to center is the opposite of the offset
             Vector3 toCenter = (orbitCenter - transform.position).normalized;
             Vector3 tangent = Vector3.Cross(toCenter, Vector3.up);
 
@@ -100,7 +172,6 @@ public class StalkTarget : MonoBehaviour
                 tangent = -tangent;
 
             // Create rotation looking along tangent
-            // Use -tangent to look "forward" along the path
             Quaternion targetRotation = Quaternion.LookRotation(-tangent, Vector3.up); 
 
             // Smoothly rotate towards tangent
@@ -113,16 +184,51 @@ public class StalkTarget : MonoBehaviour
         }
     }
 
+    void UpdateLinearRotation()
+    {
+        if (lookAtTangent)
+        {
+            // Look in the direction of movement
+            Quaternion targetRotation = Quaternion.LookRotation(movementDirection, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, lookSmoothing * Time.deltaTime);
+        }
+        else
+        {
+            // Look at the target (even after passing it)
+            Vector3 lookDirection = target.position - transform.position;
+            lookDirection.y = 0f;
+            if (lookDirection.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, lookSmoothing * Time.deltaTime);
+            }
+        }
+    }
+
     // Gizmos for visualization in Scene view
     void OnDrawGizmosSelected()
     {
         if (target != null)
         {
-            Gizmos.color = Color.yellow;
-            // Draw the gizmo at the target's position, not the (potentially outdated) orbitCenter
-            Gizmos.DrawWireSphere(target.position, orbitRadius);
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, target.position);
+            if (behaviorMode == BehaviorMode.Orbit)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(target.position, orbitRadius);
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(transform.position, target.position);
+            }
+            else if (behaviorMode == BehaviorMode.Linear)
+            {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawLine(transform.position, target.position);
+                
+                if (Application.isPlaying)
+                {
+                    // Draw movement direction
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawRay(transform.position, movementDirection * 3f);
+                }
+            }
         }
     }
 }
