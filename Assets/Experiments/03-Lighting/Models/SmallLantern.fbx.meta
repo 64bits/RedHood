@@ -3,7 +3,22 @@ guid: bc22c2c36e1034670a0361e2ab5cfe2c
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Fabric
+    second: {fileID: 2100000, guid: 238de502ece6a428591c4f8a8746f568, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_Lantern
+    second: {fileID: 2100000, guid: 0432324c1bddf410fb42f3085bb1c8a6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_Lantern_Glass
+    second: {fileID: 2100000, guid: 73bffdd7acd56498683165c46da0163b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
