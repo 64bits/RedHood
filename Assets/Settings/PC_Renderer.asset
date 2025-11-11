@@ -71,11 +71,16 @@ MonoBehaviour:
   m_Active: 1
   settings:
     OccluderMaskShader: {fileID: 4800000, guid: 09b189a71af754fd29072af02b9f276c, type: 3}
+    HighlightBlitShader: {fileID: 4800000, guid: 69df3f24e6e234c0b8d73a7a2ef89e3f, type: 3}
     MaskTextureName: _OccluderMaskTex
     OccluderLayer:
       serializedVersion: 2
       m_Bits: 128
+    HighlightLayer:
+      serializedVersion: 2
+      m_Bits: 64
     AlphaCutoff: 0.5
+    HighlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!114 &7833122117494664109
 MonoBehaviour:
   m_ObjectHideFlags: 0
