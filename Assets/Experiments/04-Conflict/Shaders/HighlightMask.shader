@@ -11,9 +11,9 @@ Shader "Hidden/HighlightMask"
         Tags { "RenderType"="Opaque" }
         LOD 100
         
-        // Write to depth
-        ZWrite On
-        ZTest LEqual
+        // No depth testing needed - just render silhouettes
+        ZWrite Off
+        ZTest Always
         
         Pass
         {

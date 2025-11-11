@@ -16,7 +16,6 @@ MonoBehaviour:
   settings:
     HighlightMaskShader: {fileID: 4800000, guid: 37e841e3fc2834daaa9be02199ad90c0, type: 3}
     MaskTextureName: _HighlightMaskTex
-    DepthTextureName: _HighlightDepthTex
     OccluderLayer:
       serializedVersion: 2
       m_Bits: 128
@@ -25,6 +24,7 @@ MonoBehaviour:
       m_Bits: 64
     AlphaCutoff: 0.5
     HighlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    DebugMask: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

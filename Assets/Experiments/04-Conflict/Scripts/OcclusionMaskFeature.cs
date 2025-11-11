@@ -12,11 +12,13 @@ public class OcclusionMaskFeature : ScriptableRendererFeature
     {
         public Shader HighlightMaskShader; // Renders Layer 6 silhouettes
         public string MaskTextureName = "_HighlightMaskTex";
-        public string DepthTextureName = "_HighlightDepthTex";
         public LayerMask OccluderLayer = 1 << 7; // Objects that will show X-ray
         public LayerMask HighlightLayer = 1 << 6; // Objects to detect behind occluders
         public float AlphaCutoff = 0.5f;
         public Color HighlightColor = Color.yellow;
+        
+        [Header("Debug")]
+        public bool DebugMask = false;
     }
 
     public Settings settings = new();
@@ -36,7 +38,6 @@ public class OcclusionMaskFeature : ScriptableRendererFeature
         private class PassData 
         {
             public TextureHandle maskTexture;
-            public TextureHandle depthTexture;
         }
 
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
@@ -51,7 +52,7 @@ public class OcclusionMaskFeature : ScriptableRendererFeature
             desc.msaaSamples = 1;
             desc.graphicsFormat = GraphicsFormat.R8_UNorm;
 
-            // Pass 1: Render Layer 6 silhouettes WITH DEPTH to mask texture
+            // Pass 1: Render Layer 6 silhouettes to mask texture
             TextureHandle maskTex = renderGraph.CreateTexture(
                 new TextureDesc(desc.width, desc.height)
                 {
@@ -63,22 +64,12 @@ public class OcclusionMaskFeature : ScriptableRendererFeature
                     clearColor = Color.clear
                 });
 
-            TextureHandle depthTex = renderGraph.CreateTexture(
-                new TextureDesc(desc.width, desc.height)
-                {
-                    colorFormat = GraphicsFormat.None,
-                    depthBufferBits = DepthBits.Depth32,
-                    msaaSamples = (MSAASamples) desc.msaaSamples,
-                    name = _settings.DepthTextureName,
-                    clearBuffer = true,
-                    clearColor = Color.clear
-                });
-
             using (var builder = renderGraph.AddRasterRenderPass<PassData>(
                 "Render Highlight Mask", out PassData passData))
             {
+                passData.maskTexture = maskTex;
+                
                 builder.SetRenderAttachment(maskTex, 0);
-                builder.SetRenderAttachmentDepth(depthTex, AccessFlags.Write);
                 builder.AllowPassCulling(false);
 
                 builder.SetRenderFunc((PassData data, RasterGraphContext ctx) =>
@@ -98,26 +89,43 @@ public class OcclusionMaskFeature : ScriptableRendererFeature
                 });
             }
 
-            // Pass 2: Expose mask and depth textures globally for Layer 7 shaders
+            // Pass 2: Expose mask texture globally for Layer 7 shaders
             using (var builder = renderGraph.AddRasterRenderPass<PassData>(
                 "Expose Highlight Mask", out PassData exposeData))
             {
                 exposeData.maskTexture = maskTex;
-                exposeData.depthTexture = depthTex;
                 
                 builder.UseTexture(maskTex);
-                builder.UseTexture(depthTex);
                 builder.AllowPassCulling(false);
                 builder.AllowGlobalStateModification(true);
 
                 builder.SetRenderFunc((PassData data, RasterGraphContext ctx) =>
                 {
-                    // Make mask and depth available to all shaders
+                    // Make mask available to all shaders
                     ctx.cmd.SetGlobalTexture(_settings.MaskTextureName, data.maskTexture);
-                    ctx.cmd.SetGlobalTexture(_settings.DepthTextureName, data.depthTexture);
                     ctx.cmd.SetGlobalColor("_HighlightColor", _settings.HighlightColor);
                 });
             }
+
+            // Debug Pass: Visualize the mask
+            // if (_settings.DebugMask)
+            // {
+            //     using (var builder = renderGraph.AddRasterRenderPass<PassData>(
+            //         "Debug Highlight Mask", out PassData debugData))
+            //     {
+            //         debugData.maskTexture = maskTex;
+                    
+            //         builder.UseTexture(maskTex);
+            //         builder.SetRenderAttachment(resourceData.activeColorTexture, 0);
+            //         builder.AllowPassCulling(false);
+
+            //         builder.SetRenderFunc((PassData data, RasterGraphContext ctx) =>
+            //         {
+            //             // Blit mask (white = Layer 6 exists)
+            //             ctx.cmd.Blit(data.maskTexture, resourceData.activeColorTexture);
+            //         });
+            //     }
+            // }
         }
     }
 
@@ -127,8 +135,8 @@ public class OcclusionMaskFeature : ScriptableRendererFeature
     {
         _maskPass = new OcclusionMaskPass(settings)
         {
-            // Run before Layer 7 objects are rendered
-            renderPassEvent = RenderPassEvent.BeforeRenderingOpaques
+            // Run after opaques but before transparents
+            renderPassEvent = RenderPassEvent.AfterRenderingOpaques
         };
     }
 
