@@ -458,6 +458,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9100549922944220864, guid: b978c79b73ffe4e118c5783e0adc405d, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b978c79b73ffe4e118c5783e0adc405d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -24.51
@@ -498,6 +502,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8546671519451032077, guid: b978c79b73ffe4e118c5783e0adc405d, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -3807137342826900553, guid: b978c79b73ffe4e118c5783e0adc405d, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -3384232889743406902, guid: b978c79b73ffe4e118c5783e0adc405d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -537,6 +549,22 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b978c79b73ffe4e118c5783e0adc405d, type: 3}
       propertyPath: m_Name
       value: LieveOma 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b978c79b73ffe4e118c5783e0adc405d, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3945217979960330648, guid: b978c79b73ffe4e118c5783e0adc405d, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952104709999512862, guid: b978c79b73ffe4e118c5783e0adc405d, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7602896589626297100, guid: b978c79b73ffe4e118c5783e0adc405d, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
