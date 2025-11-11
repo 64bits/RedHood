@@ -481,10 +481,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FiendSpawner
   spawnDataArray:
+  - prefab: {fileID: 7052031351889769243, guid: b52e331e06f6e4f559c30a7375e89980, type: 3}
+    relativePosition: {x: -2.67, y: -1.29, z: 0.72}
+    delay: 1
+    ttl: 6
+  - prefab: {fileID: 7052031351889769243, guid: b52e331e06f6e4f559c30a7375e89980, type: 3}
+    relativePosition: {x: 2.67, y: -1.29, z: -0.72}
+    delay: 1
+    ttl: 6
   - prefab: {fileID: 5592239390935161927, guid: f3d034c6f1c374b8682ffbd7381f10dc, type: 3}
-    relativePosition: {x: 5, y: 0, z: 5}
-    delay: 2
-    ttl: 2
+    relativePosition: {x: 4.5, y: -1.29, z: 4.5}
+    delay: 8
+    ttl: 4
   playOnAwake: 1
 --- !u!1 &338163921 stripped
 GameObject:
