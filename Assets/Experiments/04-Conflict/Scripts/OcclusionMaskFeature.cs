@@ -106,26 +106,6 @@ public class OcclusionMaskFeature : ScriptableRendererFeature
                     ctx.cmd.SetGlobalColor("_HighlightColor", _settings.HighlightColor);
                 });
             }
-
-            // Debug Pass: Visualize the mask
-            // if (_settings.DebugMask)
-            // {
-            //     using (var builder = renderGraph.AddRasterRenderPass<PassData>(
-            //         "Debug Highlight Mask", out PassData debugData))
-            //     {
-            //         debugData.maskTexture = maskTex;
-                    
-            //         builder.UseTexture(maskTex);
-            //         builder.SetRenderAttachment(resourceData.activeColorTexture, 0);
-            //         builder.AllowPassCulling(false);
-
-            //         builder.SetRenderFunc((PassData data, RasterGraphContext ctx) =>
-            //         {
-            //             // Blit mask (white = Layer 6 exists)
-            //             ctx.cmd.Blit(data.maskTexture, resourceData.activeColorTexture);
-            //         });
-            //     }
-            // }
         }
     }
 
@@ -136,7 +116,7 @@ public class OcclusionMaskFeature : ScriptableRendererFeature
         _maskPass = new OcclusionMaskPass(settings)
         {
             // Run after opaques but before transparents
-            renderPassEvent = RenderPassEvent.AfterRenderingOpaques
+            renderPassEvent = RenderPassEvent.BeforeRenderingOpaques
         };
     }
 
