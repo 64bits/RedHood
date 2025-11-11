@@ -445,6 +445,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 183784951}
+  - component: {fileID: 183784952}
   m_Layer: 0
   m_Name: Tracking Target
   m_TagString: Untagged
@@ -467,6 +468,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &183784952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 183784950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269ff77f931f04366b935bc6ca6ea91f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FiendSpawner
+  spawnDataArray:
+  - prefab: {fileID: 5592239390935161927, guid: f3d034c6f1c374b8682ffbd7381f10dc, type: 3}
+    relativePosition: {x: 5, y: 0, z: 5}
+    delay: 2
+    ttl: 2
+  playOnAwake: 1
 --- !u!1 &338163921 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1378258190230442398, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
