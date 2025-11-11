@@ -80,11 +80,10 @@ public class OcclusionMaskFeature : ScriptableRendererFeature
                     foreach (var rend in Highlightable.AllHighlightables)
                     {
                         if (rend == null) continue;
-                        MeshFilter mf = rend.GetComponent<MeshFilter>();
-                        if (mf != null && mf.sharedMesh != null)
-                        {
-                            ctx.cmd.DrawMesh(mf.sharedMesh, rend.transform.localToWorldMatrix, _maskMaterial);
-                        }
+
+                        // Use DrawRenderer instead of DrawMesh to handle both MeshRenderer and SkinnedMeshRenderer
+                        // We only use the first material index [0] to draw the silhouette
+                        ctx.cmd.DrawRenderer(rend, _maskMaterial, 0); 
                     }
                 });
             }
