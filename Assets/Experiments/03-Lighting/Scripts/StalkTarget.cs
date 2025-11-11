@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class StalkTarget : MonoBehaviour
 {
@@ -25,6 +26,11 @@ public class StalkTarget : MonoBehaviour
     [SerializeField] private bool lookAtTangent = true;  // Look along orbit path (orbit mode) or movement direction (linear mode)
     [SerializeField] private float lookSmoothing = 5f;   // Smooth rotation speed
 
+    [Header("Alpha Clip Settings")]
+    [SerializeField] private string alphaClipPropertyName = "_AlphaClipThreshold";  // Common property name, adjust if needed
+    [SerializeField] private float lerpDuration = 0.5f;  // Duration to lerp alpha
+    [SerializeField] private float orbitOscillationInterval = 2f;  // Time between oscillations in orbit mode
+
     // Orbit mode variables
     private float currentAngle = 0f;
     private float orbitRadius;
@@ -33,6 +39,12 @@ public class StalkTarget : MonoBehaviour
     // Linear mode variables
     private Vector3 movementDirection;
     private bool hasPassedTarget = false;
+
+    // Alpha clip variables
+    private Material[] materialInstances;
+    private Coroutine alphaCoroutine;
+    private float currentAlpha = 1f;
+    private float nextOrbitOscillationTime = 0f;
 
     void Start()
     {
@@ -44,6 +56,23 @@ public class StalkTarget : MonoBehaviour
             {
                 target = player.transform;
             }
+        }
+
+        // Get material instances from SkinnedMeshRenderer in children
+        SkinnedMeshRenderer skinnedRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        if (skinnedRenderer != null && skinnedRenderer.materials != null && skinnedRenderer.materials.Length > 0)
+        {
+            materialInstances = skinnedRenderer.materials;  // Creates instances automatically
+            
+            // Get initial alpha from first material
+            if (materialInstances[0].HasProperty(alphaClipPropertyName))
+            {
+                currentAlpha = materialInstances[0].GetFloat(alphaClipPropertyName);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("StalkTarget: No SkinnedMeshRenderer or Materials found in children!");
         }
 
         // Initialize based on behavior mode
@@ -78,6 +107,9 @@ public class StalkTarget : MonoBehaviour
 
         // Calculate initial angle from the flat offset
         currentAngle = Mathf.Atan2(flatOffset.z, flatOffset.x) * Mathf.Rad2Deg;
+
+        // Start oscillation timer
+        nextOrbitOscillationTime = Time.time + orbitOscillationInterval;
     }
 
     void InitializeLinearMode()
@@ -87,6 +119,12 @@ public class StalkTarget : MonoBehaviour
         toTarget.y = 0f;
         movementDirection = toTarget.normalized;
         hasPassedTarget = false;
+
+        // Start alpha fade from 1 to 0
+        if (materialInstances != null && materialInstances.Length > 0)
+        {
+            alphaCoroutine = StartCoroutine(LerpToTargetAlpha(0f));
+        }
     }
 
     void Update()
@@ -119,6 +157,23 @@ public class StalkTarget : MonoBehaviour
 
         // Update rotation
         UpdateOrbitRotation();
+
+        // Handle alpha oscillation
+        if (materialInstances != null && materialInstances.Length > 0 && Time.time >= nextOrbitOscillationTime)
+        {
+            // Toggle between 0 and 1
+            float targetAlpha = (currentAlpha < 0.5f) ? 1f : 0f;
+            
+            // Stop any existing coroutine and start new one
+            if (alphaCoroutine != null)
+            {
+                StopCoroutine(alphaCoroutine);
+            }
+            alphaCoroutine = StartCoroutine(LerpToTargetAlpha(targetAlpha));
+            
+            // Schedule next oscillation
+            nextOrbitOscillationTime = Time.time + orbitOscillationInterval;
+        }
     }
 
     void UpdateLinearMode()
@@ -205,6 +260,42 @@ public class StalkTarget : MonoBehaviour
         }
     }
 
+    IEnumerator LerpToTargetAlpha(float targetAlpha)
+    {
+        if (materialInstances == null || materialInstances.Length == 0) yield break;
+
+        float startAlpha = currentAlpha;
+        float elapsed = 0f;
+
+        while (elapsed < lerpDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / lerpDuration;
+            currentAlpha = Mathf.Lerp(startAlpha, targetAlpha, t);
+            
+            // Update all material instances
+            foreach (Material mat in materialInstances)
+            {
+                if (mat != null && mat.HasProperty(alphaClipPropertyName))
+                {
+                    mat.SetFloat(alphaClipPropertyName, currentAlpha);
+                }
+            }
+            
+            yield return null;
+        }
+
+        // Ensure we reach exact target value
+        currentAlpha = targetAlpha;
+        foreach (Material mat in materialInstances)
+        {
+            if (mat != null && mat.HasProperty(alphaClipPropertyName))
+            {
+                mat.SetFloat(alphaClipPropertyName, currentAlpha);
+            }
+        }
+    }
+
     // Gizmos for visualization in Scene view
     void OnDrawGizmosSelected()
     {
@@ -238,5 +329,20 @@ public class StalkTarget : MonoBehaviour
 
     public void JumpOffsetOff() {
       transform.position = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
+    }
+
+    void OnDestroy()
+    {
+        // Clean up material instances
+        if (materialInstances != null)
+        {
+            foreach (Material mat in materialInstances)
+            {
+                if (mat != null)
+                {
+                    Destroy(mat);
+                }
+            }
+        }
     }
 }
