@@ -629,6 +629,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SmallLantern
       objectReference: {fileID: 0}
+    - target: {fileID: 8121045164592721589, guid: 5c3c17aafb4484db28d4a4b86c74aa4f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8933012045373355023, guid: 5c3c17aafb4484db28d4a4b86c74aa4f, type: 3}
       propertyPath: m_LocalScale.x
       value: 100.00006
@@ -686,6 +690,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c3c17aafb4484db28d4a4b86c74aa4f, type: 3}
+--- !u!1 &4904888701158226720 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8121045164592721589, guid: 5c3c17aafb4484db28d4a4b86c74aa4f, type: 3}
+  m_PrefabInstance: {fileID: 3792617774320129429}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5718017804321202586 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8933012045373355023, guid: 5c3c17aafb4484db28d4a4b86c74aa4f, type: 3}
@@ -812,6 +821,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 561551092863457602}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2023827769491960594}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 325143514450771035}
@@ -1840,6 +1852,23 @@ MonoBehaviour:
   crouchAction: {fileID: 7040659881675835329, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   crouchBoolName: isCrouching
   crouchTriggerName: crouch
+--- !u!114 &2023827769491960594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4787488530426266539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11e89ac06ce4f4666abd6670156da2bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpecialController
+  animator: {fileID: 2295550532835410795}
+  lanternObject: {fileID: 4904888701158226720}
+  specialAction: {fileID: -6344244933227291088, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  lanternLayerIndex: 1
+  transitionSpeed: 5
 --- !u!114 &325143514450771035
 MonoBehaviour:
   m_ObjectHideFlags: 0
