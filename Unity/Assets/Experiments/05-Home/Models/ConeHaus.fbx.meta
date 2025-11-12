@@ -12,6 +12,26 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Child.png_128x128
+    second: {fileID: 2100000, guid: 0983732f601bb4e7a966c36f558e07c1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Child.png_128x128.001
+    second: {fileID: 2100000, guid: e577eb0ff4d5441628baaed0a17a77f1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Child.png_128x128.002
+    second: {fileID: 2100000, guid: 6fb5a7ece92df487490d1419cd46d24e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Ground
+    second: {fileID: 2100000, guid: fc1915f8cf1474b12b06a2b37ade43f8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: lambert1_albedo.jpg_128x128
     second: {fileID: 2100000, guid: 711e6d64586ac470c97f5f8fcacd69e2, type: 2}
   - first:
@@ -25,6 +45,36 @@ ModelImporter:
       name: project_foliage_-_Copy.png_2048x2048.002
     second: {fileID: 2100000, guid: 3a31aeb75c4c44063a6be29b25e08d17, type: 2}
   - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tree_simpleBark01
+    second: {fileID: 2100000, guid: 13a556e7b04d14ffa95ac0fbd09d83b6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tree_simpleBark01.001
+    second: {fileID: 2100000, guid: 1790dcd3baeb04bf98b4cdde9d34fdce, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tree_simpleBark01.002
+    second: {fileID: 2100000, guid: 6b85900110d0640b68bbf17bb43e8e86, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tree_simpleBark03
+    second: {fileID: 2100000, guid: 51e810a144d064be9ada6eebb91f73c2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tree_simpleBark03.001
+    second: {fileID: 2100000, guid: 6c3a44f3419574402b245569baf14c66, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Fir_Leaves_256x256_Sharp
+    second: {fileID: 2800000, guid: 95e41349e5883496ea68dea8a89840b8, type: 3}
+  - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: environment.png_2048x2048
@@ -32,8 +82,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
+      name: ground_texture
+    second: {fileID: 2800000, guid: 18dc92879021f4df0ae5718226c64eb8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
       name: lambert1_albedo.jpg_2048x2048
-    second: {fileID: 2800000, guid: 84a18210b6a9741ff94ae0879827448f, type: 3}
+    second: {fileID: 2800000, guid: e5ce1747e7ab04619aaafce18be27af5, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -121,7 +176,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.005
+    globalScale: 0.5
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
