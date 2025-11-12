@@ -5287,10 +5287,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1124087922293397435, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1124087922293397435, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[0].duration
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1124087922293397435, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[1].duration
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1224461144958643322, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: cameraTarget
       value: 
       objectReference: {fileID: 183784951}
+    - target: {fileID: 4205930872488386036, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4787488530426266539, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_Name
       value: Char_Hood
