@@ -47,6 +47,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: stylized bush
+    second: {fileID: 2100000, guid: cfd07de8b76214e72816b5617ebbda42, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: tree_simpleBark01
     second: {fileID: 2100000, guid: 13a556e7b04d14ffa95ac0fbd09d83b6, type: 2}
   - first:
