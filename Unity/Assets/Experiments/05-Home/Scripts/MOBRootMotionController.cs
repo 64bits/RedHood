@@ -9,19 +9,24 @@ public class MOBRootMotionController : MonoBehaviour
     [SerializeField] private float stopDistance = 1.5f;
     
     [Header("Snap Zone Settings")]
-    [SerializeField] private float idleSnapZone = 15f; // Total angle (7.5 degrees each side)
-    [SerializeField] private float runningSnapZone = 30f; // Total angle (15 degrees each side)
+    [SerializeField] private float idleSnapZone = 15f;
+    [SerializeField] private float runningSnapZone = 30f;
     [SerializeField] private float slerpSpeed = 5f;
     
     [Header("State Thresholds")]
-    [SerializeField] private float runStartDistance = 2f; // Must be outside stop distance to start running
+    [SerializeField] private float runStartDistance = 2f;
     
     private Animator animator;
     private CharacterController characterController;
     
     private bool isRunning = false;
-    private static readonly int AngleParam = Animator.StringToHash("angle");
+    private bool isExecutingTurn = false;
+    private float committedAngle = 0f;
+    
+    // Animator parameters
     private static readonly int IsRunningParam = Animator.StringToHash("isRunning");
+    private static readonly int TurnAngleParam = Animator.StringToHash("turnAngle");
+    private static readonly int ExecuteTurnParam = Animator.StringToHash("executeTurn");
     
     private void Awake()
     {
@@ -33,12 +38,14 @@ public class MOBRootMotionController : MonoBehaviour
     {
         if (target == null) return;
         
-        // Calculate direction and angle to target
+        // Don't update direction while executing a committed turn
+        if (isExecutingTurn) return;
+        
         Vector3 directionToTarget = target.position - transform.position;
-        directionToTarget.y = 0; // Keep movement on horizontal plane
+        directionToTarget.y = 0;
         float distanceToTarget = directionToTarget.magnitude;
         
-        // Check if we should stop (reached target)
+        // Check if we should stop
         if (distanceToTarget <= stopDistance)
         {
             if (isRunning)
@@ -46,25 +53,18 @@ public class MOBRootMotionController : MonoBehaviour
                 isRunning = false;
                 animator.SetBool(IsRunningParam, false);
             }
-            animator.SetFloat(AngleParam, 0f);
             return;
         }
         
-        // Calculate signed angle between forward and target direction
         Vector3 targetDirection = directionToTarget.normalized;
         float signedAngle = Vector3.SignedAngle(transform.forward, targetDirection, Vector3.up);
         
-        // Update animator with current angle
-        animator.SetFloat(AngleParam, signedAngle);
-        
-        // Determine current snap zone based on state
         float currentSnapZone = isRunning ? runningSnapZone : idleSnapZone;
         float halfSnapZone = currentSnapZone * 0.5f;
-        
-        // Handle rotation when within snap zone
+        Debug.Log(Mathf.Abs(signedAngle));
+        // Within snap zone - smooth rotation
         if (Mathf.Abs(signedAngle) <= halfSnapZone)
         {
-            // Smoothly rotate towards target
             Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
             transform.rotation = Quaternion.Slerp(
                 transform.rotation, 
@@ -72,18 +72,36 @@ public class MOBRootMotionController : MonoBehaviour
                 slerpSpeed * Time.deltaTime
             );
             
-            // Start running if we're idle and far enough from target
+            // Start running if idle and far enough
             if (!isRunning && distanceToTarget > runStartDistance)
             {
                 isRunning = true;
                 animator.SetBool(IsRunningParam, true);
             }
         }
+        // Outside snap zone - commit to a turn animation
         else
         {
-            // Outside snap zone - let root motion handle rotation via pivot animations
-            // The animator will select appropriate turn animation based on angle parameter
+            CommitToTurn(signedAngle);
         }
+    }
+    
+    private void CommitToTurn(float angle)
+    {
+        isExecutingTurn = true;
+        committedAngle = angle;
+        
+        // Set the angle parameter so animator can choose correct animation
+        animator.SetFloat(TurnAngleParam, committedAngle);
+        
+        // Trigger the turn
+        animator.SetTrigger(ExecuteTurnParam);
+    }
+    
+    // Called by Animation Event at end of turn animations
+    public void OnTurnComplete()
+    {
+        isExecutingTurn = false;
     }
     
     private void OnAnimatorMove()
@@ -100,19 +118,15 @@ public class MOBRootMotionController : MonoBehaviour
     {
         if (target == null) return;
         
-        // Draw stop distance
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(target.position, stopDistance);
         
-        // Draw run start distance
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(target.position, runStartDistance);
         
-        // Draw direction line
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(transform.position, target.position);
         
-        // Draw snap zone visualization
         if (Application.isPlaying)
         {
             float currentSnapZone = isRunning ? runningSnapZone : idleSnapZone;
@@ -121,7 +135,7 @@ public class MOBRootMotionController : MonoBehaviour
             Vector3 leftBound = Quaternion.Euler(0, -halfSnapZone, 0) * transform.forward * 2f;
             Vector3 rightBound = Quaternion.Euler(0, halfSnapZone, 0) * transform.forward * 2f;
             
-            Gizmos.color = Color.green;
+            Gizmos.color = isExecutingTurn ? Color.red : Color.green;
             Gizmos.DrawLine(transform.position, transform.position + leftBound);
             Gizmos.DrawLine(transform.position, transform.position + rightBound);
         }
