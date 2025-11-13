@@ -240,9 +240,10 @@ public class CharacterLocomotionController : MonoBehaviour
         Vector3 flatForward = new Vector3(transform.forward.x, 0, transform.forward.z).normalized;
         Vector3 flatTarget = new Vector3(targetDirection.x, 0, targetDirection.z).normalized;
         float angle = Vector3.Angle(flatForward, flatTarget);
+        float adjustedThreshold = isPivoting ? microRotationThreshold * 2f : microRotationThreshold;
 
         // Use slerp for micro-rotations to maintain smooth forward movement
-        if (angle < microRotationThreshold && isMoving)
+        if (angle < adjustedThreshold && isMoving)
         {
             Quaternion targetRotation = Quaternion.LookRotation(flatTarget);
             transform.rotation = Quaternion.Slerp(

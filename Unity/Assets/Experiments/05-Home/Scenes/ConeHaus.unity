@@ -5335,6 +5335,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9100000, guid: 3360e265d58804423b4fa47976855544, type: 2}
     - target: {fileID: 3924854343173156112, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: slerpSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3924854343173156112, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: movementHysteresis
       value: 0.025
       objectReference: {fileID: 0}

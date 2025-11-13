@@ -20,17 +20,17 @@ public class PivotBehaviour : StateMachineBehaviour
         
         // Snap the initial turn angle and set it
         float currentAngle = animator.GetFloat(TurnAngleParam);
-        float snappedAngle = SnapToCardinalAngle(currentAngle);
+        float snappedAngle = SnapToCardinalAngle(currentAngle * 1.5f); //Bias to higher values
         animator.SetFloat(FrozenTurnAngleParam, snappedAngle);
     }
 
-    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        // Continuously update by snapping the current turn angle
-        float currentAngle = animator.GetFloat(TurnAngleParam);
-        float snappedAngle = SnapToCardinalAngle(currentAngle);
-        animator.SetFloat(FrozenTurnAngleParam, snappedAngle);
-    }
+    // public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    // {
+    //     // Continuously update by snapping the current turn angle
+    //     float currentAngle = animator.GetFloat(TurnAngleParam);
+    //     float snappedAngle = SnapToCardinalAngle(currentAngle);
+    //     animator.SetFloat(FrozenTurnAngleParam, snappedAngle);
+    // }
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
