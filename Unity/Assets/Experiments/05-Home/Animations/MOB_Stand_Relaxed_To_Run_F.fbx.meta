@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 065691149603d4b8c8048e5232f499b5
+guid: 4c36961658580460991a7e10507cbc57
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: MOB_Run_F
-      takeName: MOB_Run_F
-      internalID: 2794943394159400904
-      firstFrame: 0
-      lastFrame: 24
+      name: MOB_Stand_Relaxed_To_Run_F
+      takeName: MOB_Stand_Relaxed_To_Run_F
+      internalID: 8056103632982025975
+      firstFrame: 6
+      lastFrame: 41
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -58,7 +58,7 @@ ModelImporter:
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+      additiveReferencePoseFrame: 6
     isReadable: 0
   meshes:
     lODScreenPercentages: []
@@ -971,11 +971,11 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 065691149603d4b8c8048e5232f499b5, type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 3
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0
