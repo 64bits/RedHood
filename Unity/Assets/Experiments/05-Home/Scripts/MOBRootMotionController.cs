@@ -39,7 +39,7 @@ public class MOBRootMotionController : MonoBehaviour
         if (target == null) return;
         
         // Don't update direction while executing a committed turn
-        if (isExecutingTurn) return;
+        // if (isExecutingTurn) return;
         
         Vector3 directionToTarget = target.position - transform.position;
         directionToTarget.y = 0;
@@ -79,9 +79,10 @@ public class MOBRootMotionController : MonoBehaviour
                 animator.SetBool(IsRunningParam, true);
             }
         }
-        // Outside snap zone - commit to a turn animation
+        // Outside snap zone - commit to a turn animation if not already
         else
         {
+            if (isExecutingTurn) return;
             CommitToTurn(signedAngle);
         }
     }

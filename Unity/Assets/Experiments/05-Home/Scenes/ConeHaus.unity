@@ -502,7 +502,7 @@ Transform:
   m_GameObject: {fileID: 195127947}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 29.4, y: 0.028, z: -36.2}
+  m_LocalPosition: {x: -6.27, y: 0.028, z: 13.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -526,11 +526,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBRootMotionController
   target: {fileID: 195127948}
-  stopDistance: 0.1
+  stopDistance: 1.5
   idleSnapZone: 15
   runningSnapZone: 30
   slerpSpeed: 5
-  runStartDistance: 0.2
+  runStartDistance: 2
 --- !u!1 &602037047
 GameObject:
   m_ObjectHideFlags: 0
