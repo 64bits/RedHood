@@ -34,8 +34,8 @@ ModelImporter:
       name: MOB_Run_R_90
       takeName: MOB_Run_R_90
       internalID: 2513260035833756224
-      firstFrame: 21.4
-      lastFrame: 47.8
+      firstFrame: 0
+      lastFrame: 70
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
