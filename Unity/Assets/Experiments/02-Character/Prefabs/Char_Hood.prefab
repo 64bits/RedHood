@@ -783,7 +783,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 4d0863bbaa38f437d8c57b0e64b4626e, type: 2}
+      objectReference: {fileID: 9100000, guid: bd1018e7d10c14b30aceabb6a4c43908, type: 2}
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_CullingMode
       value: 0
@@ -820,13 +820,13 @@ PrefabInstance:
       addedObject: {fileID: 325143514450771035}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5828831980010718437}
+      addedObject: {fileID: 3924854343173156112}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7927980692062334075}
+      addedObject: {fileID: 643304721722524872}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1822859322900294085}
+      addedObject: {fileID: 7346810611381512272}
     - targetCorrespondingSourceObject: {fileID: -1855368600654575853, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7123682496627538371}
@@ -1840,7 +1840,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterGravity
   gravity: -9.81
   groundedGravity: -0.5
---- !u!114 &5828831980010718437
+--- !u!114 &3924854343173156112
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1861,7 +1861,7 @@ MonoBehaviour:
   pivotBlendOutTime: 0.2
   microRotationThreshold: 15
   slerpSpeed: 10
---- !u!114 &7927980692062334075
+--- !u!114 &643304721722524872
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1874,7 +1874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterInputController
   moveActionReference: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
---- !u!114 &1822859322900294085
+--- !u!114 &7346810611381512272
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

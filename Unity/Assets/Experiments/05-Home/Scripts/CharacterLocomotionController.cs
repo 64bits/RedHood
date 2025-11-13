@@ -36,7 +36,7 @@ public class CharacterLocomotionController : MonoBehaviour
     private Vector3 targetDirection;
     private Vector3 currentVelocity;
     private float movementTimer;
-    private float lastInputTime = -32768;
+    private float lastInputTime;
     private bool isMoving;
     private float commitment;
     
@@ -215,7 +215,7 @@ public class CharacterLocomotionController : MonoBehaviour
         Vector3 flatForward = new Vector3(transform.forward.x, 0, transform.forward.z).normalized;
         Vector3 flatTarget = new Vector3(targetDirection.x, 0, targetDirection.z).normalized;
         float turnAngle = Vector3.SignedAngle(flatForward, flatTarget, Vector3.up);
-        
+
         animator.SetFloat(TurnAngleParam, turnAngle);
         animator.SetFloat(CommitmentParam, commitment);
         animator.SetBool(IsMovingParam, isMoving);
