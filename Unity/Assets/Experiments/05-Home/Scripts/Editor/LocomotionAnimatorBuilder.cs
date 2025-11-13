@@ -161,7 +161,6 @@ public class LocomotionAnimatorBuilder : EditorWindow
         
         var runToIdleState = rootStateMachine.AddState("RunToIdle", new Vector3(550, 50, 0));
         runToIdleState.motion = clips["MOB_Run_F_To_Stand_Relaxed"];
-        runToIdleState.AddStateMachineBehaviour<RunToIdleBehaviour>();
         
         // Set default state
         rootStateMachine.defaultState = idleState;
