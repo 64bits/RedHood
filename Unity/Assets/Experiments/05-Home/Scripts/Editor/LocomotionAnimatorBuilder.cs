@@ -210,6 +210,8 @@ public class LocomotionAnimatorBuilder : EditorWindow
             blendParameter = "FrozenTurnAngle",
             blendParameterY = "Commitment"
         };
+
+        AssetDatabase.AddObjectToAsset(blendTree, controller);
         
         // Add idle turn animations (commitment = 0) - micro-movements
         blendTree.AddChild(clips["MOB_Stand_Relaxed_Idle"], new Vector2(0, 0));
@@ -272,6 +274,8 @@ public class LocomotionAnimatorBuilder : EditorWindow
             minThreshold = -180f,
             maxThreshold = 180f
         };
+
+        AssetDatabase.AddObjectToAsset(blendTree, controller);
         
         // Add pivot animations
         blendTree.AddChild(clips["MOB_Run_R_180"], -180f);
