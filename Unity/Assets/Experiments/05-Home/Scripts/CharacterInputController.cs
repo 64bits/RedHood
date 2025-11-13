@@ -1,8 +1,9 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Simple input controller that feeds direction to the locomotion controller
-/// Can be replaced with your own input system
+/// Using Unity's new Input System
 /// </summary>
 [RequireComponent(typeof(CharacterLocomotionController))]
 public class CharacterInputController : MonoBehaviour
@@ -10,7 +11,11 @@ public class CharacterInputController : MonoBehaviour
     [Header("Camera")]
     [SerializeField] private Transform cameraTransform;
     
+    [Header("Input Actions")]
+    [SerializeField] private InputActionReference moveAction;
+    
     private CharacterLocomotionController locomotionController;
+    private Vector2 currentInput;
     
     private void Awake()
     {
@@ -25,31 +30,68 @@ public class CharacterInputController : MonoBehaviour
                 cameraTransform = mainCam.transform;
             }
         }
+        
+        // Enable input actions
+        if (moveAction != null)
+        {
+            moveAction.action.Enable();
+        }
+    }
+    
+    private void OnEnable()
+    {
+        if (moveAction != null)
+        {
+            moveAction.action.performed += OnMovePerformed;
+            moveAction.action.canceled += OnMoveCanceled;
+        }
+    }
+    
+    private void OnDisable()
+    {
+        if (moveAction != null)
+        {
+            moveAction.action.performed -= OnMovePerformed;
+            moveAction.action.canceled -= OnMoveCanceled;
+        }
+        
+        // Clear input when disabled
+        currentInput = Vector2.zero;
+        locomotionController.SetTargetDirection(Vector3.zero);
     }
     
     private void Update()
     {
-        // Get input
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        
-        // Create input vector
-        Vector3 inputDir = new Vector3(horizontal, 0f, vertical);
-        
-        if (inputDir.sqrMagnitude > 0.01f)
+        if (currentInput.sqrMagnitude > 0.01f)
         {
             // Normalize diagonal movement
+            Vector2 inputDir = currentInput;
             if (inputDir.magnitude > 1f)
             {
                 inputDir.Normalize();
             }
             
             // Convert to world space relative to camera
-            Vector3 worldDir = ConvertToWorldSpace(inputDir);
+            Vector3 worldDir = ConvertToWorldSpace(new Vector3(inputDir.x, 0f, inputDir.y));
             
             // Send to locomotion controller
             locomotionController.SetTargetDirection(worldDir);
         }
+        else
+        {
+            // Stop movement when no input
+            locomotionController.SetTargetDirection(Vector3.zero);
+        }
+    }
+    
+    private void OnMovePerformed(InputAction.CallbackContext context)
+    {
+        currentInput = context.ReadValue<Vector2>();
+    }
+    
+    private void OnMoveCanceled(InputAction.CallbackContext context)
+    {
+        currentInput = Vector2.zero;
     }
     
     private Vector3 ConvertToWorldSpace(Vector3 inputDir)
