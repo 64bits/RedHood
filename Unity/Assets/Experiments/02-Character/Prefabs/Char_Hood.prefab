@@ -783,7 +783,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 8b666ba3fe5584592b45901fa6623edb, type: 2}
+      objectReference: {fileID: 9100000, guid: 4d0863bbaa38f437d8c57b0e64b4626e, type: 2}
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_CullingMode
       value: 0
@@ -820,13 +820,13 @@ PrefabInstance:
       addedObject: {fileID: 325143514450771035}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6232086246505279715}
+      addedObject: {fileID: 5828831980010718437}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3814895015486092351}
+      addedObject: {fileID: 7927980692062334075}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3329854976561061792}
+      addedObject: {fileID: 1822859322900294085}
     - targetCorrespondingSourceObject: {fileID: -1855368600654575853, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7123682496627538371}
@@ -1833,14 +1833,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4787488530426266539}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce3b2ea1788b84aa2a752271de93ba34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterGravity
   gravity: -9.81
   groundedGravity: -0.5
---- !u!114 &6232086246505279715
+--- !u!114 &5828831980010718437
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1849,32 +1849,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 4787488530426266539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 190e0e5eba9674c908fba6a0c933007a, type: 3}
+  m_Script: {fileID: 11500000, guid: 7bb99a4bd077a45e08103b17e0352012, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RootMotionController
-  shouldMove: 1
-  idleSnapZone: 30
-  runningSnapZone: 30
-  slerpSpeed: 5
-  runStartThreshold: 2
---- !u!114 &3814895015486092351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4787488530426266539}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4420623d53d4047fda4d72bc485828bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CommandInputSource
-  commands:
-  - direction: {x: 0, y: 0, z: 1}
-    duration: 3
-  - direction: {x: 0, y: 0, z: -1}
-    duration: 3
---- !u!114 &3329854976561061792
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterLocomotionController
+  moveSpeed: 5
+  rotationSpeed: 540
+  commitmentThreshold: 0.15
+  movementHysteresis: 0.1
+  pivotAngleThreshold: 90
+  pivotBlendInTime: 0.15
+  pivotBlendOutTime: 0.2
+  microRotationThreshold: 15
+  slerpSpeed: 10
+--- !u!114 &7927980692062334075
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1883,10 +1870,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 4787488530426266539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb24923c65ecd4b5483ff78b35d6ec31, type: 3}
+  m_Script: {fileID: 11500000, guid: a6a2944c0e4fb41dd9b797bea4af5eb8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UserInputSource
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterInputController
   moveActionReference: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!114 &1822859322900294085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4787488530426266539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b7f91ab1f03429dab2d1cb7b63b25f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocomotionDebugVisualizer
+  showDebugInfo: 1
+  showGizmos: 1
+  showOnScreenDebug: 1
+  forwardArrowLength: 2
+  targetArrowLength: 2.5
+  gizmoHeight: 1.5
 --- !u!1 &5095064199604543061 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 577788141732143279, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}

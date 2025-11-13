@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(RootMotionController))]
+[RequireComponent(typeof(CharacterLocomotionController))]
 /// <summary>
 /// This script demonstrates one way to set the target direction
 /// (by processing a list of commands). This logic could be replaced
@@ -20,16 +20,16 @@ public class CommandInputSource : MonoBehaviour
     public MoveCommand[] commands;
 
     // A reference to the controller that will receive the movement direction
-    private RootMotionController motionController;
+    private CharacterLocomotionController motionController;
     private int currentCommandIndex = 0;
 
     private void Awake()
     {
         // Get the controller component on the same GameObject
-        motionController = GetComponent<RootMotionController>();
+        motionController = GetComponent<CharacterLocomotionController>();
         if (motionController == null)
         {
-            Debug.LogError("MovementInputSource requires a RootMotionController component on the same GameObject.");
+            Debug.LogError("MovementInputSource requires a CharacterLocomotionController component on the same GameObject.");
             enabled = false;
         }
     }

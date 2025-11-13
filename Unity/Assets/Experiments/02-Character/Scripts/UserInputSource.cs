@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(RootMotionController))]
+[RequireComponent(typeof(CharacterLocomotionController))]
 /// <summary>
 /// Reads input from the new Unity Input System's "Move" action, calculates
 /// the world-space direction relative to the camera, and passes it to the
-/// RootMotionController.
+/// CharacterLocomotionController.
 /// This version uses standard camera-relative movement.
 /// Logic is in Update() to avoid feedback loops with camera systems like Cinemachine.
 /// </summary>
@@ -15,7 +15,7 @@ public class UserInputSource : MonoBehaviour
     [Tooltip("Assign the Input System Action used for 2D movement (e.g., 'Move').")]
     public InputActionReference moveActionReference;
 
-    private RootMotionController motionController;
+    private CharacterLocomotionController motionController;
     private Transform mainCameraTransform;
     private Vector2 rawInputVector = Vector2.zero;
 
@@ -24,7 +24,7 @@ public class UserInputSource : MonoBehaviour
     private void Awake()
     {
         // RequireComponent ensures this will not be null
-        motionController = GetComponent<RootMotionController>();
+        motionController = GetComponent<CharacterLocomotionController>();
 
         // Find and cache the main camera's transform
         if (Camera.main != null)
@@ -104,7 +104,7 @@ public class UserInputSource : MonoBehaviour
         // The input's X component drives the camera's right vector (X world-axis)
         Vector3 targetDirection = (forward * rawInputVector.y) + (right * rawInputVector.x);
 
-        // 3. Pass the resulting direction to the RootMotionController
+        // 3. Pass the resulting direction to the CharacterLocomotionController
         // We normalize the result to prevent diagonal movement from being faster (vector magnitude > 1)
         motionController.SetTargetDirection(targetDirection);
     }
