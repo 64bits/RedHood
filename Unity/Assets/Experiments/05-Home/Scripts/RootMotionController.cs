@@ -150,6 +150,14 @@ public class RootMotionController : MonoBehaviour
     {
         isExecutingTurn = false;
         logicalForward = transform.forward;
+
+        // Immediately check if we should start running after turn completes
+        if (!isRunning && currentDirection.magnitude >= runStartThreshold)
+        {
+            isRunning = true;
+            animator.SetBool(IsRunningParam, true);
+            Debug.Log("Started running");
+        }
     }
     
     private void OnAnimatorMove()
