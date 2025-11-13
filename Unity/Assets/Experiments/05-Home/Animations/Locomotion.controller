@@ -94,7 +94,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0
+  m_TransitionDuration: 0.05
   m_TransitionOffset: 0
   m_ExitTime: 1
   m_HasExitTime: 1
@@ -518,18 +518,6 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 1769049858020055233}
---- !u!114 &1289065692500267565
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0cb63b7eeba94d9f962cd24451d0fa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::IdleToRunBehaviour
 --- !u!1102 &1769049858020055233
 AnimatorState:
   serializedVersion: 6
@@ -606,6 +594,18 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &2355285927052824147
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0cb63b7eeba94d9f962cd24451d0fa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IdleToRunBehaviour
 --- !u!1101 &4798105147862296035
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -700,7 +700,7 @@ AnimatorState:
   - {fileID: 4798105147862296035}
   - {fileID: -7297492120006437126}
   m_StateMachineBehaviours:
-  - {fileID: 1289065692500267565}
+  - {fileID: 2355285927052824147}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1

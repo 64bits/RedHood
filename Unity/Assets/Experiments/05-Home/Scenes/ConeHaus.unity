@@ -5322,6 +5322,18 @@ PrefabInstance:
       propertyPath: cameraTarget
       value: 
       objectReference: {fileID: 183784951}
+    - target: {fileID: 3924854343173156112, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: movementHysteresis
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 3924854343173156112, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commitmentThreshold
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3924854343173156112, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: microRotationThreshold
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 4787488530426266539, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_Name
       value: Char_Hood
@@ -5332,7 +5344,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5276885986018646289, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.028
+      value: 0.17
       objectReference: {fileID: 0}
     - target: {fileID: 5276885986018646289, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_LocalPosition.z
