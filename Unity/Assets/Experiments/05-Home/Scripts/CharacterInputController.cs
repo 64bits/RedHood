@@ -5,11 +5,11 @@ using UnityEngine.InputSystem;
 /// <summary>
 /// Reads input from the new Unity Input System's "Move" action, calculates
 /// the world-space direction relative to the camera, and passes it to the
-/// CharacterLocomotionController.
+/// RootMotionController.
 /// This version uses standard camera-relative movement.
 /// Logic is in Update() to avoid feedback loops with camera systems like Cinemachine.
 /// </summary>
-public class UserInputSource : MonoBehaviour
+public class CharacterInputController : MonoBehaviour
 {
     // The Input Action Reference for the movement vector (usually WASD/Left Stick)
     [Tooltip("Assign the Input System Action used for 2D movement (e.g., 'Move').")]
@@ -104,7 +104,7 @@ public class UserInputSource : MonoBehaviour
         // The input's X component drives the camera's right vector (X world-axis)
         Vector3 targetDirection = (forward * rawInputVector.y) + (right * rawInputVector.x);
 
-        // 3. Pass the resulting direction to the CharacterLocomotionController
+        // 3. Pass the resulting direction to the RootMotionController
         // We normalize the result to prevent diagonal movement from being faster (vector magnitude > 1)
         motionController.SetTargetDirection(targetDirection);
     }
