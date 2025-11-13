@@ -176,7 +176,7 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
-  m_BlendParameter: TurnAngle
+  m_BlendParameter: FrozenTurnAngle
   m_BlendParameterY: Blend
   m_MinThreshold: -180
   m_MaxThreshold: 180

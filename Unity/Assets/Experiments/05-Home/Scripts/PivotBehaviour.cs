@@ -7,6 +7,10 @@ using UnityEngine;
 public class PivotBehaviour : StateMachineBehaviour
 {
     private CharacterLocomotionController controller;
+    private static readonly int TurnAngleParam = Animator.StringToHash("TurnAngle");
+    private static readonly int FrozenTurnAngleParam = Animator.StringToHash("FrozenTurnAngle");
+
+    private float snapshotAngle;
     
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -15,9 +19,17 @@ public class PivotBehaviour : StateMachineBehaviour
         {
             controller = animator.GetComponent<CharacterLocomotionController>();
         }
+
+        // Capture the turn angle at the moment we enter this state
+        snapshotAngle = animator.GetFloat(TurnAngleParam);
+        animator.SetFloat(FrozenTurnAngleParam, snapshotAngle);
     }
     
-    // OnStateUpdate is no longer needed
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        // Keep the frozen value throughout the state
+        animator.SetFloat(FrozenTurnAngleParam, snapshotAngle);
+    }
     
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
