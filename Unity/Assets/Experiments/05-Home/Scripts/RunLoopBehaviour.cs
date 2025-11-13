@@ -2,18 +2,30 @@ using UnityEngine;
 
 /// <summary>
 /// State machine behaviour for the RunLoop state
-/// Monitors for pivot conditions
+/// Notifies the controller when the character is in the main running animation.
 /// </summary>
 public class RunLoopBehaviour : StateMachineBehaviour
 {
+    private CharacterLocomotionController controller;
+
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        // Entered run loop - continuous running
+        if (controller == null)
+        {
+            controller = animator.GetComponent<CharacterLocomotionController>();
+        }
+        
+        if (controller != null)
+        {
+            controller.SetInRunLoop(true); // <--- Flag the controller that we are running
+        }
     }
-    
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        // The pivot detection is handled in the main controller
-        // This behaviour can be extended for additional logic
+        if (controller != null)
+        {
+            controller.SetInRunLoop(false); // <--- Unflag when leaving the run loop
+        }
     }
 }

@@ -16,8 +16,7 @@ public class CharacterLocomotionController : MonoBehaviour
     
     [Header("Pivot Settings")]
     [SerializeField] private float pivotAngleThreshold = 90f; // angle change to trigger pivot
-    [SerializeField] private float pivotBlendInTime = 0.15f;
-    [SerializeField] private float pivotBlendOutTime = 0.2f;
+    // Blending fields are removed
     
     [Header("Rotation Correction")]
     [SerializeField] private float microRotationThreshold = 15f; // angle within which we slerp instead of using root motion
@@ -31,33 +30,56 @@ public class CharacterLocomotionController : MonoBehaviour
     private static readonly int TurnAngleParam = Animator.StringToHash("TurnAngle");
     private static readonly int CommitmentParam = Animator.StringToHash("Commitment");
     private static readonly int IsMovingParam = Animator.StringToHash("IsMoving");
+    private static readonly int IsPivotingParam = Animator.StringToHash("IsPivoting");
     
     // Movement state
     private Vector3 targetDirection;
     private Vector3 currentVelocity;
     private float movementTimer;
-    private float lastInputTime;
+    private float lastInputTime = -32768;
     private bool isMoving;
     private float commitment;
     
     // Pivot state
-    private float pivotWeight;
+    private float pivotWeight; // Will now be 0 or 1
     private bool isPivoting;
-    private float pivotTimer;
     private float lastAngle;
-    private bool wasPivotBlendingIn;
     
     // Root motion
     private Vector3 rootMotionDelta;
     private Quaternion rootMotionRotation;
+
+    // New state flag for external control by StateMachineBehaviours
+    public bool IsInRunLoop { get; private set; } 
     
+    // Public setter for StateMachineBehaviour
+    public void SetInRunLoop(bool isInRunLoop)
+    {
+        IsInRunLoop = isInRunLoop;
+    }
+
+    //================================================================//
+    // NEW PUBLIC METHOD FOR STATE MACHINE BEHAVIOUR
+    //================================================================//
+    /// <summary>
+    /// Called by the PivotBehaviour on StateExit to signal the pivot is complete.
+    /// </summary>
+    public void EndPivot()
+    {
+        isPivoting = false;
+        pivotWeight = 0f;
+        // Optional: Log to confirm it's called
+        // Debug.Log($"EndPivot() called at {Time.time}. isPivoting: {isPivoting}");
+    }
+    //================================================================//
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
         
-        // Ensure root motion is enabled
-        animator.applyRootMotion = false; // We'll apply it manually
+        // We'll apply root motion manually
+        animator.applyRootMotion = false; 
     }
     
     private void Start()
@@ -148,11 +170,14 @@ public class CharacterLocomotionController : MonoBehaviour
         // Calculate signed angle
         float angle = Vector3.SignedAngle(flatForward, flatTarget, Vector3.up);
         
-        // Check for pivot condition
-        if (isMoving && commitment >= 1f && !isPivoting)
+        // Check for pivot condition:
+        // 1. We are committed to a run (commitment >= 1f)
+        // 2. We are NOT already pivoting (!isPivoting)
+        // 3. The RunLoopBehaviour has flagged that we are in the main run animation.
+        if (commitment >= 1f && !isPivoting && IsInRunLoop)
         {
-            float angleDelta = Mathf.Abs(Mathf.DeltaAngle(lastAngle, angle));
-            
+            float angleDelta = Mathf.Abs(Mathf.DeltaAngle(lastAngle, angle)) * Mathf.Rad2Deg; 
+
             if (angleDelta > pivotAngleThreshold)
             {
                 TriggerPivot();
@@ -165,49 +190,23 @@ public class CharacterLocomotionController : MonoBehaviour
     private void TriggerPivot()
     {
         isPivoting = true;
-        pivotTimer = 0f;
-        wasPivotBlendingIn = true;
+        pivotWeight = 1f; // Set weight directly to 1
+        animator.SetTrigger(IsPivotingParam);
+        // Optional: Log to confirm it's called
+        // Debug.Log($"TriggerPivot() called at {Time.time}. isPivoting: {isPivoting}");
     }
     
+    //================================================================//
+    // SIMPLIFIED PIVOT LAYER LOGIC
+    //================================================================//
     private void UpdatePivotLayer()
     {
-        if (isPivoting)
-        {
-            pivotTimer += Time.deltaTime;
-            
-            if (wasPivotBlendingIn)
-            {
-                // Blend in
-                pivotWeight = Mathf.Clamp01(pivotTimer / pivotBlendInTime);
-                
-                // Check if pivot animation is near completion
-                AnimatorStateInfo pivotState = animator.GetCurrentAnimatorStateInfo(1);
-                if (pivotState.normalizedTime >= 0.7f) // Start blending out at 70%
-                {
-                    wasPivotBlendingIn = false;
-                    pivotTimer = 0f;
-                }
-            }
-            else
-            {
-                // Blend out
-                pivotWeight = 1f - Mathf.Clamp01(pivotTimer / pivotBlendOutTime);
-                
-                if (pivotWeight <= 0f)
-                {
-                    isPivoting = false;
-                    pivotWeight = 0f;
-                }
-            }
-        }
-        else
-        {
-            pivotWeight = 0f;
-        }
-        
-        // Apply pivot layer weight
+        // The weight is now managed by TriggerPivot() (sets to 1) 
+        // and EndPivot() (sets to 0).
+        // We just need to apply this value to the animator layer.
         animator.SetLayerWeight(1, pivotWeight);
     }
+    //================================================================//
     
     private void UpdateAnimatorParameters()
     {
@@ -215,7 +214,7 @@ public class CharacterLocomotionController : MonoBehaviour
         Vector3 flatForward = new Vector3(transform.forward.x, 0, transform.forward.z).normalized;
         Vector3 flatTarget = new Vector3(targetDirection.x, 0, targetDirection.z).normalized;
         float turnAngle = Vector3.SignedAngle(flatForward, flatTarget, Vector3.up);
-
+        
         animator.SetFloat(TurnAngleParam, turnAngle);
         animator.SetFloat(CommitmentParam, commitment);
         animator.SetBool(IsMovingParam, isMoving);
