@@ -58,12 +58,6 @@ public class CharacterLocomotionController : MonoBehaviour
         IsInRunLoop = isInRunLoop;
     }
 
-    //================================================================//
-    // NEW PUBLIC METHOD FOR STATE MACHINE BEHAVIOUR
-    //================================================================//
-    /// <summary>
-    /// Called by the PivotBehaviour on StateExit to signal the pivot is complete.
-    /// </summary>
     public void EndPivot()
     {
         isPivoting = false;
@@ -71,7 +65,6 @@ public class CharacterLocomotionController : MonoBehaviour
         // Optional: Log to confirm it's called
         // Debug.Log($"EndPivot() called at {Time.time}. isPivoting: {isPivoting}");
     }
-    //================================================================//
 
     private void Awake()
     {
