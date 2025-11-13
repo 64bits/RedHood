@@ -6,7 +6,7 @@ using UnityEngine;
 /// Handles the movement/animation processing based on a target direction
 /// set externally (e.g., by a MovementInputSource).
 /// </summary>
-public class RootMotionController : MonoBehaviour
+public class OldRootMotionController : MonoBehaviour
 {
     public float forwardSmoothing = 3f;
 
