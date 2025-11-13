@@ -34,8 +34,8 @@ ModelImporter:
       name: MOB_Stand_Relaxed_L180
       takeName: MOB_Stand_Relaxed_L180
       internalID: 5883100358194157748
-      firstFrame: 0
-      lastFrame: 113
+      firstFrame: 7
+      lastFrame: 83
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
