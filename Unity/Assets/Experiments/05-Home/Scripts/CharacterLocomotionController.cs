@@ -36,7 +36,7 @@ public class CharacterLocomotionController : MonoBehaviour
     private Vector3 targetDirection;
     private Vector3 currentVelocity;
     private float movementTimer;
-    private float lastInputTime;
+    private float lastInputTime = -32768;
     private bool isMoving;
     private float commitment;
     

@@ -6,25 +6,22 @@ using UnityEngine;
 /// </summary>
 public class IdleToRunBehaviour : StateMachineBehaviour
 {
-    private static readonly int CommitmentParam = Animator.StringToHash("Commitment");
-    private static readonly int IsMovingParam = Animator.StringToHash("IsMoving");
+    private static readonly int TurnAngleParam = Animator.StringToHash("TurnAngle");
+    private static readonly int FrozenTurnAngleParam = Animator.StringToHash("FrozenTurnAngle");
     
-    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    private float snapshotAngle;
+    
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        // Reset any state if needed
+        // Capture the turn angle at the moment we enter this state
+        snapshotAngle = animator.GetFloat(TurnAngleParam);
+        animator.SetFloat(FrozenTurnAngleParam, snapshotAngle);
     }
     
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        // Monitor commitment and movement for transition
-        float commitment = animator.GetFloat(CommitmentParam);
-        bool isMoving = animator.GetBool(IsMovingParam);
-        
-        // This helps ensure smooth transitions
-        if (!isMoving && stateInfo.normalizedTime >= 0.8f)
-        {
-            // Ready to transition to idle
-        }
+        // Keep the frozen value throughout the state
+        animator.SetFloat(FrozenTurnAngleParam, snapshotAngle);
     }
 }
 

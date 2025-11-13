@@ -543,8 +543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6a2944c0e4fb41dd9b797bea4af5eb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterInputController
-  cameraTransform: {fileID: 0}
-  moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  moveActionReference: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &407387574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5387,7 +5386,7 @@ PrefabInstance:
     - target: {fileID: 2295550532835410795, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 65bd2707f03e54b809f5d67d4e3bb5ed, type: 2}
+      objectReference: {fileID: 9100000, guid: acb3f2d8a8b274476b370c6c5480af52, type: 2}
     - target: {fileID: 3329854976561061792, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_Enabled
       value: 0

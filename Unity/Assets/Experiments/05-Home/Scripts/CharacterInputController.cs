@@ -1,132 +1,111 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Simple input controller that feeds direction to the locomotion controller
-/// Using Unity's new Input System
-/// </summary>
 [RequireComponent(typeof(CharacterLocomotionController))]
+/// <summary>
+/// Reads input from the new Unity Input System's "Move" action, calculates
+/// the world-space direction relative to the camera, and passes it to the
+/// RootMotionController.
+/// This version uses standard camera-relative movement.
+/// Logic is in Update() to avoid feedback loops with camera systems like Cinemachine.
+/// </summary>
 public class CharacterInputController : MonoBehaviour
 {
-    [Header("Camera")]
-    [SerializeField] private Transform cameraTransform;
-    
-    [Header("Input Actions")]
-    [SerializeField] private InputActionReference moveAction;
-    
-    private CharacterLocomotionController locomotionController;
-    private Vector2 currentInput;
-    
+    // The Input Action Reference for the movement vector (usually WASD/Left Stick)
+    [Tooltip("Assign the Input System Action used for 2D movement (e.g., 'Move').")]
+    public InputActionReference moveActionReference;
+
+    private CharacterLocomotionController motionController;
+    private Transform mainCameraTransform;
+    private Vector2 rawInputVector = Vector2.zero;
+
+    // --- No state for locked directions is needed ---
+
     private void Awake()
     {
-        locomotionController = GetComponent<CharacterLocomotionController>();
-        
-        // Auto-find main camera if not set
-        if (cameraTransform == null)
+        // RequireComponent ensures this will not be null
+        motionController = GetComponent<CharacterLocomotionController>();
+
+        // Find and cache the main camera's transform
+        if (Camera.main != null)
         {
-            Camera mainCam = Camera.main;
-            if (mainCam != null)
-            {
-                cameraTransform = mainCam.transform;
-            }
-        }
-        
-        // Enable input actions
-        if (moveAction != null)
-        {
-            moveAction.action.Enable();
-        }
-    }
-    
-    private void OnEnable()
-    {
-        if (moveAction != null)
-        {
-            moveAction.action.performed += OnMovePerformed;
-            moveAction.action.canceled += OnMoveCanceled;
-        }
-    }
-    
-    private void OnDisable()
-    {
-        if (moveAction != null)
-        {
-            moveAction.action.performed -= OnMovePerformed;
-            moveAction.action.canceled -= OnMoveCanceled;
-        }
-        
-        // Clear input when disabled
-        currentInput = Vector2.zero;
-        locomotionController.SetTargetDirection(Vector3.zero);
-    }
-    
-    private void Update()
-    {
-        if (currentInput.sqrMagnitude > 0.01f)
-        {
-            // Normalize diagonal movement
-            Vector2 inputDir = currentInput;
-            if (inputDir.magnitude > 1f)
-            {
-                inputDir.Normalize();
-            }
-            
-            // Convert to world space relative to camera
-            Vector3 worldDir = ConvertToWorldSpace(new Vector3(inputDir.x, 0f, inputDir.y));
-            
-            // Send to locomotion controller
-            locomotionController.SetTargetDirection(worldDir);
+            mainCameraTransform = Camera.main.transform;
         }
         else
         {
-            // Stop movement when no input
-            locomotionController.SetTargetDirection(Vector3.zero);
+            Debug.LogError("UserInputSource requires a Camera tagged 'MainCamera'.");
+            enabled = false;
         }
     }
-    
+
+    private void OnEnable()
+    {
+        if (moveActionReference?.action != null)
+        {
+            moveActionReference.action.Enable();
+            // Subscribe to the action's performed event to capture the latest value
+            moveActionReference.action.performed += OnMovePerformed;
+            moveActionReference.action.canceled += OnMoveCanceled;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (moveActionReference?.action != null)
+        {
+            moveActionReference.action.performed -= OnMovePerformed;
+            moveActionReference.action.canceled -= OnMoveCanceled;
+            moveActionReference.action.Disable();
+        }
+    }
+
+    // --- Input Handling Callbacks ---
+
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
-        currentInput = context.ReadValue<Vector2>();
+        // Read the Vector2 value (e.g., (1, 0) for W, (0.5, -0.5) for diagonal stick)
+        rawInputVector = context.ReadValue<Vector2>();
     }
-    
+
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
-        currentInput = Vector2.zero;
+        // Stop movement when keys are released
+        rawInputVector = Vector2.zero;
     }
     
-    private Vector3 ConvertToWorldSpace(Vector3 inputDir)
+    // --- No CacheDirectionVectors() needed ---
+
+    // --- Movement Processing ---
+
+    /// <summary>
+    /// Changed from LateUpdate to Update.
+    /// This ensures we read the camera's state *before* it is updated by
+    /// systems like Cinemachine, which typically run after Update() or in LateUpdate().
+    /// This breaks the "chasing" feedback loop that causes infinite rotation.
+    /// </summary>
+    private void Update()
     {
-        if (cameraTransform == null)
-        {
-            return inputDir;
-        }
+        if (motionController == null || mainCameraTransform == null) return;
         
-        // Get camera forward and right (flattened on Y)
-        Vector3 camForward = cameraTransform.forward;
-        camForward.y = 0f;
-        camForward.Normalize();
+        // 1. Get the camera's *current* forward and right vectors, flattened to the XZ plane
+        Vector3 forward = mainCameraTransform.forward;
+        Vector3 right = mainCameraTransform.right;
+
+        // Ignore the Y component to keep movement strictly on the horizontal plane
+        forward.y = 0f;
+        right.y = 0f;
         
-        Vector3 camRight = cameraTransform.right;
-        camRight.y = 0f;
-        camRight.Normalize();
-        
-        // Calculate world space direction
-        Vector3 worldDir = (camForward * inputDir.z + camRight * inputDir.x);
-        return worldDir.normalized;
-    }
-    
-    // Optional: Visualize input direction in editor
-    private void OnDrawGizmos()
-    {
-        if (Application.isPlaying && locomotionController != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawRay(transform.position + Vector3.up, 
-                locomotionController.transform.forward * 2f);
-            
-            Gizmos.color = Color.green;
-            Gizmos.DrawRay(transform.position + Vector3.up * 1.5f,
-                locomotionController.transform.forward * locomotionController.CurrentCommitment * 2f);
-        }
+        // Normalize the vectors after flattening to ensure they are unit vectors
+        forward.Normalize();
+        right.Normalize();
+
+        // 2. Calculate the world-space target direction
+        // The input's Y component drives the camera's forward vector (Z world-axis)
+        // The input's X component drives the camera's right vector (X world-axis)
+        Vector3 targetDirection = (forward * rawInputVector.y) + (right * rawInputVector.x);
+
+        // 3. Pass the resulting direction to the RootMotionController
+        // We normalize the result to prevent diagonal movement from being faster (vector magnitude > 1)
+        motionController.SetTargetDirection(targetDirection);
     }
 }

@@ -137,6 +137,7 @@ public class LocomotionAnimatorBuilder : EditorWindow
     private void AddParameters()
     {
         controller.AddParameter("TurnAngle", AnimatorControllerParameterType.Float);
+        controller.AddParameter("FrozenTurnAngle", AnimatorControllerParameterType.Float);
         controller.AddParameter("Commitment", AnimatorControllerParameterType.Float);
         controller.AddParameter("IsMoving", AnimatorControllerParameterType.Bool);
     }
@@ -206,22 +207,22 @@ public class LocomotionAnimatorBuilder : EditorWindow
         {
             name = "IdleToRun BlendTree",
             blendType = BlendTreeType.FreeformDirectional2D,
-            blendParameter = "TurnAngle",
+            blendParameter = "FrozenTurnAngle",
             blendParameterY = "Commitment"
         };
         
-        // Add idle turn animations (commitment = 0)
-        blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_F"], new Vector2(0, 0));
-        blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_R45_Fwd"], new Vector2(45, 0));
-        blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_R90_Fwd"], new Vector2(90, 0));
-        blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_R135_Fwd"], new Vector2(135, 0));
-        blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_R180_Fwd"], new Vector2(180, 0));
-        blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_L45_Fwd"], new Vector2(-45, 0));
-        blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_L90_Fwd"], new Vector2(-90, 0));
-        blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_L135_Fwd"], new Vector2(-135, 0));
-        blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_L180_Fwd"], new Vector2(-180, 0));
+        // Add idle turn animations (commitment = 0) - micro-movements
+        blendTree.AddChild(clips["MOB_Stand_Relaxed_Idle"], new Vector2(0, 0));
+        blendTree.AddChild(clips["MOB_Stand_Relaxed_R_45"], new Vector2(45, 0));
+        blendTree.AddChild(clips["MOB_Stand_Relaxed_R_90"], new Vector2(90, 0));
+        blendTree.AddChild(clips["MOB_Stand_Relaxed_R_135"], new Vector2(135, 0));
+        blendTree.AddChild(clips["MOB_Stand_Relaxed_R_180"], new Vector2(180, 0));
+        blendTree.AddChild(clips["MOB_Stand_Relaxed_L45"], new Vector2(-45, 0));
+        blendTree.AddChild(clips["MOB_Stand_Relaxed_L90"], new Vector2(-90, 0));
+        blendTree.AddChild(clips["MOB_Stand_Relaxed_L135"], new Vector2(-135, 0));
+        blendTree.AddChild(clips["MOB_Stand_Relaxed_L180"], new Vector2(-180, 0));
         
-        // Add committed turn animations (commitment = 1)
+        // Add committed turn animations (commitment = 1) - full transitions to run
         blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_F"], new Vector2(0, 1));
         blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_R45_Fwd"], new Vector2(45, 1));
         blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_R90_Fwd"], new Vector2(90, 1));
