@@ -160,7 +160,7 @@ public class LocomotionAnimatorBuilder : EditorWindow
         runLoopState.AddStateMachineBehaviour<RunLoopBehaviour>();
         
         var runToIdleState = rootStateMachine.AddState("RunToIdle", new Vector3(550, 50, 0));
-        runToIdleState.motion = CreateRunToIdleBlendTree();
+        runToIdleState.motion = clips["MOB_Run_F_To_Stand_Relaxed"];
         runToIdleState.AddStateMachineBehaviour<RunToIdleBehaviour>();
         
         // Set default state
@@ -173,7 +173,7 @@ public class LocomotionAnimatorBuilder : EditorWindow
         idleToIdleToRun.hasExitTime = false;
         idleToIdleToRun.duration = 0.1f;
         
-        // IdleToRun -> RunLoop
+        // IdleToRun -> RunLoop (with commitment)
         var idleToRunToRunLoop = idleToRunState.AddTransition(runLoopState);
         idleToRunToRunLoop.AddCondition(AnimatorConditionMode.Greater, 0.5f, "Commitment");
         idleToRunToRunLoop.AddCondition(AnimatorConditionMode.If, 0, "IsMoving");
@@ -181,12 +181,12 @@ public class LocomotionAnimatorBuilder : EditorWindow
         idleToRunToRunLoop.exitTime = 0.8f;
         idleToRunToRunLoop.duration = 0.2f;
         
-        // IdleToRun -> RunToIdle (no commitment)
-        var idleToRunToRunToIdle = idleToRunState.AddTransition(runToIdleState);
-        idleToRunToRunToIdle.AddCondition(AnimatorConditionMode.IfNot, 0, "IsMoving");
-        idleToRunToRunToIdle.hasExitTime = true;
-        idleToRunToRunToIdle.exitTime = 0.8f;
-        idleToRunToRunToIdle.duration = 0.2f;
+        // IdleToRun -> Idle (no commitment - player changed mind quickly)
+        var idleToRunToIdle = idleToRunState.AddTransition(idleState);
+        idleToRunToIdle.AddCondition(AnimatorConditionMode.IfNot, 0, "IsMoving");
+        idleToRunToIdle.AddCondition(AnimatorConditionMode.Less, 0.5f, "Commitment");
+        idleToRunToIdle.hasExitTime = false;
+        idleToRunToIdle.duration = 0.15f;
         
         // RunLoop -> RunToIdle
         var runLoopToRunToIdle = runLoopState.AddTransition(runToIdleState);
@@ -232,24 +232,6 @@ public class LocomotionAnimatorBuilder : EditorWindow
         blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_L90_Fwd"], new Vector2(-90, 1));
         blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_L135_Fwd"], new Vector2(-135, 1));
         blendTree.AddChild(clips["MOB_Stand_Relaxed_To_Run_L180_Fwd"], new Vector2(-180, 1));
-        
-        return blendTree;
-    }
-    
-    private BlendTree CreateRunToIdleBlendTree()
-    {
-        var blendTree = new BlendTree
-        {
-            name = "RunToIdle BlendTree",
-            blendType = BlendTreeType.Simple1D,
-            blendParameter = "Commitment"
-        };
-        
-        // No commitment: just idle
-        blendTree.AddChild(clips["MOB_Stand_Relaxed_Idle"], 0f);
-        
-        // Full commitment: run to idle animation
-        blendTree.AddChild(clips["MOB_Run_F_To_Stand_Relaxed"], 1f);
         
         return blendTree;
     }
