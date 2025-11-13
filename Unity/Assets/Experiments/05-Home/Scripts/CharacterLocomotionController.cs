@@ -180,14 +180,15 @@ public class CharacterLocomotionController : MonoBehaviour
         lastAngle = angle;
     }
     
-    private void TriggerPivot()
-    {
-        isPivoting = true;
-        pivotWeight = 1f; // Set weight directly to 1
-        animator.SetTrigger(IsPivotingParam);
-        // Optional: Log to confirm it's called
-        // Debug.Log($"TriggerPivot() called at {Time.time}. isPivoting: {isPivoting}");
-    }
+    // TODO: Pivots suck, need to be fixed.
+    private void TriggerPivot() {}
+    // {
+    //     isPivoting = true;
+    //     pivotWeight = 1f; // Set weight directly to 1
+    //     animator.SetTrigger(IsPivotingParam);
+    //     // Optional: Log to confirm it's called
+    //     // Debug.Log($"TriggerPivot() called at {Time.time}. isPivoting: {isPivoting}");
+    // }
     
     //================================================================//
     // SIMPLIFIED PIVOT LAYER LOGIC

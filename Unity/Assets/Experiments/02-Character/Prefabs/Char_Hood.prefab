@@ -726,7 +726,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.028
+      value: 0.17
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -783,7 +783,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: bd1018e7d10c14b30aceabb6a4c43908, type: 2}
+      objectReference: {fileID: 9100000, guid: 3360e265d58804423b4fa47976855544, type: 2}
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_CullingMode
       value: 0
@@ -1854,13 +1854,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterLocomotionController
   moveSpeed: 5
   rotationSpeed: 540
-  commitmentThreshold: 0.15
-  movementHysteresis: 0.1
+  commitmentThreshold: 0.05
+  movementHysteresis: 0.025
   pivotAngleThreshold: 90
-  pivotBlendInTime: 0.15
-  pivotBlendOutTime: 0.2
-  microRotationThreshold: 15
-  slerpSpeed: 10
+  microRotationThreshold: 30
+  slerpSpeed: 15
 --- !u!114 &643304721722524872
 MonoBehaviour:
   m_ObjectHideFlags: 0

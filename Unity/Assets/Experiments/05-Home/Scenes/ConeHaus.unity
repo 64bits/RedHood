@@ -5318,38 +5318,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 643304721722524872, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      propertyPath: cameraStabilityTime
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 643304721722524872, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      propertyPath: cameraStabilityThreshold
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 1224461144958643322, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: cameraTarget
       value: 
       objectReference: {fileID: 183784951}
-    - target: {fileID: 2295550532835410795, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 3360e265d58804423b4fa47976855544, type: 2}
-    - target: {fileID: 3924854343173156112, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      propertyPath: slerpSpeed
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 3924854343173156112, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      propertyPath: movementHysteresis
-      value: 0.025
-      objectReference: {fileID: 0}
-    - target: {fileID: 3924854343173156112, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      propertyPath: commitmentThreshold
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 3924854343173156112, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      propertyPath: microRotationThreshold
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 4787488530426266539, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_Name
       value: Char_Hood
