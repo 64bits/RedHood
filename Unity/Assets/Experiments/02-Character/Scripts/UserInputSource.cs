@@ -106,6 +106,6 @@ public class UserInputSource : MonoBehaviour
 
         // 3. Pass the resulting direction to the RootMotionController
         // We normalize the result to prevent diagonal movement from being faster (vector magnitude > 1)
-        motionController.SetTargetDirection(targetDirection.normalized);
+        motionController.SetTargetDirection(targetDirection);
     }
 }

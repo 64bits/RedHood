@@ -14,6 +14,8 @@ public class RootMotionController : MonoBehaviour
     
     [Header("State Thresholds")]
     [SerializeField] private float runStartThreshold = 2f;
+    [SerializeField] private float runStopThreshold = 0.1f;
+    [SerializeField] private float runningInertiaTime = 0.2f; // NEW: Time buffer before stopping
     
     private Animator animator;
     private CharacterController characterController;
@@ -23,9 +25,10 @@ public class RootMotionController : MonoBehaviour
     private bool isExecutingTurn = false;
     private float committedAngle = 0f;
 
-    // FIX: Add a 'logicalForward' to act as a stable base for rotation calculations,
-    // inspired by your reference script.
     private Vector3 logicalForward;
+    
+    // NEW: Track when we last had valid running input
+    private float lastRunningInputTime = -1f;
     
     // Animator parameters
     private static readonly int IsRunningParam = Animator.StringToHash("isRunning");
@@ -37,7 +40,6 @@ public class RootMotionController : MonoBehaviour
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
         
-        // FIX: Initialize logicalForward to the character's starting direction.
         logicalForward = transform.forward;
     }
     
@@ -52,6 +54,7 @@ public class RootMotionController : MonoBehaviour
         {
             isRunning = false;
             animator.SetBool(IsRunningParam, false);
+            lastRunningInputTime = -1f;
         }
     }
     
@@ -60,45 +63,52 @@ public class RootMotionController : MonoBehaviour
     /// </summary>
     public void SetTargetDirection(Vector3 direction)
     {
-        // FIX: Do not normalize here. We need the magnitude
-        // to check for "no input" vs "move input".
         currentDirection = direction; 
-        currentDirection.y = 0; // Keep direction horizontal
+        currentDirection.y = 0;
     }
     
     private void Update()
     {
-        // FIX: Check the magnitude of our raw input vector.
-        // Use a small deadzone threshold.
         float inputMagnitude = currentDirection.magnitude;
         bool hasInput = shouldMove && inputMagnitude > 0.1f;
-
-        // --- STOPPING LOGIC ---
-        // If we have no input, stop running and do nothing else.
-        if (!hasInput)
+        
+        // FIX: Update the "last time we had input" timestamp
+        if (hasInput)
         {
-            if (isRunning) // Only update if we need to
+            lastRunningInputTime = Time.time;
+        }
+        
+        // FIX: Only stop running if BOTH conditions are met:
+        // 1. Input is below threshold
+        // 2. Enough time has passed since last valid input (inertia expired)
+        if (isRunning)
+        {
+            float timeSinceLastInput = Time.time - lastRunningInputTime;
+            
+            if (inputMagnitude <= runStopThreshold && timeSinceLastInput > runningInertiaTime)
             {
                 isRunning = false;
                 animator.SetBool(IsRunningParam, false);
+                Debug.Log($"Stopped running: no input for {timeSinceLastInput:F2}s");
             }
-            return; // Exit Update
         }
         
-        // If we're here, we know we have input (hasInput is true).
-
-        // If we are turning, let the turn animation finish.
+        // No input at all - just return (but character might still be "running" due to inertia)
+        if (!hasInput)
+        {
+            return;
+        }
+        
+        // If we're in a turn animation, let it finish
         if (isExecutingTurn) return;
         
-        // FIX: NOW we get the normalized direction, just for rotation calculations.
         Vector3 targetDirection = currentDirection.normalized;
-        
         float signedAngle = Vector3.SignedAngle(logicalForward, targetDirection, Vector3.up);
         
         float currentSnapZone = isRunning ? runningSnapZone : idleSnapZone;
         float halfSnapZone = currentSnapZone * 0.5f;
         
-        // Within snap zone - snap rotation
+        // Within snap zone - smooth rotation
         if (Mathf.Abs(signedAngle) <= halfSnapZone)
         {
             Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
@@ -110,16 +120,15 @@ public class RootMotionController : MonoBehaviour
             
             logicalForward = transform.forward;
             
-            // --- RUNNING LOGIC ---
-            // We already know we have input.
-            // Use the 'runStartThreshold' to decide if we should START running.
+            // Start running only if we're NOT running and input is strong enough
             if (!isRunning && inputMagnitude >= runStartThreshold)
             {
                 isRunning = true;
                 animator.SetBool(IsRunningParam, true);
+                Debug.Log("Started running");
             }
         }
-        // Outside snap zone - commit to a turn animation
+        // Outside snap zone - trigger turn animation
         else
         {
             CommitToTurn(signedAngle);
@@ -128,14 +137,11 @@ public class RootMotionController : MonoBehaviour
     
     private void CommitToTurn(float angle)
     {
-        Debug.Log("Committing to turn at "+angle);
+        Debug.Log($"Committing to turn at {angle:F1}° (isRunning: {isRunning})");
         isExecutingTurn = true;
         committedAngle = angle;
         
-        // Set the angle parameter so animator can choose correct animation
         animator.SetFloat(TurnAngleParam, committedAngle);
-        
-        // Trigger the turn
         animator.SetTrigger(ExecuteTurnParam);
     }
     
@@ -143,22 +149,14 @@ public class RootMotionController : MonoBehaviour
     public void OnTurnComplete()
     {
         isExecutingTurn = false;
-        
-        // FIX: The turn is over. Snap 'logicalForward' to our new,
-        // animation-driven 'transform.forward'. This provides a stable
-        // base for the next Update() calculation.
         logicalForward = transform.forward;
     }
     
     private void OnAnimatorMove()
     {
-        // Apply root motion position always
         Vector3 movement = animator.deltaPosition;
         characterController.Move(movement);
         
-        // FIX: ONLY apply root motion rotation if we are in a committed turn.
-        // Otherwise, the Slerp in Update() handles rotation, and we
-        // avoid the "double rotation" bug.
         if (isExecutingTurn)
         {
             transform.rotation *= animator.deltaRotation;
@@ -167,11 +165,9 @@ public class RootMotionController : MonoBehaviour
     
     private void OnDrawGizmosSelected()
     {
-        // ... (Gizmos code remains the same, it's great for debugging!)
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(transform.position, transform.position + currentDirection * 3f);
 
-        // Draw the logicalForward
         Gizmos.color = Color.cyan;
         Gizmos.DrawLine(transform.position + Vector3.up * 0.1f, transform.position + Vector3.up * 0.1f + logicalForward * 2f);
         
@@ -180,13 +176,24 @@ public class RootMotionController : MonoBehaviour
             float currentSnapZone = isRunning ? runningSnapZone : idleSnapZone;
             float halfSnapZone = currentSnapZone * 0.5f;
             
-            // FIX: Draw the snap zone relative to the logicalForward
             Vector3 leftBound = Quaternion.Euler(0, -halfSnapZone, 0) * logicalForward * 2f;
             Vector3 rightBound = Quaternion.Euler(0, halfSnapZone, 0) * logicalForward * 2f;
             
             Gizmos.color = isExecutingTurn ? Color.red : Color.green;
             Gizmos.DrawLine(transform.position, transform.position + leftBound);
             Gizmos.DrawLine(transform.position, transform.position + rightBound);
+            
+            // NEW: Show inertia status
+            if (isRunning && currentDirection.magnitude <= runStopThreshold)
+            {
+                float timeSinceLastInput = Time.time - lastRunningInputTime;
+                float inertiaRemaining = runningInertiaTime - timeSinceLastInput;
+                if (inertiaRemaining > 0)
+                {
+                    Gizmos.color = Color.yellow;
+                    Gizmos.DrawWireSphere(transform.position + Vector3.up * 2f, 0.5f);
+                }
+            }
         }
     }
 }
