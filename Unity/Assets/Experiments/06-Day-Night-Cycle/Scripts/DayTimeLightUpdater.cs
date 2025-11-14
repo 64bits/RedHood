@@ -10,7 +10,6 @@ public class DayTimeLightUpdater : MonoBehaviour
     [SerializeField] private float dayTemperature = 6500f;
 
     [Header("Night Settings")]
-    [SerializeField] private float nightIntensity = 0.05f;
     [SerializeField] private float nightTemperature = 3000f;
 
     [Header("Skybox Influence")]
@@ -31,11 +30,20 @@ public class DayTimeLightUpdater : MonoBehaviour
     [Tooltip("The fog density to be reached at night.")]
     [SerializeField] private float maxFogDensity = 0.049f;
 
+    [Header("Skybox Settings")]
+    [Tooltip("Enable to control the skybox's exposure/intensity.")]
+    [SerializeField] private bool controlSkyboxIntensity = true;
+    [Tooltip("The skybox exposure/intensity during the day.")]
+    [SerializeField] private float daySkyboxIntensity = 0.24f;
+    [Tooltip("The skybox exposure/intensity at night.")]
+    [SerializeField] private float nightSkyboxIntensity = 0f;
+
     [Header("Manager Reference")]
     [SerializeField] private DayTimeManager timeManager;
 
     private Material skyboxMaterial;
     private int skyTintShaderID;
+    private int skyExposureShaderID;
 
     private void Awake()
     {
@@ -58,6 +66,7 @@ public class DayTimeLightUpdater : MonoBehaviour
         {
             skyboxMaterial = RenderSettings.skybox;
             skyTintShaderID = Shader.PropertyToID("_Tint");
+            skyExposureShaderID = Shader.PropertyToID("_Exposure");
         }
         else
         {
@@ -120,16 +129,21 @@ public class DayTimeLightUpdater : MonoBehaviour
             timeSinceRotationStart += 1.0f;
         }
         
-        // Only update rotation during Dawn and Day
-        if (currentTimeOfDay == DayTimeManager.TimeOfDay.Dawn || currentTimeOfDay == DayTimeManager.TimeOfDay.Day)
-        {
-            float rotationProgress = timeSinceRotationStart / rotationDuration;
-            rotationProgress = Mathf.Clamp01(rotationProgress);
+        // Update rotation - a bit off since day start and day end mean something else
+        float rotationProgress = timeManager.GetNormalizedTime();
+        rotationProgress = Mathf.Clamp01(rotationProgress);
 
+        if (rotationProgress <= 0.5f) {
             sunLight.transform.rotation = Quaternion.Lerp(
                 Quaternion.Euler(dayStartRotation),
                 Quaternion.Euler(dayEndRotation),
-                rotationProgress
+                rotationProgress * 2f
+            );
+        } else {
+            sunLight.transform.rotation = Quaternion.Lerp(
+                Quaternion.Euler(dayEndRotation),
+                Quaternion.Euler(dayStartRotation),
+                (rotationProgress - 0.5f) * 2f
             );
         }
 
@@ -140,7 +154,7 @@ public class DayTimeLightUpdater : MonoBehaviour
             float duskProgress = (currentCycleTime - timeManager.DuskStart) / timeManager.TransitionDuration;
             duskProgress = Mathf.Clamp01(duskProgress); // Ensure progress is 0-1
 
-            sunLight.intensity = Mathf.Lerp(dayIntensity, nightIntensity, duskProgress);
+            sunLight.intensity = Mathf.Lerp(dayIntensity, 0f, duskProgress);
             float baseTemperature = Mathf.Lerp(dayTemperature, nightTemperature, duskProgress);
             sunLight.colorTemperature = ApplySkyboxInfluence(baseTemperature);
 
@@ -151,6 +165,13 @@ public class DayTimeLightUpdater : MonoBehaviour
                 RenderSettings.fogMode = FogMode.ExponentialSquared;
                 RenderSettings.fogDensity = Mathf.Lerp(0, maxFogDensity, duskProgress);
             }
+            
+            // Update skybox intensity
+            if (controlSkyboxIntensity && skyboxMaterial != null)
+            {
+                float skyIntensity = Mathf.Lerp(daySkyboxIntensity, nightSkyboxIntensity, duskProgress);
+                skyboxMaterial.SetFloat(skyExposureShaderID, skyIntensity);
+            }
         }
         else if (currentTimeOfDay == DayTimeManager.TimeOfDay.Dawn)
         {
@@ -158,7 +179,7 @@ public class DayTimeLightUpdater : MonoBehaviour
             float dawnProgress = (currentCycleTime - timeManager.DawnStart) / timeManager.TransitionDuration;
             dawnProgress = Mathf.Clamp01(dawnProgress); // Ensure progress is 0-1
 
-            sunLight.intensity = Mathf.Lerp(nightIntensity, dayIntensity, dawnProgress);
+            sunLight.intensity = Mathf.Lerp(0f, dayIntensity, dawnProgress);
             float baseTemperature = Mathf.Lerp(nightTemperature, dayTemperature, dawnProgress);
             sunLight.colorTemperature = ApplySkyboxInfluence(baseTemperature);
 
@@ -168,6 +189,13 @@ public class DayTimeLightUpdater : MonoBehaviour
                 RenderSettings.fog = true;
                 RenderSettings.fogMode = FogMode.ExponentialSquared;
                 RenderSettings.fogDensity = Mathf.Lerp(maxFogDensity, 0, dawnProgress);
+            }
+            
+            // Update skybox intensity
+            if (controlSkyboxIntensity && skyboxMaterial != null)
+            {
+                float skyIntensity = Mathf.Lerp(nightSkyboxIntensity, daySkyboxIntensity, dawnProgress);
+                skyboxMaterial.SetFloat(skyExposureShaderID, skyIntensity);
             }
         }
         else
@@ -243,16 +271,22 @@ public class DayTimeLightUpdater : MonoBehaviour
             RenderSettings.fog = false;
             RenderSettings.fogDensity = 0f;
         }
+
+        // Snap skybox intensity
+        if (controlSkyboxIntensity && skyboxMaterial != null)
+        {
+            skyboxMaterial.SetFloat(skyExposureShaderID, daySkyboxIntensity);
+        }
     }
 
     private void SetLightToNightSettings()
     {
         if (sunLight == null) return;
-        sunLight.intensity = nightIntensity;
+        sunLight.intensity = 0f;
         sunLight.colorTemperature = ApplySkyboxInfluence(nightTemperature);
 
         // Snap rotation to the final "day end" rotation
-        sunLight.transform.rotation = Quaternion.Euler(dayEndRotation);
+        // sunLight.transform.rotation = Quaternion.Euler(dayEndRotation);
 
         // Snap fog to on
         if (controlFog)
@@ -260,6 +294,12 @@ public class DayTimeLightUpdater : MonoBehaviour
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
             RenderSettings.fogDensity = maxFogDensity;
+        }
+
+        // Snap skybox intensity
+        if (controlSkyboxIntensity && skyboxMaterial != null)
+        {
+            skyboxMaterial.SetFloat(skyExposureShaderID, nightSkyboxIntensity);
         }
     }
 }
