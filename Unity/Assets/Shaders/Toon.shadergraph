@@ -267,6 +267,12 @@
         },
         {
             "m_Id": "82e4e1be58c7435b93d67b13720e3990"
+        },
+        {
+            "m_Id": "f1f2f384ed6b4a8cbaade0e4f42352a7"
+        },
+        {
+            "m_Id": "57ef65fc38dc431dbd9668e89c9e9691"
         }
     ],
     "m_GroupDatas": [
@@ -656,6 +662,20 @@
                     "m_Id": "27263807a673409487841ea6a28ff225"
                 },
                 "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "57ef65fc38dc431dbd9668e89c9e9691"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "f1f2f384ed6b4a8cbaade0e4f42352a7"
+                },
+                "m_SlotId": 1
             }
         },
         {
@@ -1269,7 +1289,7 @@
             },
             "m_InputSlot": {
                 "m_Node": {
-                    "m_Id": "7d9b8a88530f4385998da9919c4df472"
+                    "m_Id": "f1f2f384ed6b4a8cbaade0e4f42352a7"
                 },
                 "m_SlotId": 0
             }
@@ -1410,6 +1430,20 @@
             "m_InputSlot": {
                 "m_Node": {
                     "m_Id": "8d1e1e9023fcbb81a74b209141bf1bdb"
+                },
+                "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "f1f2f384ed6b4a8cbaade0e4f42352a7"
+                },
+                "m_SlotId": 2
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "7d9b8a88530f4385998da9919c4df472"
                 },
                 "m_SlotId": 0
             }
@@ -2150,6 +2184,21 @@
     "m_Property": {
         "m_Id": "45fd3f0875bf6f878f0a80e54cdfc636"
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "119a7c43e0474e1cbb8a63025df04dc8",
+    "m_Id": 1,
+    "m_DisplayName": "X",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "X",
+    "m_StageCapability": 3,
+    "m_Value": 0.05000000074505806,
+    "m_DefaultValue": 0.0,
+    "m_Labels": []
 }
 
 {
@@ -2908,10 +2957,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 2415.0,
-            "y": -539.9999389648438,
+            "x": 2448.0,
+            "y": -364.0,
             "width": 208.0,
-            "height": 326.0
+            "height": 326.0000305175781
         }
     },
     "m_Slots": [
@@ -3311,6 +3360,31 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
+    "m_ObjectId": "3cff4c4676d547628e846d9895338671",
+    "m_Id": 2,
+    "m_DisplayName": "OutColor",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "OutColor",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
     "m_ObjectId": "3d8fd195253a4c1c8b8a21ca0652fe33",
     "m_Group": {
@@ -3434,6 +3508,21 @@
         "e32": 0.0,
         "e33": 1.0
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "417b96ac43dd44f993245543869e2b73",
+    "m_Id": 0,
+    "m_DisplayName": "Out",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
+    "m_StageCapability": 3,
+    "m_Value": 0.0,
+    "m_DefaultValue": 0.0,
+    "m_Labels": []
 }
 
 {
@@ -4209,6 +4298,49 @@
         "e32": 0.0,
         "e33": 1.0
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1Node",
+    "m_ObjectId": "57ef65fc38dc431dbd9668e89c9e9691",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Float",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": 2239.999755859375,
+            "y": -1035.0,
+            "width": 126.000244140625,
+            "height": 77.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "119a7c43e0474e1cbb8a63025df04dc8"
+        },
+        {
+            "m_Id": "417b96ac43dd44f993245543869e2b73"
+        }
+    ],
+    "synonyms": [
+        "Vector 1",
+        "1",
+        "v1",
+        "vec1",
+        "scalar"
+    ],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_Value": 0.0
 }
 
 {
@@ -5086,6 +5218,31 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
+    "m_ObjectId": "758bfef1d3f94db8b20f8f6c09cfa8ee",
+    "m_Id": 1,
+    "m_DisplayName": "MinLum",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "MinLum",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.DynamicValueMaterialSlot",
     "m_ObjectId": "7721a35555d8a58598f5de9d49dc6b1c",
     "m_Id": 1,
@@ -5388,10 +5545,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 2343.999755859375,
-            "y": -1000.9999389648438,
+            "x": 2778.999755859375,
+            "y": -978.9998779296875,
             "width": 208.0,
-            "height": 326.00006103515627
+            "height": 326.0
         }
     },
     "m_Slots": [
@@ -6707,10 +6864,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 1755.0,
-            "y": -979.0,
+            "x": 1752.9998779296875,
+            "y": -1051.0,
             "width": 208.0,
-            "height": 312.0
+            "height": 312.00006103515627
         }
     },
     "m_Slots": [
@@ -8162,6 +8319,31 @@
         "z": 0.0,
         "w": 0.0
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
+    "m_ObjectId": "be982980171a44b0bf17c6cd501a8fad",
+    "m_Id": 0,
+    "m_DisplayName": "InColor",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "InColor",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_Labels": []
 }
 
 {
@@ -10339,6 +10521,53 @@
         "y": 1.0
     },
     "m_Labels": []
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.CustomFunctionNode",
+    "m_ObjectId": "f1f2f384ed6b4a8cbaade0e4f42352a7",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "EnforceMinBrightness (Custom Function)",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": 2393.999755859375,
+            "y": -915.0000610351563,
+            "width": 279.0,
+            "height": 118.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "be982980171a44b0bf17c6cd501a8fad"
+        },
+        {
+            "m_Id": "758bfef1d3f94db8b20f8f6c09cfa8ee"
+        },
+        {
+            "m_Id": "3cff4c4676d547628e846d9895338671"
+        }
+    ],
+    "synonyms": [
+        "code",
+        "HLSL"
+    ],
+    "m_Precision": 0,
+    "m_PreviewExpanded": false,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_SourceType": 1,
+    "m_FunctionName": "EnforceMinBrightness",
+    "m_FunctionSource": "",
+    "m_FunctionSourceUsePragmas": true,
+    "m_FunctionBody": "    // Luminance coefficients for RGB channels\n    float luminance = dot(InColor.rgb, float3(0.2126, 0.7152, 0.0722));\n    \n    // Ensure the luminance is at least MinLum\n    float newLuminance = max(luminance, MinLum);\n    \n    // Preserve original color (hue/saturation) by applying the new luminance.\n    // Use max(luminance, 0.0001) in the denominator to avoid division by zero errors.\n    float factor = newLuminance / max(luminance, 0.0001);\n    \n    OutColor.rgb = InColor.rgb * factor;\n    OutColor.a = InColor.a; // Preserve alpha"
 }
 
 {
