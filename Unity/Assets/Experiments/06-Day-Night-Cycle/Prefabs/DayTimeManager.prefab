@@ -253,10 +253,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 173a9c9b827ff46cd9b9df33bbd1dbf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkyboxTimelapseManager
-  skyboxMaterial: {fileID: 2100000, guid: 2bd8959f5fbd3644aa33af1a155fc147, type: 2}
-  timeManager: {fileID: 0}
-  dayCubemap: {fileID: 0}
-  nightCubemap: {fileID: 0}
+  skyboxMaterial: {fileID: 2100000, guid: 8294a709a7c444022bfcaa213e4b5c6a, type: 2}
+  timeManager: {fileID: 2598449308920174092}
+  dayCubemap: {fileID: 8900000, guid: beb1457d375110e468b8d8e1f29fccea, type: 3}
+  nightCubemap: {fileID: 8900000, guid: fa41734a337674542975482c8fe96ea1, type: 3}
   cubemapBlendThreshold: 0.3
   dawnTint: {r: 1.2, g: 0.9, b: 0.8, a: 1}
   dayTint: {r: 1, g: 1, b: 1, a: 1}
@@ -271,7 +271,7 @@ MonoBehaviour:
   dayEnd: 17
   duskEnd: 19
   useCubemapBlending: 1
-  blendedSkyboxMaterial: {fileID: 0}
+  blendedSkyboxMaterial: {fileID: 2100000, guid: 8294a709a7c444022bfcaa213e4b5c6a, type: 2}
 --- !u!114 &115851613652356068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,9 +284,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb24873782711412c8cc979ec064e09b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DayTimeLightUpdater
-  sunLight: {fileID: 0}
+  sunLight: {fileID: 6214027729726353932}
   dayIntensity: 1
-  dayTemperature: 6500
+  dayTemperature: 7000
   nightIntensity: 0.05
   nightTemperature: 3000
   useSkyboxTint: 1
@@ -334,10 +334,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2e13c662c514c029dabd78ad60d363, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DayTimeUIUpdater
-  radialFillImage: {fileID: 0}
+  radialFillImage: {fileID: 6599747441938233329}
   arcRadius: 100
-  timeText: {fileID: 0}
-  timeManager: {fileID: 0}
+  timeText: {fileID: 865405060395308971}
+  timeManager: {fileID: 2598449308920174092}
 --- !u!1 &5424773147864477769
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,8 +467,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6794419130861275457}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: -355.5, y: -233.5, z: 0}
+  m_LocalRotation: {x: 0.4506083, y: -0.5613285, z: 0.5234478, w: 0.45592204}
+  m_LocalPosition: {x: 1.1666, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -485,7 +485,7 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1.6
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -528,7 +528,7 @@ Light:
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_ColorTemperature: 6518
+  m_ColorTemperature: 7000
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
