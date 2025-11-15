@@ -10,6 +10,9 @@ public class TooltipManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private RectTransform tooltipRect;
+    [SerializeField] private float offsetY = 10f; // Offset above the slot
+    
+    private RectTransform currentSlotRect;
     
     private void Awake()
     {
@@ -25,33 +28,48 @@ public class TooltipManager : MonoBehaviour
     
     private void Update()
     {
-        if (tooltipPanel.activeSelf)
+        if (tooltipPanel.activeSelf && currentSlotRect != null)
         {
-            // Position tooltip near mouse cursor
-            Vector2 pos = Input.mousePosition;
+            // Position tooltip above the slot
+            Vector3 slotPos = currentSlotRect.position;
             
-            // Offset tooltip to avoid cursor overlap
-            pos.x += 15;
-            pos.y -= 15;
+            // Calculate position above the slot
+            float tooltipHeight = tooltipRect.rect.height;
+            float slotHeight = currentSlotRect.rect.height;
             
-            // Keep tooltip within screen bounds
-            float pivotX = pos.x + tooltipRect.rect.width > Screen.width ? 1f : 0f;
-            float pivotY = pos.y - tooltipRect.rect.height < 0 ? 0f : 1f;
+            Vector2 pos = slotPos;
+            pos.y = slotPos.y + (slotHeight / 2f) + tooltipHeight + offsetY;
             
-            tooltipRect.pivot = new Vector2(pivotX, pivotY);
+            // Keep tooltip within screen bounds horizontally
+            float halfWidth = tooltipRect.rect.width / 2f;
+            pos.x = Mathf.Clamp(pos.x, halfWidth, Screen.width - halfWidth);
+            
+            // If tooltip would go above screen, show it below the slot instead
+            if (pos.y > Screen.height)
+            {
+                pos.y = slotPos.y - (slotHeight / 2f) - offsetY;
+                tooltipRect.pivot = new Vector2(0.5f, 1f);
+            }
+            else
+            {
+                tooltipRect.pivot = new Vector2(0.5f, 0f);
+            }
+            
             tooltipRect.position = pos;
         }
     }
     
-    public void ShowTooltip(string itemName, string description)
+    public void ShowTooltip(string itemName, string description, RectTransform slotRect)
     {
         nameText.text = itemName;
         descriptionText.text = description;
+        currentSlotRect = slotRect;
         tooltipPanel.SetActive(true);
     }
     
     public void HideTooltip()
     {
         tooltipPanel.SetActive(false);
+        currentSlotRect = null;
     }
 }

@@ -111,7 +111,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (currentItem != null)
         {
-            TooltipManager.Instance.ShowTooltip(currentItem.itemName, currentItem.description);
+            TooltipManager.Instance.ShowTooltip(currentItem.itemName, currentItem.description, GetComponent<RectTransform>());
         }
     }
     
