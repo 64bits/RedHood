@@ -10567,7 +10567,7 @@
     "m_FunctionName": "EnforceMinBrightness",
     "m_FunctionSource": "",
     "m_FunctionSourceUsePragmas": true,
-    "m_FunctionBody": "    // Luminance coefficients for RGB channels\n    float luminance = dot(InColor.rgb, float3(0.2126, 0.7152, 0.0722));\n    \n    // Ensure the luminance is at least MinLum\n    float newLuminance = max(luminance, MinLum);\n    \n    // Preserve original color (hue/saturation) by applying the new luminance.\n    // Use max(luminance, 0.0001) in the denominator to avoid division by zero errors.\n    float factor = newLuminance / max(luminance, 0.0001);\n    \n    OutColor.rgb = InColor.rgb * factor;\n    OutColor.a = InColor.a; // Preserve alpha"
+    "m_FunctionBody": "    // Luminance coefficients for RGB channels\n    float luminance = dot(InColor.rgb, float3(0.2126, 0.7152, 0.0722));\n    \n    // Ensure the luminance is at least MinLum\n    float newLuminance = max(luminance, MinLum);\n    \n    // Preserve original color (hue/saturation) by applying the new luminance.\n    // Use max(luminance, 0.0001) in the denominator to avoid division by zero errors.\n    float factor = newLuminance / max(luminance, 0.0001);\n    \n    // Apply the factor\n    OutColor.rgb = InColor.rgb * factor;\n\n    // CRITICAL FIX: Clamp the final RGB values to ensure they stay within the valid 0 to 1 range.\n    // Values outside this range often display as red/pink errors.\n    OutColor.rgb = clamp(OutColor.rgb, 0.0, 1.0);\n\n    OutColor.a = InColor.a; // Preserve alpha"
 }
 
 {
