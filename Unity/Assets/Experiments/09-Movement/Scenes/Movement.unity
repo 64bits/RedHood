@@ -5104,6 +5104,10 @@ PrefabInstance:
       propertyPath: cameraTarget
       value: 
       objectReference: {fileID: 183784951}
+    - target: {fileID: 3686595383284806102, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: rotationCorrectionSpeed
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 4787488530426266539, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_Name
       value: Char_Hood

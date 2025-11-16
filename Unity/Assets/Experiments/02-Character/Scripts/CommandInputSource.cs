@@ -46,10 +46,16 @@ public class CommandInputSource : MonoBehaviour
     private void Update()
     {
         // Draw debug arrow every frame
-        if (showDebugArrow && commands.Length > 0)
+        if (showDebugArrow)
         {
-            Vector3 direction = commands[currentCommandIndex].direction.normalized;
-            DrawDebugArrow(transform.position, direction, arrowLength);
+            if (commands.Length > 0)
+            {
+                Vector3 direction = commands[currentCommandIndex].direction.normalized;
+                DrawDebugArrow(transform.position, direction, arrowLength, new Color(0.5f, 0.7f, 1f)); // Light blue
+            }
+            
+            // Draw transform.forward arrow in deep blue
+            DrawDebugArrow(transform.position, transform.forward, arrowLength, new Color(0f, 0.2f, 0.8f)); // Deep blue
         }
     }
     
@@ -74,17 +80,15 @@ public class CommandInputSource : MonoBehaviour
         }
     }
     
-    private void DrawDebugArrow(Vector3 origin, Vector3 direction, float length)
+    private void DrawDebugArrow(Vector3 origin, Vector3 direction, float length, Color color)
     {
-        Color lightBlue = new Color(0.5f, 0.7f, 1f); // Light blue color
-        
         if (direction.magnitude < 0.001f)
             return;
         
         Vector3 end = origin + direction * length;
         
         // Draw main arrow line
-        Debug.DrawLine(origin, end, lightBlue);
+        Debug.DrawLine(origin, end, color);
         
         // Draw arrowhead
         float arrowHeadLength = length * 0.25f;
@@ -93,16 +97,7 @@ public class CommandInputSource : MonoBehaviour
         Vector3 right = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 + arrowHeadAngle, 0) * Vector3.forward;
         Vector3 left = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 - arrowHeadAngle, 0) * Vector3.forward;
         
-        Debug.DrawRay(end, right * arrowHeadLength, lightBlue);
-        Debug.DrawRay(end, left * arrowHeadLength, lightBlue);
+        Debug.DrawRay(end, right * arrowHeadLength, color);
+        Debug.DrawRay(end, left * arrowHeadLength, color);
     }
-    
-    // Example of a public method for a separate script (like a CommandManager) to call
-    // public void SetNextMoveDirection(Vector3 direction)
-    // {
-    //     if (motionController != null)
-    //     {
-    //         motionController.SetTargetDirection(direction);
-    //     }
-    // }
 }

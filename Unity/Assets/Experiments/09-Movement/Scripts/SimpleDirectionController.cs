@@ -3,6 +3,7 @@ using UnityEngine;
 /// <summary>
 /// A simplified controller that sets an integer on the Animator based on
 /// a target direction. This is used for a standing 8-way directional blend.
+/// Includes rotation correction to compensate for animation imperfections.
 /// </summary>
 [RequireComponent(typeof(Animator))]
 public class SimpleDirectionController : MonoBehaviour
@@ -19,6 +20,13 @@ public class SimpleDirectionController : MonoBehaviour
     /// should not re-calculate the angle.
     /// </summary>
     private bool isTurning;
+
+    [Header("Rotation Correction")]
+    [Tooltip("Speed of subtle rotation correction during turn animation")]
+    [SerializeField] private float rotationCorrectionSpeed = 2f;
+    
+    private Quaternion targetRotation;
+    private bool isCorrectingRotation;
 
     // --- INTEGER MAPPING ---
     // This script maps angles to integers like this:
@@ -93,6 +101,11 @@ public class SimpleDirectionController : MonoBehaviour
             if (directionInt != 0)
             {
                 isTurning = true;
+                
+                // Calculate the target rotation for correction during the turn
+                Vector3 targetDir = new Vector3(currentTargetDirection.x, 0, currentTargetDirection.z).normalized;
+                targetRotation = Quaternion.LookRotation(targetDir);
+                isCorrectingRotation = true;
             }
         }
         else
@@ -120,9 +133,23 @@ public class SimpleDirectionController : MonoBehaviour
             {
                 // Animator is NO LONGER in the IdleTurn state.
                 // The turn is complete (or was interrupted and finished).
+                
+                // Stop rotation correction
+                isCorrectingRotation = false;
+                
                 // Release the latch so we can calculate a new turn next frame.
                 isTurning = false;
             }
+        }
+        
+        // Apply subtle rotation correction DURING the turn animation
+        if (isCorrectingRotation && animatorIsTurning)
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation, 
+                targetRotation, 
+                Time.deltaTime * rotationCorrectionSpeed
+            );
         }
     }
 
@@ -131,6 +158,7 @@ public class SimpleDirectionController : MonoBehaviour
     /// </summary>
     private int GetDirectionIntFromAngle(float angle)
     {
+      Debug.Log($"angle is {angle}");
         // R_45
         if (angle > 22.5f && angle <= 67.5f) return 1;
         // R_90
