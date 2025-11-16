@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterLocomotionController))]
+[RequireComponent(typeof(SimpleDirectionController))]
 /// <summary>
 /// Reads input from the new Unity Input System's "Move" action, calculates
 /// the world-space direction relative to the camera, and passes it to the
-/// CharacterLocomotionController.
+/// SimpleDirectionController.
 /// This version uses standard camera-relative movement.
 /// Logic is in Update() to avoid feedback loops with camera systems like Cinemachine.
 /// </summary>
@@ -15,16 +15,22 @@ public class UserInputSource : MonoBehaviour
     [Tooltip("Assign the Input System Action used for 2D movement (e.g., 'Move').")]
     public InputActionReference moveActionReference;
 
-    private CharacterLocomotionController motionController;
+    [Tooltip("Time in seconds the input must be held before it's considered 'committed'.")]
+    [SerializeField] private float commitThreshold = 0.1f;
+
+    private SimpleDirectionController motionController;
     private Transform mainCameraTransform;
     private Vector2 rawInputVector = Vector2.zero;
-
-    // --- No state for locked directions is needed ---
+    
+    // Time tracking for commitment
+    private float inputHeldTime = 0f;
+    private bool isInputActive = false;
+    private bool hasCommitted = false; // Track if we've already committed this input
 
     private void Awake()
     {
         // RequireComponent ensures this will not be null
-        motionController = GetComponent<CharacterLocomotionController>();
+        motionController = GetComponent<SimpleDirectionController>();
 
         // Find and cache the main camera's transform
         if (Camera.main != null)
@@ -65,15 +71,34 @@ public class UserInputSource : MonoBehaviour
     {
         // Read the Vector2 value (e.g., (1, 0) for W, (0.5, -0.5) for diagonal stick)
         rawInputVector = context.ReadValue<Vector2>();
+        
+        // Start tracking held time if input just became active
+        if (!isInputActive)
+        {
+            isInputActive = true;
+            inputHeldTime = 0f;
+            hasCommitted = false;
+        }
     }
 
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
+        Vector3 forward = mainCameraTransform.forward;
+        Vector3 right = mainCameraTransform.right;
+        forward.y = 0f;
+        right.y = 0f;
+        forward.Normalize();
+        right.Normalize();
+        
+        Vector3 targetDirection = (forward * rawInputVector.y) + (right * rawInputVector.x);
+        motionController.SetTargetDirection(targetDirection, false);
+        
         // Stop movement when keys are released
         rawInputVector = Vector2.zero;
+        isInputActive = false;
+        inputHeldTime = 0f;
+        hasCommitted = false;
     }
-    
-    // --- No CacheDirectionVectors() needed ---
 
     // --- Movement Processing ---
 
@@ -87,25 +112,40 @@ public class UserInputSource : MonoBehaviour
     {
         if (motionController == null || mainCameraTransform == null) return;
         
-        // 1. Get the camera's *current* forward and right vectors, flattened to the XZ plane
-        Vector3 forward = mainCameraTransform.forward;
-        Vector3 right = mainCameraTransform.right;
-
-        // Ignore the Y component to keep movement strictly on the horizontal plane
-        forward.y = 0f;
-        right.y = 0f;
-        
-        // Normalize the vectors after flattening to ensure they are unit vectors
-        forward.Normalize();
-        right.Normalize();
-
-        // 2. Calculate the world-space target direction
-        // The input's Y component drives the camera's forward vector (Z world-axis)
-        // The input's X component drives the camera's right vector (X world-axis)
-        Vector3 targetDirection = (forward * rawInputVector.y) + (right * rawInputVector.x);
-
-        // 3. Pass the resulting direction to the CharacterLocomotionController
-        // We normalize the result to prevent diagonal movement from being faster (vector magnitude > 1)
-        motionController.SetTargetDirection(targetDirection);
+        // Update held time if input is active
+        if (isInputActive)
+        {
+            inputHeldTime += Time.deltaTime;
+            
+            // Only call SetTargetDirection once we've crossed the commit threshold
+            if (!hasCommitted && inputHeldTime >= commitThreshold)
+            {
+                hasCommitted = true;
+                
+                // Calculate and send the committed direction
+                Vector3 forward = mainCameraTransform.forward;
+                Vector3 right = mainCameraTransform.right;
+                forward.y = 0f;
+                right.y = 0f;
+                forward.Normalize();
+                right.Normalize();
+                
+                Vector3 targetDirection = (forward * rawInputVector.y) + (right * rawInputVector.x);
+                motionController.SetTargetDirection(targetDirection, true);
+            }
+            else if (hasCommitted)
+            {
+                // Continue updating direction after commitment
+                Vector3 forward = mainCameraTransform.forward;
+                Vector3 right = mainCameraTransform.right;
+                forward.y = 0f;
+                right.y = 0f;
+                forward.Normalize();
+                right.Normalize();
+                
+                Vector3 targetDirection = (forward * rawInputVector.y) + (right * rawInputVector.x);
+                motionController.SetTargetDirection(targetDirection, true);
+            }
+        }
     }
 }
