@@ -8,10 +8,11 @@ using System.Collections.Generic;
 /// with the SimpleDirectionController.
 ///
 /// It creates:
-/// 1. An 'Idle' state.
-/// 2. An 'IdleTurn' state containing an 8-way blend tree.
+/// 1. An 'Idle' state (motion set in inspector).
+/// 2. Eight directional states (R_45, R_90, R_135, R_180, L_180, L_135, L_90, L_45).
 /// 3. The 'TargetDirection' integer parameter.
-/// 4. Transitions between Idle and IdleTurn.
+/// 4. Transitions from Idle to each directional state (no exit time).
+/// 5. Transitions from each directional state back to Idle (using exit time).
 ///
 /// It will attempt to find and assign the 9 required animation clips
 /// from the specified folder.
@@ -21,7 +22,6 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
     private DefaultAsset animationFolder;
 
     // Map integers from the controller to the expected animation clip names
-    // This is based on your provided file list.
     private static readonly Dictionary<int, string> IntToClipName = new Dictionary<int, string>
     {
         { 0, "MOB_Stand_Relaxed_Idle" },
@@ -29,10 +29,24 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
         { 2, "MOB_Stand_Relaxed_R_90" },
         { 3, "MOB_Stand_Relaxed_R_135" },
         { 4, "MOB_Stand_Relaxed_R_180" },
-        { 5, "MOB_Stand_Relaxed_L180" }, // Note: L180, L135, etc. based on your file list
+        { 5, "MOB_Stand_Relaxed_L180" },
         { 6, "MOB_Stand_Relaxed_L135" },
         { 7, "MOB_Stand_Relaxed_L90" },
         { 8, "MOB_Stand_Relaxed_L45" }
+    };
+
+    // State names matching the integer values
+    private static readonly Dictionary<int, string> IntToStateName = new Dictionary<int, string>
+    {
+        { 0, "Idle" },
+        { 1, "R_45" },
+        { 2, "R_90" },
+        { 3, "R_135" },
+        { 4, "R_180" },
+        { 5, "L_180" },
+        { 6, "L_135" },
+        { 7, "L_90" },
+        { 8, "L_45" }
     };
 
     [MenuItem("Tools/Animation/Create Simple Direction Animator")]
@@ -76,7 +90,6 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
     private AnimationClip LoadClipFromFolder(string folderPath, string clipName)
     {
         // Try finding a Model asset (FBX) first
-        // FindAssets searches for files *named* clipName
         string[] modelGuids = AssetDatabase.FindAssets($"{clipName} t:Model", new[] { folderPath });
         if (modelGuids.Length > 0)
         {
@@ -92,7 +105,6 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             {
                 if (asset is AnimationClip clip)
                 {
-                    // Found the clip inside the FBX
                     return clip;
                 }
             }
@@ -149,51 +161,67 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
 
         // 4. Load Clips and Create States
         
-        // Load Idle (0)
+        // Load and create Idle state (0)
         AnimationClip idleClip = LoadClipFromFolder(folderPath, IntToClipName[0]);
-        AnimatorState idleState = rootSM.AddState("Idle");
+        AnimatorState idleState = rootSM.AddState(IntToStateName[0]);
         idleState.motion = idleClip;
         rootSM.defaultState = idleState;
 
-        // Load Turns (1-8)
-        AnimatorState turnState = rootSM.AddState("IdleTurn");
-        BlendTree tree = new BlendTree
-        {
-            name = "IdleTurnBlendTree",
-            blendType = BlendTreeType.Simple1D,
-            blendParameter = "TargetDirection",
-            useAutomaticThresholds = false
-        };
+        // Create directional states (1-8) and set up transitions
+        Dictionary<int, AnimatorState> directionalStates = new Dictionary<int, AnimatorState>();
         
-        // Add all 8 directional clips to the blend tree
         for (int i = 1; i <= 8; i++)
         {
-            AnimationClip turnClip = LoadClipFromFolder(folderPath, IntToClipName[i]);
-            tree.AddChild(turnClip, i); // Threshold matches the integer
+            // Load the clip for this direction
+            AnimationClip dirClip = LoadClipFromFolder(folderPath, IntToClipName[i]);
+            
+            // Create the state
+            AnimatorState dirState = rootSM.AddState(IntToStateName[i]);
+            dirState.motion = dirClip;
+            directionalStates[i] = dirState;
+            
+            // Transition FROM Idle TO this directional state (no exit time, immediate response)
+            AnimatorStateTransition toDirection = idleState.AddTransition(dirState);
+            toDirection.AddCondition(AnimatorConditionMode.Equals, i, "TargetDirection");
+            toDirection.hasExitTime = false;
+            toDirection.duration = 0.15f;
+            toDirection.exitTime = 0;
+            toDirection.canTransitionToSelf = false;
+            
+            // Transition FROM this directional state BACK TO Idle (using exit time)
+            AnimatorStateTransition backToIdle = dirState.AddTransition(idleState);
+            backToIdle.hasExitTime = true;
+            backToIdle.exitTime = 0.95f; // Near the end of the animation
+            backToIdle.duration = 0.1f;
+            backToIdle.canTransitionToSelf = false;
         }
 
-        turnState.motion = tree;
-        AssetDatabase.AddObjectToAsset(tree, controller);
-
-        // 5. Create Transitions
-        AnimatorStateTransition toTurn = idleState.AddTransition(turnState);
-        toTurn.AddCondition(AnimatorConditionMode.Greater, 0, "TargetDirection");
-        toTurn.hasExitTime = false;
-        toTurn.duration = 0.1f;
-        toTurn.exitTime = 0;
-
-        AnimatorStateTransition toIdle = turnState.AddTransition(idleState);
-        toIdle.AddCondition(AnimatorConditionMode.Equals, 0, "TargetDirection");
-        toIdle.hasExitTime = false;
-        toIdle.duration = 0.1f;
-        toIdle.exitTime = 0;
+        // 5. Add transitions between directional states for smooth direction changes
+        for (int i = 1; i <= 8; i++)
+        {
+            AnimatorState fromState = directionalStates[i];
+            
+            for (int j = 1; j <= 8; j++)
+            {
+                if (i == j) continue; // Skip self-transitions
+                
+                AnimatorState toState = directionalStates[j];
+                AnimatorStateTransition crossTransition = fromState.AddTransition(toState);
+                crossTransition.AddCondition(AnimatorConditionMode.Equals, j, "TargetDirection");
+                crossTransition.hasExitTime = false;
+                crossTransition.duration = 0.15f;
+                crossTransition.exitTime = 0;
+                crossTransition.canTransitionToSelf = false;
+            }
+        }
 
         // 6. Finish
         AssetDatabase.SaveAssets();
         EditorUtility.FocusProjectWindow();
         Selection.activeObject = controller;
 
-        Debug.Log($"Successfully created Animator Controller at: {path}. " +
-                  $"Animations from '{folderPath}' have been assigned.");
+        Debug.Log($"Successfully created Animator Controller at: {path}\n" +
+                  $"Animations from '{folderPath}' have been assigned.\n" +
+                  $"Created states: Idle + 8 directional states (R_45, R_90, R_135, R_180, L_180, L_135, L_90, L_45)");
     }
 }

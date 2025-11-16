@@ -5104,9 +5104,13 @@ PrefabInstance:
       propertyPath: cameraTarget
       value: 
       objectReference: {fileID: 183784951}
+    - target: {fileID: 2295550532835410795, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: d559452e35e964b38b45ca7bcb20682a, type: 2}
     - target: {fileID: 3686595383284806102, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: rotationCorrectionSpeed
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4787488530426266539, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_Name
