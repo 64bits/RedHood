@@ -6,6 +6,8 @@ public class SpecialController : MonoBehaviour
     [Header("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject lanternObject;
+    [SerializeField] private GameObject regularDomeObject;
+    [SerializeField] private GameObject lanternDomeObject;
     
     [Header("Input Settings")]
     [SerializeField] private InputActionReference specialAction;
@@ -56,6 +58,16 @@ public class SpecialController : MonoBehaviour
         {
             lanternObject.SetActive(true);
         }
+
+        if (lanternDomeObject != null)
+        {
+            lanternDomeObject.SetActive(true);
+        }
+
+        if (regularDomeObject != null)
+        {
+            regularDomeObject.SetActive(false);
+        }
     }
     
     private void DisableSpecial()
@@ -67,6 +79,16 @@ public class SpecialController : MonoBehaviour
         if (lanternObject != null)
         {
             lanternObject.SetActive(false);
+        }
+
+        if (lanternDomeObject != null)
+        {
+            lanternDomeObject.SetActive(false);
+        }
+
+        if (regularDomeObject != null)
+        {
+            regularDomeObject.SetActive(true);
         }
     }
     
