@@ -1164,7 +1164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6941fef65fcaf4a9c926fa61d200ec64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SquirrelController
-  runSpeed: 15
+  runSpeed: 10
 --- !u!1 &8437729874803812984
 GameObject:
   m_ObjectHideFlags: 0
