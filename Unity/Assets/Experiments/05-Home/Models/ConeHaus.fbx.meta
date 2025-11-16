@@ -27,8 +27,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Flax bush
+    second: {fileID: 2100000, guid: 4c16a99dd65ab4ea98375945925dd0b4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Ground
     second: {fileID: 2100000, guid: fc1915f8cf1474b12b06a2b37ade43f8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pods
+    second: {fileID: 2100000, guid: d091f0442dfd440d2b7ab03ccb4178c4, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
