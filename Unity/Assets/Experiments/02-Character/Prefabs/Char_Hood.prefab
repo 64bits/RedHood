@@ -923,6 +923,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
+      propertyPath: m_AnimatePhysics
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 1
       objectReference: {fileID: 0}
@@ -981,9 +985,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5562666237543164527}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4130374033472012898}
     - targetCorrespondingSourceObject: {fileID: -1855368600654575853, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7123682496627538371}
@@ -2034,18 +2035,6 @@ MonoBehaviour:
     duration: 1
   showDebugArrow: 1
   arrowLength: 2
---- !u!114 &4130374033472012898
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4787488530426266539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32a4dfb1245404b23bbf758abc835d3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SimpleDirectionController
 --- !u!1 &5095064199604543061 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 577788141732143279, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
