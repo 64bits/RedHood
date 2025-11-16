@@ -3036,6 +3036,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cd7fbc28a354bdbb111e149fdc4347, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Revealable
+--- !u!1001 &2094006786
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1494084276720286955, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 043057a7f5afc4a5fb3df3c1e29c818d, type: 2}
+    - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -8.137
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00009918213
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10.876
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7797262813761470966, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+      propertyPath: m_Name
+      value: Squirrel
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
 --- !u!1 &2143682048
 GameObject:
   m_ObjectHideFlags: 0
@@ -6647,3 +6708,4 @@ SceneRoots:
   - {fileID: 1631124892}
   - {fileID: 1664975932}
   - {fileID: 1470623213}
+  - {fileID: 2094006786}
