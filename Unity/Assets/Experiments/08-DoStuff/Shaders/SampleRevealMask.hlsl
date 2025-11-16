@@ -1,7 +1,7 @@
 TEXTURE2D(_CombinedMaskTex);
 SAMPLER(sampler_CombinedMaskTex);
 
-void SampleHighlightMask_float(float4 ScreenPos, out float Mask)
+void SampleRevealMask_float(float4 ScreenPos, out float Mask)
 {
     // Use the xy components directly as UVs (0 to 1 range)
     float2 screenUV = ScreenPos.xy; 
@@ -9,6 +9,6 @@ void SampleHighlightMask_float(float4 ScreenPos, out float Mask)
     // float2 screenUV = ScreenPos.xy * 0.5f + 0.5f; 
     // For now, try this simplest change first:
     
-    // Sample from R channel of combined mask texture
-    Mask = SAMPLE_TEXTURE2D(_CombinedMaskTex, sampler_CombinedMaskTex, screenUV).r;
+    // Sample from G channel of combined mask texture
+    Mask = SAMPLE_TEXTURE2D(_CombinedMaskTex, sampler_CombinedMaskTex, screenUV).g;
 }
