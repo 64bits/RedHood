@@ -9,15 +9,19 @@ using System.Collections.Generic;
 ///
 /// It creates:
 /// 1. An 'Idle' state (motion set in inspector).
-/// 2. Eight directional states (R_45, R_90, ... L_45).
-/// 3. Eight "committed" directional states (Committed_R_45, ...).
-/// 4. 'TargetDirection' (int) and 'committed' (bool) parameters.
-/// 5. Transitions from Idle to directional states (requires committed == false).
-/// 6. Transitions from Idle to committed states (requires committed == true).
-/// 7. Transitions from directional states back to Idle (using exit time).
-/// 8. Transitions from committed states back to Idle (immediate, when committed == false).
+/// 2. A 'Run_Forward' state (looping).
+/// 3. Eight directional states (R_45, R_90, ... L_45).
+/// 4. Eight "committed" directional states (Committed_R_45, ...).
+/// 5. 'TargetDirection' (int) and 'committed' (bool) parameters.
+/// 6. Transitions from Idle to directional states (requires committed == false).
+/// 7. Transitions from Idle to committed states (requires committed == true).
+/// 8. Transitions from directional states back to Idle (using exit time).
+/// 9. Transitions from committed states to Idle (immediate, when committed == false).
+/// 10. Transitions from committed states to Run_Forward (on exit time, when committed == true).
+/// 11. Transitions from Run_Forward to Idle (when committed == false).
+/// 12. Transitions from Run_Forward to committed states (when TargetDirection changes and committed == true).
 ///
-/// It will attempt to find and assign the 17 required animation clips
+/// It will attempt to find and assign the 18 required animation clips
 /// from the specified folder, ensuring they are saved as sub-assets of the controller.
 /// </summary>
 public class SimpleDirectionAnimatorSetup : EditorWindow
@@ -77,6 +81,11 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
         { 8, "Committed_L_45" }
     };
 
+    // Clip name for the new Run Forward state
+    private const string RunForwardClipName = "MOB_Run_F";
+    private const string RunForwardStateName = "Run_Forward";
+
+
     [MenuItem("Tools/Animation/Create Simple Direction Animator")]
     public static void ShowWindow()
     {
@@ -85,13 +94,14 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
 
     private void OnGUI()
     {
-        GUILayout.Label("Create Stand-Turn Animator", EditorStyles.boldLabel);
+        GUILayout.Label("Create Stand-Turn-Run Animator", EditorStyles.boldLabel);
         GUILayout.Space(10);
         EditorGUILayout.HelpBox(
             "This will create a new Animator Controller for the SimpleDirectionController.\n\n" +
-            "Select the folder containing your 17 animations:\n" +
+            "Select the folder containing your 18 animations:\n" +
             "- 9 'MOB_Stand_Relaxed...' (Idle + 8 Dirs)\n" +
-            "- 8 'MOB_Stand_Relaxed_To_Run...' (Committed Dirs)\n\n" +
+            "- 8 'MOB_Stand_Relaxed_To_Run...' (Committed Dirs)\n" +
+            "- 1 'MOB_Run_F' (Forward Run Loop)\n\n" +
             "The script will automatically find, copy, and assign them.",
             MessageType.Info);
         
@@ -216,6 +226,20 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
         idleState.motion = idleClip;
         rootSM.defaultState = idleState;
 
+        // Load and create Run_Forward state
+        AnimationClip runForwardClip = SafeLoadAndAddClip(RunForwardClipName, folderPath, controller);
+        if(runForwardClip == null)
+        {
+            // Clean up the created controller file if the crucial Run clip is missing
+            AssetDatabase.DeleteAsset(path); 
+            Debug.LogError("Failed to load Run_Forward clip. Aborting animator creation.");
+            return;
+        }
+        AnimatorState runForwardState = rootSM.AddState(RunForwardStateName);
+        runForwardState.motion = runForwardClip;
+        runForwardState.speed = 1.5f;
+        
+
         // Create UNCOMMITTED directional states (1-8)
         Dictionary<int, AnimatorState> directionalStates = new Dictionary<int, AnimatorState>();
         
@@ -276,6 +300,14 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             committedBackToIdle.hasExitTime = false; 
             committedBackToIdle.duration = 0.1f;
             committedBackToIdle.canTransitionToSelf = false;
+
+            // NEW: Transition FROM this committed state TO Run_Forward (ON EXIT TIME WHEN committed == true)
+            AnimatorStateTransition committedToRun = committedState.AddTransition(runForwardState);
+            committedToRun.AddCondition(AnimatorConditionMode.If, 0, "committed"); // Only if we're still committed
+            committedToRun.hasExitTime = true; 
+            committedToRun.exitTime = 0.75f; // Smoothly exit after 75% of the turn animation
+            committedToRun.duration = 0.15f;
+            committedToRun.canTransitionToSelf = false;
         }
 
         // 5. Add transitions between (non-committed) directional states for smooth direction changes
@@ -318,13 +350,35 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             }
         }
 
-        // 7. Finish
+        // 7. NEW: Add transitions FROM Run_Forward state
+        
+        // Transition FROM Run_Forward TO Idle (WHEN committed == false)
+        AnimatorStateTransition runToIdle = runForwardState.AddTransition(idleState);
+        runToIdle.AddCondition(AnimatorConditionMode.IfNot, 0, "committed");
+        runToIdle.hasExitTime = false;
+        runToIdle.duration = 0.15f;
+        runToIdle.canTransitionToSelf = false;
+
+        // Transition FROM Run_Forward TO Committed States (WHEN TargetDirection changes and committed == true)
+        for (int j = 1; j <= 8; j++)
+        {
+            AnimatorState toState = committedStates[j];
+            AnimatorStateTransition runToTurn = runForwardState.AddTransition(toState);
+            runToTurn.AddCondition(AnimatorConditionMode.Equals, j, "TargetDirection");
+            runToTurn.AddCondition(AnimatorConditionMode.If, 0, "committed");
+            runToTurn.hasExitTime = false;
+            runToTurn.duration = 0.15f;
+            runToTurn.canTransitionToSelf = false;
+        }
+
+
+        // 8. Finish
         AssetDatabase.SaveAssets();
         EditorUtility.FocusProjectWindow();
         Selection.activeObject = controller;
 
         Debug.Log($"Successfully created Animator Controller at: {path}\n" +
                   $"Animations from '{folderPath}' have been assigned and saved as sub-assets.\n" +
-                  $"Created states: Idle + 8 directional states + 8 committed states.");
+                  $"Created states: Idle, Run_Forward, 8 directional states, 8 committed states.");
     }
 }
