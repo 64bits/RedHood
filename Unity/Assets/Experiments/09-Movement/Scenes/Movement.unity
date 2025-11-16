@@ -5158,7 +5158,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[0].duration
@@ -5177,6 +5177,14 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[4].duration
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[5].duration
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[1].direction.z
       value: 1
       objectReference: {fileID: 0}
@@ -5190,11 +5198,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[3].direction.x
-      value: -1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[3].direction.z
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[4].direction.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[4].direction.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[5].direction.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[5].direction.z
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

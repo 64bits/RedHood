@@ -17,6 +17,12 @@ public class SimpleDirectionController : MonoBehaviour
     [Tooltip("Minimum angle change (in degrees) in target direction required to trigger an update")]
     [SerializeField] private float directionChangeThreshold = 15f;
     
+    [Tooltip("Speed at which the transform rotates toward the target direction when within alignment threshold")]
+    [SerializeField] private float rotationSpeed = 5f;
+    
+    [Tooltip("Angle threshold (in degrees) within which rotation lerping is active")]
+    [SerializeField] private float alignmentThreshold = 22.5f;
+    
     // This is the parameter we will set on the animator controller.
     private static readonly int TargetDirectionParam = Animator.StringToHash("TargetDirection");
     
@@ -74,6 +80,20 @@ public class SimpleDirectionController : MonoBehaviour
             
             // Convert this angle into our integer mapping
             directionInt = GetDirectionIntFromAngle(angle);
+            
+            // If within alignment threshold, lerp the rotation
+            if (Mathf.Abs(angle) <= alignmentThreshold)
+            {
+                // Calculate the target rotation
+                Quaternion targetRotation = Quaternion.LookRotation(targetDir, Vector3.up);
+                
+                // Lerp toward the target rotation
+                transform.rotation = Quaternion.Lerp(
+                    transform.rotation, 
+                    targetRotation, 
+                    rotationSpeed * Time.deltaTime
+                );
+            }
         }
         else
         {
