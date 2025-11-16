@@ -917,14 +917,14 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: e9a0738333c624e3484a166b4e773ab5, type: 2}
+      objectReference: {fileID: 9100000, guid: 6a42dea41c061495f9f2d9fb16b51cd4, type: 2}
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_CullingMode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_AnimatePhysics
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_ApplyRootMotion
@@ -985,6 +985,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5562666237543164527}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 704219880663227739}
     - targetCorrespondingSourceObject: {fileID: -1855368600654575853, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7123682496627538371}
@@ -2018,7 +2021,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32a4dfb1245404b23bbf758abc835d3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleDirectionController
+  directionChangeThreshold: 15
+  rotationSpeed: 5
+  alignmentThreshold: 22.5
 --- !u!114 &5562666237543164527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4787488530426266539}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4420623d53d4047fda4d72bc485828bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CommandInputSource
+  commands:
+  - direction: {x: 0, y: 0, z: -1}
+    duration: 3
+  - direction: {x: 0, y: 0, z: 1}
+    duration: 3
+  - direction: {x: 1, y: 0, z: 1}
+    duration: 3
+  - direction: {x: 1, y: 0, z: -1}
+    duration: 3
+  - direction: {x: -1, y: 0, z: 1}
+    duration: 3
+  - direction: {x: -1, y: 0, z: -1}
+    duration: 3
+  showDebugArrow: 1
+  arrowLength: 2
+--- !u!114 &704219880663227739
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2027,14 +2060,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4787488530426266539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4420623d53d4047fda4d72bc485828bb, type: 3}
+  m_Script: {fileID: 11500000, guid: bb24923c65ecd4b5483ff78b35d6ec31, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CommandInputSource
-  commands:
-  - direction: {x: 0, y: 0, z: -1}
-    duration: 1
-  showDebugArrow: 1
-  arrowLength: 2
+  m_EditorClassIdentifier: Assembly-CSharp::UserInputSource
+  moveActionReference: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  commitThreshold: 0.1
 --- !u!1 &5095064199604543061 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 577788141732143279, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}

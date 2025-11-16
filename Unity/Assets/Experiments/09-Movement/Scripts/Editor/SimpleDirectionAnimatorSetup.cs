@@ -20,6 +20,7 @@ using System.Collections.Generic;
 /// 10. Transitions from committed states to Run_Forward (on exit time, when committed == true).
 /// 11. Transitions from Run_Forward to Idle (when committed == false).
 /// 12. Transitions from Run_Forward to committed states (when TargetDirection changes and committed == true).
+/// 13. Transition from Idle to Run_Forward (when TargetDirection == 0 and committed == true).
 ///
 /// It will attempt to find and assign the 18 required animation clips
 /// from the specified folder, ensuring they are saved as sub-assets of the controller.
@@ -251,7 +252,8 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             // Create the state
             AnimatorState dirState = rootSM.AddState(IntToStateName[i]);
             dirState.motion = dirClip;
-            dirState.speed = 1.5f;
+            // Set speed to 2f for R_180 (4) and L_180 (5) states
+            dirState.speed = (i == 4 || i == 5) ? 2f : 1.5f;
             directionalStates[i] = dirState;
             
             // Transition FROM Idle TO this directional state (IF committed == false)
@@ -282,7 +284,8 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             // Create the state
             AnimatorState committedState = rootSM.AddState(IntToCommittedStateName[i]);
             committedState.motion = committedClip;
-            committedState.speed = 1.5f;
+            // Set speed to 2f for Committed_R_180 (4) and Committed_L_180 (5) states
+            committedState.speed = (i == 4 || i == 5) ? 2f : 1.5f;
             committedStates[i] = committedState;
             
             // Transition FROM Idle TO this committed state (WHEN committed == true)
@@ -309,6 +312,15 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             committedToRun.duration = 0.15f;
             committedToRun.canTransitionToSelf = false;
         }
+
+        // NEW: Transition FROM Idle TO Run_Forward (WHEN TargetDirection == 0 and committed == true)
+        AnimatorStateTransition idleToRun = idleState.AddTransition(runForwardState);
+        idleToRun.AddCondition(AnimatorConditionMode.Equals, 0, "TargetDirection");
+        idleToRun.AddCondition(AnimatorConditionMode.If, 0, "committed");
+        idleToRun.hasExitTime = false;
+        idleToRun.duration = 0.15f;
+        idleToRun.exitTime = 0;
+        idleToRun.canTransitionToSelf = false;
 
         // 5. Add transitions between (non-committed) directional states for smooth direction changes
         for (int i = 1; i <= 8; i++)
