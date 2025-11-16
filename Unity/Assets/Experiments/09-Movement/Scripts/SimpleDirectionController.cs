@@ -11,7 +11,11 @@ public class SimpleDirectionController : MonoBehaviour
     private Animator animator;
     private bool hasTarget;
     private Vector3 currentTargetDirection;
-    private bool isAnimating; // Track if we're currently playing a turn animation
+    private Vector3 lastTargetDirection;
+    private bool hasLastTarget = false;
+    
+    [Tooltip("Minimum angle change (in degrees) in target direction required to trigger an update")]
+    [SerializeField] private float directionChangeThreshold = 15f;
     
     // This is the parameter we will set on the animator controller.
     private static readonly int TargetDirectionParam = Animator.StringToHash("TargetDirection");
@@ -54,21 +58,6 @@ public class SimpleDirectionController : MonoBehaviour
 
     private void Update()
     {
-        // Don't update the parameter if we're currently playing a turn animation
-        if (isAnimating)
-        {
-            // Check if we've returned to Idle state
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            if (stateInfo.IsName("Idle"))
-            {
-                isAnimating = false;
-            }
-            else
-            {
-                return; // Still animating, don't change the parameter
-            }
-        }
-
         int directionInt;
 
         if (hasTarget)
@@ -92,16 +81,40 @@ public class SimpleDirectionController : MonoBehaviour
             directionInt = 0;
         }
 
-        // Only set the parameter if it's different from Idle (0)
-        // Once we set it to a direction, mark that we're animating
-        if (directionInt != 0)
+        // Check if we should update the animator parameter
+        bool shouldUpdate = false;
+        
+        if (directionInt == 0)
         {
-            animator.SetInteger(TargetDirectionParam, directionInt);
-            isAnimating = true;
+            // Always update when in Idle state
+            shouldUpdate = true;
         }
         else
         {
-            animator.SetInteger(TargetDirectionParam, 0);
+            // For non-idle states, only update if target direction changed significantly
+            if (hasTarget != hasLastTarget)
+            {
+                // Target state changed (started or stopped targeting)
+                shouldUpdate = true;
+            }
+            else if (hasTarget && hasLastTarget)
+            {
+                // Both have targets, check if the direction changed significantly
+                float angleDelta = Vector3.Angle(lastTargetDirection, currentTargetDirection);
+                if (angleDelta >= directionChangeThreshold)
+                {
+                    shouldUpdate = true;
+                }
+            }
+        }
+
+        if (shouldUpdate)
+        {
+            animator.SetInteger(TargetDirectionParam, directionInt);
+            
+            // Update the last target tracking
+            lastTargetDirection = currentTargetDirection;
+            hasLastTarget = hasTarget;
         }
     }
 

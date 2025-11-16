@@ -273,8 +273,25 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             committedBackToIdle.canTransitionToSelf = false;
         }
 
-        // 5. REMOVED: Section for transitions between directional states (R_45 to R_90 etc.) 
-        // as requested. The system now relies solely on transitions to/from Idle.
+        // 5. Add transitions between (non-committed) directional states for smooth direction changes
+        for (int i = 1; i <= 8; i++)
+        {
+            AnimatorState fromState = directionalStates[i];
+            
+            for (int j = 1; j <= 8; j++)
+            {
+                if (i == j) continue; // Skip self-transitions
+                
+                AnimatorState toState = directionalStates[j];
+                AnimatorStateTransition crossTransition = fromState.AddTransition(toState);
+                crossTransition.AddCondition(AnimatorConditionMode.Equals, j, "TargetDirection");
+                crossTransition.AddCondition(AnimatorConditionMode.IfNot, 0, "committed"); // Also check committed is false
+                crossTransition.hasExitTime = false;
+                crossTransition.duration = 0.15f;
+                crossTransition.exitTime = 0;
+                crossTransition.canTransitionToSelf = false;
+            }
+        }
 
         // 6. Finish
         AssetDatabase.SaveAssets();
