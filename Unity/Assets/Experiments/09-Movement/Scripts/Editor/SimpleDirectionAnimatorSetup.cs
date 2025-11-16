@@ -227,6 +227,7 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             // Create the state
             AnimatorState dirState = rootSM.AddState(IntToStateName[i]);
             dirState.motion = dirClip;
+            dirState.speed = 1.5f;
             directionalStates[i] = dirState;
             
             // Transition FROM Idle TO this directional state (IF committed == false)
@@ -245,8 +246,10 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             backToIdle.duration = 0.1f;
             backToIdle.canTransitionToSelf = false;
         }
-        
-        // Create COMMITTED states (1-8)
+
+        // Create COMMITTED directional states (1-8)
+        Dictionary<int, AnimatorState> committedStates = new Dictionary<int, AnimatorState>();
+
         for (int i = 1; i <= 8; i++)
         {
             // Load the clip and add it as a sub-asset
@@ -255,6 +258,8 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             // Create the state
             AnimatorState committedState = rootSM.AddState(IntToCommittedStateName[i]);
             committedState.motion = committedClip;
+            committedState.speed = 1.5f;
+            committedStates[i] = committedState;
             
             // Transition FROM Idle TO this committed state (WHEN committed == true)
             AnimatorStateTransition toCommittedState = idleState.AddTransition(committedState);
@@ -293,7 +298,27 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             }
         }
 
-        // 6. Finish
+        // 6. Add transitions between (committed) directional states for smooth direction changes
+        for (int i = 1; i <= 8; i++)
+        {
+            AnimatorState fromState = committedStates[i];
+            
+            for (int j = 1; j <= 8; j++)
+            {
+                if (i == j) continue; // Skip self-transitions
+                
+                AnimatorState toState = committedStates[j];
+                AnimatorStateTransition crossTransition = fromState.AddTransition(toState);
+                crossTransition.AddCondition(AnimatorConditionMode.Equals, j, "TargetDirection");
+                crossTransition.AddCondition(AnimatorConditionMode.If, 0, "committed"); // Also check committed is true
+                crossTransition.hasExitTime = false;
+                crossTransition.duration = 0.15f;
+                crossTransition.exitTime = 0;
+                crossTransition.canTransitionToSelf = false;
+            }
+        }
+
+        // 7. Finish
         AssetDatabase.SaveAssets();
         EditorUtility.FocusProjectWindow();
         Selection.activeObject = controller;
