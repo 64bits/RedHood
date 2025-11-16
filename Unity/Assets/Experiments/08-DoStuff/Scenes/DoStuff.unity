@@ -2069,24 +2069,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
---- !u!1 &2016914346 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8035429034208111919, guid: 04badd7ab968742f5b90c6993731afee, type: 3}
-  m_PrefabInstance: {fileID: 1213474505052963543}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2016914351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016914346}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed398ecaf13af41a497094fbbf85e0fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BrambleSlowdown
-  slowedSpeed: 0.25
 --- !u!1001 &2094006786
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5705,10 +5687,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8035429034208111919, guid: 04badd7ab968742f5b90c6993731afee, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2016914351}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 04badd7ab968742f5b90c6993731afee, type: 3}
 --- !u!1001 &3639386950323156854
 PrefabInstance:
