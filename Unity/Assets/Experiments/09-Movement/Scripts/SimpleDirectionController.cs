@@ -25,6 +25,7 @@ public class SimpleDirectionController : MonoBehaviour
     
     // This is the parameter we will set on the animator controller.
     private static readonly int TargetDirectionParam = Animator.StringToHash("TargetDirection");
+    private static readonly int CommittedParam = Animator.StringToHash("committed");
     
     // --- INTEGER MAPPING ---
     // This script maps angles to integers like this:
@@ -48,17 +49,19 @@ public class SimpleDirectionController : MonoBehaviour
     /// Call this from your Input or AI script to provide a target direction.
     /// </summary>
     /// <param name="worldDirection">The direction the character should be facing.</param>
-    public void SetTargetDirection(Vector3 worldDirection)
+    public void SetTargetDirection(Vector3 worldDirection, bool isCommitted = true)
     {
         // Check if the input is significant. If not, we'll clear the target.
         if (worldDirection.sqrMagnitude > 0.01f)
         {
             currentTargetDirection = worldDirection.normalized;
             hasTarget = true;
+            animator.SetBool(CommittedParam, isCommitted);
         }
         else
         {
             hasTarget = false;
+            animator.SetBool(CommittedParam, false);
         }
     }
 
