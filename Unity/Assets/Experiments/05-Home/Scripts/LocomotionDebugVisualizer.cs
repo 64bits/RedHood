@@ -4,7 +4,7 @@ using UnityEngine;
 /// Debug visualizer for the locomotion system
 /// Shows movement state, commitment, pivot info, and turn angles in editor and runtime
 /// </summary>
-[RequireComponent(typeof(CharacterLocomotionController))]
+[RequireComponent(typeof(SimpleDirectionController))]
 public class LocomotionDebugVisualizer : MonoBehaviour
 {
     [Header("Visualization Settings")]
@@ -17,7 +17,7 @@ public class LocomotionDebugVisualizer : MonoBehaviour
     [SerializeField] private float targetArrowLength = 2.5f;
     [SerializeField] private float gizmoHeight = 1.5f;
     
-    private CharacterLocomotionController locomotionController;
+    private SimpleDirectionController locomotionController;
     private Animator animator;
     
     // Cached for display
@@ -26,7 +26,7 @@ public class LocomotionDebugVisualizer : MonoBehaviour
     
     private void Awake()
     {
-        locomotionController = GetComponent<CharacterLocomotionController>();
+        locomotionController = GetComponent<SimpleDirectionController>();
         animator = GetComponent<Animator>();
     }
     
@@ -61,10 +61,10 @@ public class LocomotionDebugVisualizer : MonoBehaviour
         GUILayout.BeginArea(new Rect(10, 10, 300, 300));
         GUILayout.Box("Locomotion Debug Info");
         
-        GUILayout.Label($"Is Moving: {locomotionController.IsMoving}");
-        GUILayout.Label($"Commitment: {locomotionController.CurrentCommitment:F2}");
-        GUILayout.Label($"Turn Angle: {locomotionController.CurrentTurnAngle:F1}°");
-        GUILayout.Label($"Pivot Weight: {locomotionController.PivotWeight:F2}");
+        // GUILayout.Label($"Is Moving: {locomotionController.IsMoving}");
+        // GUILayout.Label($"Commitment: {locomotionController.CurrentCommitment:F2}");
+        // GUILayout.Label($"Turn Angle: {locomotionController.CurrentTurnAngle:F1}°");
+        // GUILayout.Label($"Pivot Weight: {locomotionController.PivotWeight:F2}");
         
         GUILayout.Space(10);
         GUILayout.Label($"Base State: {currentStateName}");
@@ -93,37 +93,37 @@ public class LocomotionDebugVisualizer : MonoBehaviour
         DrawArrowHead(basePos + forward, transform.forward, 0.3f, Color.blue);
         
         // Draw target direction (green if moving, gray if not)
-        Gizmos.color = locomotionController.IsMoving ? Color.green : Color.gray;
-        Vector3 targetDir = Quaternion.Euler(0, locomotionController.CurrentTurnAngle, 0) * transform.forward;
-        Vector3 target = targetDir * targetArrowLength;
-        Gizmos.DrawLine(basePos, basePos + target);
-        DrawArrowHead(basePos + target, targetDir, 0.3f, locomotionController.IsMoving ? Color.green : Color.gray);
+        // Gizmos.color = locomotionController.IsMoving ? Color.green : Color.gray;
+        // Vector3 targetDir = Quaternion.Euler(0, locomotionController.CurrentTurnAngle, 0) * transform.forward;
+        // Vector3 target = targetDir * targetArrowLength;
+        // Gizmos.DrawLine(basePos, basePos + target);
+        // DrawArrowHead(basePos + target, targetDir, 0.3f, locomotionController.IsMoving ? Color.green : Color.gray);
         
         // Draw commitment indicator (yellow ring)
-        if (locomotionController.CurrentCommitment > 0.01f)
-        {
-            Gizmos.color = Color.yellow;
-            DrawCircle(basePos, 0.5f + locomotionController.CurrentCommitment * 0.5f, 16);
-        }
+        // if (locomotionController.CurrentCommitment > 0.01f)
+        // {
+        //     Gizmos.color = Color.yellow;
+        //     DrawCircle(basePos, 0.5f + locomotionController.CurrentCommitment * 0.5f, 16);
+        // }
         
         // Draw pivot indicator (red flash)
-        if (locomotionController.PivotWeight > 0.01f)
-        {
-            Gizmos.color = new Color(1f, 0f, 0f, locomotionController.PivotWeight);
-            DrawCircle(basePos, 1.5f, 24);
+        // if (locomotionController.PivotWeight > 0.01f)
+        // {
+        //     Gizmos.color = new Color(1f, 0f, 0f, locomotionController.PivotWeight);
+        //     DrawCircle(basePos, 1.5f, 24);
             
-            // Draw pivot arc
-            float angle = locomotionController.CurrentTurnAngle;
-            DrawArc(basePos, 1.2f, 0, angle, 16);
-        }
+        //     // Draw pivot arc
+        //     float angle = locomotionController.CurrentTurnAngle;
+        //     DrawArc(basePos, 1.2f, 0, angle, 16);
+        // }
         
         // Draw movement path prediction
-        if (locomotionController.IsMoving)
-        {
-            Gizmos.color = new Color(0f, 1f, 0f, 0.3f);
-            Vector3 predictedPos = transform.position + targetDir * 3f;
-            Gizmos.DrawLine(transform.position + Vector3.up * 0.1f, predictedPos + Vector3.up * 0.1f);
-        }
+        // if (locomotionController.IsMoving)
+        // {
+        //     Gizmos.color = new Color(0f, 1f, 0f, 0.3f);
+        //     Vector3 predictedPos = transform.position + targetDir * 3f;
+        //     Gizmos.DrawLine(transform.position + Vector3.up * 0.1f, predictedPos + Vector3.up * 0.1f);
+        // }
     }
     
     private void DrawArrowHead(Vector3 pos, Vector3 direction, float size, Color color)

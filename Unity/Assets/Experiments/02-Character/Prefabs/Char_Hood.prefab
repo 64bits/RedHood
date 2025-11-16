@@ -691,12 +691,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: cf60f6ae45cd94a26b25e1859f59fbae, type: 3}
       propertyPath: m_Materials.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: cf60f6ae45cd94a26b25e1859f59fbae, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 919132149155446097, guid: cf60f6ae45cd94a26b25e1859f59fbae, type: 3}
       propertyPath: m_Name
       value: Lantern Dome
@@ -917,7 +917,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 3360e265d58804423b4fa47976855544, type: 2}
+      objectReference: {fileID: 9100000, guid: e9a0738333c624e3484a166b4e773ab5, type: 2}
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_CullingMode
       value: 0
@@ -925,6 +925,22 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -5596858767202016720, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
@@ -961,13 +977,13 @@ PrefabInstance:
       addedObject: {fileID: 325143514450771035}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3924854343173156112}
+      addedObject: {fileID: 3686595383284806102}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 643304721722524872}
+      addedObject: {fileID: 5562666237543164527}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7346810611381512272}
+      addedObject: {fileID: 4130374033472012898}
     - targetCorrespondingSourceObject: {fileID: -1855368600654575853, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7123682496627538371}
@@ -1963,7 +1979,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4787488530426266539}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11e89ac06ce4f4666abd6670156da2bc, type: 3}
   m_Name: 
@@ -1989,7 +2005,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterGravity
   gravity: -9.81
   groundedGravity: -0.5
---- !u!114 &3924854343173156112
+--- !u!114 &3686595383284806102
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1998,17 +2014,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4787488530426266539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bb99a4bd077a45e08103b17e0352012, type: 3}
+  m_Script: {fileID: 11500000, guid: 32a4dfb1245404b23bbf758abc835d3a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CharacterLocomotionController
-  moveSpeed: 5
-  rotationSpeed: 540
-  commitmentThreshold: 0.05
-  movementHysteresis: 0.025
-  pivotAngleThreshold: 90
-  microRotationThreshold: 30
-  slerpSpeed: 15
---- !u!114 &643304721722524872
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleDirectionController
+--- !u!114 &5562666237543164527
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2017,11 +2026,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 4787488530426266539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6a2944c0e4fb41dd9b797bea4af5eb8, type: 3}
+  m_Script: {fileID: 11500000, guid: 4420623d53d4047fda4d72bc485828bb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CharacterInputController
-  moveActionReference: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
---- !u!114 &7346810611381512272
+  m_EditorClassIdentifier: Assembly-CSharp::CommandInputSource
+  commands:
+  - direction: {x: 0, y: 0, z: -1}
+    duration: 1
+  showDebugArrow: 1
+  arrowLength: 2
+--- !u!114 &4130374033472012898
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2030,15 +2043,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4787488530426266539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49b7f91ab1f03429dab2d1cb7b63b25f, type: 3}
+  m_Script: {fileID: 11500000, guid: 32a4dfb1245404b23bbf758abc835d3a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LocomotionDebugVisualizer
-  showDebugInfo: 1
-  showGizmos: 1
-  showOnScreenDebug: 1
-  forwardArrowLength: 2
-  targetArrowLength: 2.5
-  gizmoHeight: 1.5
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleDirectionController
 --- !u!1 &5095064199604543061 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 577788141732143279, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
@@ -3010,12 +3017,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: cf60f6ae45cd94a26b25e1859f59fbae, type: 3}
       propertyPath: m_Materials.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: cf60f6ae45cd94a26b25e1859f59fbae, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 919132149155446097, guid: cf60f6ae45cd94a26b25e1859f59fbae, type: 3}
       propertyPath: m_Name
       value: Regular Dome
