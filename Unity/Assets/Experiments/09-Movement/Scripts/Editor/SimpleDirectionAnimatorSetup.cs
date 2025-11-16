@@ -9,13 +9,16 @@ using System.Collections.Generic;
 ///
 /// It creates:
 /// 1. An 'Idle' state (motion set in inspector).
-/// 2. Eight directional states (R_45, R_90, R_135, R_180, L_180, L_135, L_90, L_45).
-/// 3. The 'TargetDirection' integer parameter.
-/// 4. Transitions from Idle to each directional state (no exit time).
-/// 5. Transitions from each directional state back to Idle (using exit time).
+/// 2. Eight directional states (R_45, R_90, ... L_45).
+/// 3. Eight "committed" directional states (Committed_R_45, ...).
+/// 4. 'TargetDirection' (int) and 'committed' (bool) parameters.
+/// 5. Transitions from Idle to directional states (requires committed == false).
+/// 6. Transitions from Idle to committed states (requires committed == true).
+/// 7. Transitions from directional states back to Idle (using exit time).
+/// 8. Transitions from committed states back to Idle (immediate, when committed == false).
 ///
-/// It will attempt to find and assign the 9 required animation clips
-/// from the specified folder.
+/// It will attempt to find and assign the 17 required animation clips
+/// from the specified folder, ensuring they are saved as sub-assets of the controller.
 /// </summary>
 public class SimpleDirectionAnimatorSetup : EditorWindow
 {
@@ -49,6 +52,31 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
         { 8, "L_45" }
     };
 
+    // Dictionaries for Committed States
+    private static readonly Dictionary<int, string> IntToCommittedClipName = new Dictionary<int, string>
+    {
+        { 1, "MOB_Stand_Relaxed_To_Run_R45_Fwd" },
+        { 2, "MOB_Stand_Relaxed_To_Run_R90_Fwd" },
+        { 3, "MOB_Stand_Relaxed_To_Run_R135_Fwd" },
+        { 4, "MOB_Stand_Relaxed_To_Run_R180_Fwd" },
+        { 5, "MOB_Stand_Relaxed_To_Run_L180_Fwd" },
+        { 6, "MOB_Stand_Relaxed_To_Run_L135_Fwd" },
+        { 7, "MOB_Stand_Relaxed_To_Run_L90_Fwd" },
+        { 8, "MOB_Stand_Relaxed_To_Run_L45_Fwd" }
+    };
+
+    private static readonly Dictionary<int, string> IntToCommittedStateName = new Dictionary<int, string>
+    {
+        { 1, "Committed_R_45" },
+        { 2, "Committed_R_90" },
+        { 3, "Committed_R_135" },
+        { 4, "Committed_R_180" },
+        { 5, "Committed_L_180" },
+        { 6, "Committed_L_135" },
+        { 7, "Committed_L_90" },
+        { 8, "Committed_L_45" }
+    };
+
     [MenuItem("Tools/Animation/Create Simple Direction Animator")]
     public static void ShowWindow()
     {
@@ -61,8 +89,10 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
         GUILayout.Space(10);
         EditorGUILayout.HelpBox(
             "This will create a new Animator Controller for the SimpleDirectionController.\n\n" +
-            "Select the folder containing your 9 'MOB_Stand_Relaxed...' animations " +
-            "(either .fbx or .anim files). The script will automatically find and assign them.", 
+            "Select the folder containing your 17 animations:\n" +
+            "- 9 'MOB_Stand_Relaxed...' (Idle + 8 Dirs)\n" +
+            "- 8 'MOB_Stand_Relaxed_To_Run...' (Committed Dirs)\n\n" +
+            "The script will automatically find, copy, and assign them.",
             MessageType.Info);
         
         GUILayout.Space(10);
@@ -85,7 +115,7 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
 
     /// <summary>
     /// Loads an AnimationClip from the specified folder.
-    /// It searches for both Model files (FBX) and standalone AnimationClip files (.anim).
+    /// Returns a new instance if sourced from an FBX sub-asset.
     /// </summary>
     private AnimationClip LoadClipFromFolder(string folderPath, string clipName)
     {
@@ -94,10 +124,6 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
         if (modelGuids.Length > 0)
         {
             string assetPath = AssetDatabase.GUIDToAssetPath(modelGuids[0]);
-            if (modelGuids.Length > 1)
-            {
-                Debug.LogWarning($"Found multiple models named '{clipName}' in {folderPath}. Using the first one: {assetPath}");
-            }
             
             // An FBX is a container; we need to find the AnimationClip *inside* it.
             Object[] assets = AssetDatabase.LoadAllAssetsAtPath(assetPath);
@@ -105,7 +131,10 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             {
                 if (asset is AnimationClip clip)
                 {
-                    return clip;
+                    // MUST instantiate for FBX sub-assets to make them editable copies
+                    AnimationClip instancedClip = Instantiate(clip);
+                    instancedClip.name = clip.name;
+                    return instancedClip;
                 }
             }
         }
@@ -115,14 +144,26 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
         if (animGuids.Length > 0)
         {
             string assetPath = AssetDatabase.GUIDToAssetPath(animGuids[0]);
-            if (animGuids.Length > 1)
-            {
-                Debug.LogWarning($"Found multiple .anim files named '{clipName}' in {folderPath}. Using the first one: {assetPath}");
-            }
             return AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
         }
 
-        Debug.LogError($"Could not find animation clip for '{clipName}' in '{folderPath}'. Looked for FBX and .anim files.");
+        Debug.LogError($"Could not find animation clip for '{clipName}' in '{folderPath}'.");
+        return null;
+    }
+    
+    /// <summary>
+    /// Loads the clip, adds it as a sub-asset to the controller, and handles error checking.
+    /// </summary>
+    private AnimationClip SafeLoadAndAddClip(string clipName, string folderPath, AnimatorController controller)
+    {
+        AnimationClip clip = LoadClipFromFolder(folderPath, clipName);
+        if (clip != null)
+        {
+            // Crucial step: Add the clip (especially if instantiated) as a sub-asset 
+            // of the new controller so it gets saved correctly.
+            AssetDatabase.AddObjectToAsset(clip, controller);
+            return clip;
+        }
         return null;
     }
 
@@ -154,35 +195,44 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             return;
         }
 
-        // 3. Create the controller
+        // 3. Create the controller and parameters
         AnimatorController controller = AnimatorController.CreateAnimatorControllerAtPath(path);
         controller.AddParameter("TargetDirection", AnimatorControllerParameterType.Int);
+        controller.AddParameter("committed", AnimatorControllerParameterType.Bool);
         AnimatorStateMachine rootSM = controller.layers[0].stateMachine;
 
         // 4. Load Clips and Create States
         
         // Load and create Idle state (0)
-        AnimationClip idleClip = LoadClipFromFolder(folderPath, IntToClipName[0]);
+        AnimationClip idleClip = SafeLoadAndAddClip(IntToClipName[0], folderPath, controller);
+        if(idleClip == null)
+        {
+            // Clean up the created controller file if the crucial Idle clip is missing
+            AssetDatabase.DeleteAsset(path); 
+            Debug.LogError("Failed to load Idle clip. Aborting animator creation.");
+            return;
+        }
         AnimatorState idleState = rootSM.AddState(IntToStateName[0]);
         idleState.motion = idleClip;
         rootSM.defaultState = idleState;
 
-        // Create directional states (1-8) and set up transitions
+        // Create UNCOMMITTED directional states (1-8)
         Dictionary<int, AnimatorState> directionalStates = new Dictionary<int, AnimatorState>();
         
         for (int i = 1; i <= 8; i++)
         {
-            // Load the clip for this direction
-            AnimationClip dirClip = LoadClipFromFolder(folderPath, IntToClipName[i]);
+            // Load the clip and add it as a sub-asset
+            AnimationClip dirClip = SafeLoadAndAddClip(IntToClipName[i], folderPath, controller);
             
             // Create the state
             AnimatorState dirState = rootSM.AddState(IntToStateName[i]);
             dirState.motion = dirClip;
             directionalStates[i] = dirState;
             
-            // Transition FROM Idle TO this directional state (no exit time, immediate response)
+            // Transition FROM Idle TO this directional state (IF committed == false)
             AnimatorStateTransition toDirection = idleState.AddTransition(dirState);
             toDirection.AddCondition(AnimatorConditionMode.Equals, i, "TargetDirection");
+            toDirection.AddCondition(AnimatorConditionMode.IfNot, 0, "committed"); 
             toDirection.hasExitTime = false;
             toDirection.duration = 0.15f;
             toDirection.exitTime = 0;
@@ -191,29 +241,40 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
             // Transition FROM this directional state BACK TO Idle (using exit time)
             AnimatorStateTransition backToIdle = dirState.AddTransition(idleState);
             backToIdle.hasExitTime = true;
-            backToIdle.exitTime = 0.95f; // Near the end of the animation
+            backToIdle.exitTime = 0.95f; 
             backToIdle.duration = 0.1f;
             backToIdle.canTransitionToSelf = false;
         }
-
-        // 5. Add transitions between directional states for smooth direction changes
+        
+        // Create COMMITTED states (1-8)
         for (int i = 1; i <= 8; i++)
         {
-            AnimatorState fromState = directionalStates[i];
+            // Load the clip and add it as a sub-asset
+            AnimationClip committedClip = SafeLoadAndAddClip(IntToCommittedClipName[i], folderPath, controller);
             
-            for (int j = 1; j <= 8; j++)
-            {
-                if (i == j) continue; // Skip self-transitions
-                
-                AnimatorState toState = directionalStates[j];
-                AnimatorStateTransition crossTransition = fromState.AddTransition(toState);
-                crossTransition.AddCondition(AnimatorConditionMode.Equals, j, "TargetDirection");
-                crossTransition.hasExitTime = false;
-                crossTransition.duration = 0.15f;
-                crossTransition.exitTime = 0;
-                crossTransition.canTransitionToSelf = false;
-            }
+            // Create the state
+            AnimatorState committedState = rootSM.AddState(IntToCommittedStateName[i]);
+            committedState.motion = committedClip;
+            
+            // Transition FROM Idle TO this committed state (WHEN committed == true)
+            AnimatorStateTransition toCommittedState = idleState.AddTransition(committedState);
+            toCommittedState.AddCondition(AnimatorConditionMode.Equals, i, "TargetDirection");
+            toCommittedState.AddCondition(AnimatorConditionMode.If, 0, "committed"); 
+            toCommittedState.hasExitTime = false;
+            toCommittedState.duration = 0.15f;
+            toCommittedState.exitTime = 0;
+            toCommittedState.canTransitionToSelf = false;
+            
+            // Transition FROM this committed state BACK TO Idle (IMMEDIATE WHEN committed == false)
+            AnimatorStateTransition committedBackToIdle = committedState.AddTransition(idleState);
+            committedBackToIdle.AddCondition(AnimatorConditionMode.IfNot, 0, "committed"); 
+            committedBackToIdle.hasExitTime = false; 
+            committedBackToIdle.duration = 0.1f;
+            committedBackToIdle.canTransitionToSelf = false;
         }
+
+        // 5. REMOVED: Section for transitions between directional states (R_45 to R_90 etc.) 
+        // as requested. The system now relies solely on transitions to/from Idle.
 
         // 6. Finish
         AssetDatabase.SaveAssets();
@@ -221,7 +282,7 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
         Selection.activeObject = controller;
 
         Debug.Log($"Successfully created Animator Controller at: {path}\n" +
-                  $"Animations from '{folderPath}' have been assigned.\n" +
-                  $"Created states: Idle + 8 directional states (R_45, R_90, R_135, R_180, L_180, L_135, L_90, L_45)");
+                  $"Animations from '{folderPath}' have been assigned and saved as sub-assets.\n" +
+                  $"Created states: Idle + 8 directional states + 8 committed states.");
     }
 }
