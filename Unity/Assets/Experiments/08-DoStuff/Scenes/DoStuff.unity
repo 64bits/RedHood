@@ -5746,10 +5746,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 704219880663227739, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      propertyPath: commitThreshold
-      value: 0.05
-      objectReference: {fileID: 0}
     - target: {fileID: 1224461144958643322, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: cameraTarget
       value: 
