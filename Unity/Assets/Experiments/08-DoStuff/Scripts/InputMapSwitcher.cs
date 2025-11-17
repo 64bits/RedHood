@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-// Updated to use the correct Cinemachine namespace
-using Unity.Cinemachine; // Required for Cinemachine access
+using System;
+using Unity.Cinemachine;
 
 /// <summary>
 /// Handles switching between "Player" and "UI" action maps.
@@ -19,14 +19,16 @@ using Unity.Cinemachine; // Required for Cinemachine access
 [RequireComponent(typeof(PlayerInput))]
 public class InputMapSwitcher : MonoBehaviour
 {
-    // --- Simplified Fields ---
+    // Static events that other components can subscribe to.
+    public static event Action OnEnterUIMode; // Fired when switching to UI map
+    public static event Action OnExitUIMode;  // Fired when switching back to Player map
+
     private string playerMapName = "Player";
     private string uiMapName = "UI";
 
     [Header("Component References")]
     
     [Tooltip("The CinemachineInputAxisController component, usually on the same GameObject. This will be disabled when in UI mode.")]
-    // Changed type from CinemachineInputProvider to CinemachineInputAxisController
     [SerializeField] private CinemachineInputAxisController cinemachineAxisController;
 
     private PlayerInput playerInput;
@@ -114,6 +116,8 @@ public class InputMapSwitcher : MonoBehaviour
         // Unlock and show cursor
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        OnEnterUIMode?.Invoke();
     }
 
     /// <summary>
@@ -148,5 +152,7 @@ public class InputMapSwitcher : MonoBehaviour
         // Lock and hide cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        OnExitUIMode?.Invoke();
     }
 }

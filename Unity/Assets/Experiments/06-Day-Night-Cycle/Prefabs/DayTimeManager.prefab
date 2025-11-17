@@ -28,7 +28,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: 0, z: -0.7071068, w: -0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7462429497552572973}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -270}
@@ -236,11 +236,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eef9ad47656654dc68986647d88c1d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DayNightCycle
-  cycleDuration: 30
+  dayDuration: 180
+  nightDuration: 180
   transitionDuration: 3
   useManualTimeControl: 0
   manualTimeOfDay: 0
-  playerInput: {fileID: 0}
 --- !u!114 &3258314614195314237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,41 +287,19 @@ MonoBehaviour:
   sunLight: {fileID: 6214027729726353932}
   dayIntensity: 1
   dayTemperature: 7000
-  nightIntensity: 0.05
   nightTemperature: 3000
   useSkyboxTint: 1
   skyboxInfluence: 0.3
   minTemperature: 2000
   maxTemperature: 10000
-  orbitCenter: {fileID: 0}
-  orbitRadius: 100
-  dayPosition: {x: 0, y: 100, z: 0}
-  nightPosition: {x: 0, y: -100, z: 0}
-  orbitCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  timeManager: {fileID: 0}
+  dayStartRotation: {x: 150, y: 380, z: 85}
+  dayEndRotation: {x: 28, y: 380, z: 85}
+  controlFog: 1
+  maxFogDensity: 0.049
+  controlSkyboxIntensity: 1
+  daySkyboxIntensity: 0.24
+  nightSkyboxIntensity: 0
+  timeManager: {fileID: 2598449308920174092}
 --- !u!114 &6132952796409724475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -467,13 +445,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6794419130861275457}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.4506083, y: -0.5613285, z: 0.5234478, w: 0.45592204}
+  m_LocalRotation: {x: 0.45186007, y: -0.55333745, z: 0.5317059, w: 0.45489442}
   m_LocalPosition: {x: 1.1666, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5115630454188640427}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 88.23, y: -132.13, z: -31.9}
 --- !u!108 &6214027729726353932
 Light:
   m_ObjectHideFlags: 0
@@ -585,7 +563,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8312145107521772128
 RectTransform:
   m_ObjectHideFlags: 0
