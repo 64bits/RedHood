@@ -988,6 +988,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 704219880663227739}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3127766533027389318}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5229645108524548928}
     - targetCorrespondingSourceObject: {fileID: -1855368600654575853, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7123682496627538371}
@@ -1992,7 +1998,6 @@ MonoBehaviour:
   lanternObject: {fileID: 4904888701158226720}
   regularDomeObject: {fileID: 7811474445379674282}
   lanternDomeObject: {fileID: 322858412490452685}
-  specialAction: {fileID: -6344244933227291088, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   lanternLayerIndex: 1
   transitionSpeed: 5
 --- !u!114 &325143514450771035
@@ -2063,8 +2068,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb24923c65ecd4b5483ff78b35d6ec31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UserInputSource
-  moveActionReference: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   commitThreshold: 0.05
+--- !u!114 &3127766533027389318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4787488530426266539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
+  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
+--- !u!114 &5229645108524548928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4787488530426266539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d7a2971c386c4081a7cd6a3e50ce388, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InputMapSwitcher
+  cinemachineAxisController: {fileID: 0}
 --- !u!1 &5095064199604543061 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 577788141732143279, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
