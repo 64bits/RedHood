@@ -1983,7 +1983,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4787488530426266539}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11e89ac06ce4f4666abd6670156da2bc, type: 3}
   m_Name: 
@@ -1993,7 +1993,7 @@ MonoBehaviour:
   regularDomeObject: {fileID: 7811474445379674282}
   lanternDomeObject: {fileID: 322858412490452685}
   specialAction: {fileID: -6344244933227291088, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  lanternLayerIndex: 2
+  lanternLayerIndex: 1
   transitionSpeed: 5
 --- !u!114 &325143514450771035
 MonoBehaviour:
@@ -2064,7 +2064,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UserInputSource
   moveActionReference: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  commitThreshold: 0.1
+  commitThreshold: 0.05
 --- !u!1 &5095064199604543061 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 577788141732143279, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
