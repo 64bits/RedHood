@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(SimpleDirectionController))]
+[RequireComponent(typeof(PlayerInput))]
 /// <summary>
-/// Reads input from the new Unity Input System's "Move" action, calculates
+/// Reads input from the PlayerInput component's "Move" action, calculates
 /// the world-space direction relative to the camera, and passes it to the
 /// SimpleDirectionController.
 /// This version uses standard camera-relative movement.
@@ -11,14 +12,12 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class UserInputSource : MonoBehaviour
 {
-    // The Input Action Reference for the movement vector (usually WASD/Left Stick)
-    [Tooltip("Assign the Input System Action used for 2D movement (e.g., 'Move').")]
-    public InputActionReference moveActionReference;
-
     [Tooltip("Time in seconds the input must be held before it's considered 'committed'.")]
     [SerializeField] private float commitThreshold = 0.1f;
 
     private SimpleDirectionController motionController;
+    private PlayerInput playerInput;
+    private InputAction moveAction;
     private Transform mainCameraTransform;
     private Vector2 rawInputVector = Vector2.zero;
     
@@ -29,8 +28,12 @@ public class UserInputSource : MonoBehaviour
 
     private void Awake()
     {
-        // RequireComponent ensures this will not be null
+        // RequireComponent ensures these will not be null
         motionController = GetComponent<SimpleDirectionController>();
+        playerInput = GetComponent<PlayerInput>();
+
+        // Get the Move action from the PlayerInput component
+        moveAction = playerInput.actions["Move"];
 
         // Find and cache the main camera's transform
         if (Camera.main != null)
@@ -46,22 +49,22 @@ public class UserInputSource : MonoBehaviour
 
     private void OnEnable()
     {
-        if (moveActionReference?.action != null)
+        if (moveAction != null)
         {
-            moveActionReference.action.Enable();
+            moveAction.Enable();
             // Subscribe to the action's performed event to capture the latest value
-            moveActionReference.action.performed += OnMovePerformed;
-            moveActionReference.action.canceled += OnMoveCanceled;
+            moveAction.performed += OnMovePerformed;
+            moveAction.canceled += OnMoveCanceled;
         }
     }
 
     private void OnDisable()
     {
-        if (moveActionReference?.action != null)
+        if (moveAction != null)
         {
-            moveActionReference.action.performed -= OnMovePerformed;
-            moveActionReference.action.canceled -= OnMoveCanceled;
-            moveActionReference.action.Disable();
+            moveAction.performed -= OnMovePerformed;
+            moveAction.canceled -= OnMoveCanceled;
+            moveAction.Disable();
         }
     }
 
