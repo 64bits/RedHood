@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 406da00a722c24fd183f7fdd3b90c5f9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9.38
+      value: -5.21
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 406da00a722c24fd183f7fdd3b90c5f9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -30,7 +30,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 406da00a722c24fd183f7fdd3b90c5f9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.6
+      value: -8.67
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 406da00a722c24fd183f7fdd3b90c5f9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -71,9 +71,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 406da00a722c24fd183f7fdd3b90c5f9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6117268084846259866}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 406da00a722c24fd183f7fdd3b90c5f9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 525843452805920847}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 406da00a722c24fd183f7fdd3b90c5f9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6977860837962713416}
@@ -124,22 +121,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &525843452805920847
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5788663272379997582}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: def87913544384827b074c521f82b0f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HoverInteractionTrigger
-  raycastLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  maxRayDistance: 100
 --- !u!114 &6977860837962713416
 MonoBehaviour:
   m_ObjectHideFlags: 0
