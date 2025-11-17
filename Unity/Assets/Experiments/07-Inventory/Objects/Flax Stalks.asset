@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cde19d582bb5e47ce8a39e83b8cb02aa, type: 3}
   m_Name: Flax Stalks
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItem
-  itemName: Flax Stalks
-  description: Somewhat dry, good for making twine
-  icon: {fileID: 21300000, guid: e3246c8e6206948f8b463c1db0c4d7af, type: 3}
+  itemName: Bushel of Flax
+  description: Dry and off-season, but great for making twine
+  icon: {fileID: 21300000, guid: 803e96eb87dbb4d4e87eb40b6c484315, type: 3}
