@@ -988,7 +988,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "StitchWidth",
     "m_StageCapability": 3,
-    "m_Value": 0.004999999888241291,
+    "m_Value": 0.009999999776482582,
     "m_DefaultValue": 0.0,
     "m_Labels": []
 }
@@ -1215,7 +1215,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "StitchTiling",
     "m_StageCapability": 3,
-    "m_Value": 30.0,
+    "m_Value": 18.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
 }
