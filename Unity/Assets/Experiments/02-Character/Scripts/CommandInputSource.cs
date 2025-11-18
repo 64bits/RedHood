@@ -14,6 +14,7 @@ public class CommandInputSource : MonoBehaviour
     {
         public Vector3 direction; // World-space direction
         public float duration;    // Duration to hold this movement
+        public bool commit;    // Whether this is a committed movement
     }
     
     public MoveCommand[] commands;
@@ -66,7 +67,7 @@ public class CommandInputSource : MonoBehaviour
             MoveCommand cmd = commands[currentCommandIndex];
             
             // *** CORE LOGIC: Set the target direction on the controller ***
-            motionController.SetTargetDirection(cmd.direction.normalized);
+            motionController.SetTargetDirection(cmd.direction.normalized, cmd.commit);
             
             float timer = 0f;
             while (timer < cmd.duration)

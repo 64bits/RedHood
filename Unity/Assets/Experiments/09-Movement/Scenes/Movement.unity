@@ -5161,12 +5161,20 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[2].commit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[0].duration
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[1].duration
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[2].duration
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: commands.Array.data[3].duration
