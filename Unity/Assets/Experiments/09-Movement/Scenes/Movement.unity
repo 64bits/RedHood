@@ -5100,6 +5100,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 704219880663227739, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1224461144958643322, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: cameraTarget
       value: 
@@ -5146,6 +5150,58 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5276885986018646289, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[0].duration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[2].duration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[3].duration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[5].duration
+      value: 3.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[0].direction.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[1].direction.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[1].direction.z
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[2].direction.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[2].direction.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[3].direction.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562666237543164527, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commands.Array.data[3].direction.z
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
