@@ -340,6 +340,28 @@ public class SimpleDirectionAnimatorSetup : EditorWindow
                 crossTransition.exitTime = 0;
                 crossTransition.canTransitionToSelf = false;
             }
+
+            // Add transitions FROM directional states TO committed states (when committed becomes true)
+            for (int j = 1; j <= 8; j++)
+            {
+                AnimatorState toCommittedState = committedStates[j];
+                AnimatorStateTransition dirToCommitted = fromState.AddTransition(toCommittedState);
+                dirToCommitted.AddCondition(AnimatorConditionMode.Equals, j, "TargetDirection");
+                dirToCommitted.AddCondition(AnimatorConditionMode.If, 0, "committed");
+                dirToCommitted.hasExitTime = false;
+                dirToCommitted.duration = 0.15f;
+                dirToCommitted.exitTime = 0;
+                dirToCommitted.canTransitionToSelf = false;
+            }
+            
+            // Add transition FROM directional states TO Run_Forward (when TargetDirection == 0 and committed == true)
+            AnimatorStateTransition dirToRun = fromState.AddTransition(runForwardState);
+            dirToRun.AddCondition(AnimatorConditionMode.Equals, 0, "TargetDirection");
+            dirToRun.AddCondition(AnimatorConditionMode.If, 0, "committed");
+            dirToRun.hasExitTime = false;
+            dirToRun.duration = 0.15f;
+            dirToRun.exitTime = 0;
+            dirToRun.canTransitionToSelf = false;
         }
 
         // 6. Add transitions between (committed) directional states for smooth direction changes

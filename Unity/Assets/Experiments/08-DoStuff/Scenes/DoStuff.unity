@@ -6608,10 +6608,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 704219880663227739, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: commitThreshold
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 1224461144958643322, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: cameraTarget
       value: 
       objectReference: {fileID: 183784951}
+    - target: {fileID: 2295550532835410795, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 6a42dea41c061495f9f2d9fb16b51cd4, type: 2}
     - target: {fileID: 3127766533027389318, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_UIInputModule
       value: 

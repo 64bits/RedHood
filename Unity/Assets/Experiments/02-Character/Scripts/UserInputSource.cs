@@ -15,6 +15,10 @@ public class UserInputSource : MonoBehaviour
     [Tooltip("Time in seconds the input must be held before it's considered 'committed'.")]
     [SerializeField] private float commitThreshold = 0.1f;
 
+    [Header("Debug Visualization")]
+    public bool showDebugArrow = true;
+    public float arrowLength = 2f;
+
     private SimpleDirectionController motionController;
     private PlayerInput playerInput;
     private InputAction moveAction;
@@ -150,5 +154,42 @@ public class UserInputSource : MonoBehaviour
                 motionController.SetTargetDirection(targetDirection, true);
             }
         }
+
+        // Draw debug arrow every frame
+        if (showDebugArrow)
+        {
+            Vector3 forward = mainCameraTransform.forward;
+            Vector3 right = mainCameraTransform.right;
+            forward.y = 0f;
+            right.y = 0f;
+            forward.Normalize();
+            right.Normalize();
+            Vector3 direction = (forward * rawInputVector.y) + (right * rawInputVector.x);
+            DrawDebugArrow(transform.position, direction, arrowLength, new Color(0.5f, 0.7f, 1f)); // Light blue
+            
+            // Draw transform.forward arrow in deep blue
+            DrawDebugArrow(transform.position, transform.forward, arrowLength, new Color(0f, 0.2f, 0.8f)); // Deep blue
+        }
+    }
+
+    private void DrawDebugArrow(Vector3 origin, Vector3 direction, float length, Color color)
+    {
+        if (direction.magnitude < 0.001f)
+            return;
+        
+        Vector3 end = origin + direction * length;
+        
+        // Draw main arrow line
+        Debug.DrawLine(origin, end, color);
+        
+        // Draw arrowhead
+        float arrowHeadLength = length * 0.25f;
+        float arrowHeadAngle = 25f;
+        
+        Vector3 right = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 + arrowHeadAngle, 0) * Vector3.forward;
+        Vector3 left = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 - arrowHeadAngle, 0) * Vector3.forward;
+        
+        Debug.DrawRay(end, right * arrowHeadLength, color);
+        Debug.DrawRay(end, left * arrowHeadLength, color);
     }
 }

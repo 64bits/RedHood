@@ -85,7 +85,11 @@ public class SimpleDirectionController : MonoBehaviour
             directionInt = GetDirectionIntFromAngle(angle);
             
             // If within alignment threshold, lerp the rotation
-            if (Mathf.Abs(angle) <= alignmentThreshold)
+            // Also lerp is directionInt is 3 or 6...the 135 rotation has trouble ending
+            // up in alignment, which causes problems since the animator direction only
+            // updates if the calculation determines we are at direction int 0. That leads
+            // to a horrendous turning loop as directionInt remains 3 or 6.
+            if (Mathf.Abs(angle) <= alignmentThreshold || directionInt == 3 || directionInt == 6)
             {
                 // Calculate the target rotation
                 Quaternion targetRotation = Quaternion.LookRotation(targetDir, Vector3.up);
