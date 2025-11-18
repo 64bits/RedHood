@@ -5108,6 +5108,10 @@ PrefabInstance:
       propertyPath: cameraTarget
       value: 
       objectReference: {fileID: 183784951}
+    - target: {fileID: 2295550532835410795, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 6a42dea41c061495f9f2d9fb16b51cd4, type: 2}
     - target: {fileID: 4787488530426266539, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_Name
       value: Char_Hood
