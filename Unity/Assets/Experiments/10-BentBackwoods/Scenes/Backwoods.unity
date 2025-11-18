@@ -14432,7 +14432,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6565868096270042932, guid: d5fd68b14a5b2429f99f034ac124bc3b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.13
+      value: -0.064
       objectReference: {fileID: 0}
     - target: {fileID: 6565868096270042932, guid: d5fd68b14a5b2429f99f034ac124bc3b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -14534,6 +14534,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 2692442ab56d3438ca7799753742e509, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -391692695873145290, guid: 2692442ab56d3438ca7799753742e509, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 882129737928793925, guid: 2692442ab56d3438ca7799753742e509, type: 3}
       propertyPath: m_CastShadows
@@ -15096,7 +15100,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6565868096270042932, guid: d5fd68b14a5b2429f99f034ac124bc3b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.13
+      value: -0.064
       objectReference: {fileID: 0}
     - target: {fileID: 6565868096270042932, guid: d5fd68b14a5b2429f99f034ac124bc3b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -15165,7 +15169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BendingManager
   enablePlanet: 1
-  bendingAmount: 0.001
+  bendingAmount: 0.0015
 --- !u!4 &1790131197
 Transform:
   m_ObjectHideFlags: 0
@@ -15370,7 +15374,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00009918213
+      value: -0.046
       objectReference: {fileID: 0}
     - target: {fileID: 7387900599469564461, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -18925,7 +18929,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7262129778149685141, guid: 04badd7ab968742f5b90c6993731afee, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.15
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 7262129778149685141, guid: 04badd7ab968742f5b90c6993731afee, type: 3}
       propertyPath: m_LocalPosition.z
