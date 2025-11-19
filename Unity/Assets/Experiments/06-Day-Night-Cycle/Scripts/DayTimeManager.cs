@@ -10,8 +10,16 @@ public class DayTimeManager : MonoBehaviour
     [SerializeField] private bool useManualTimeControl = false;
     [SerializeField] [Range(0f, 2f)] private float manualTimeOfDay = 0f;
     
+    [Header("Beacon Detection")]
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] [Range(0f, 6f)] private float distanceFromBeacon = 0f;
+    [SerializeField] private float maxBeaconDistance = 6f;
+    [SerializeField] private float beaconDistanceChangeThreshold = 0.1f; // Minimum change to trigger event
+    
     private float currentCycleTime = 0f;
     private float cycleDuration;
+    private int beaconLayer;
+    private float previousBeaconDistance = 0f;
     
     // Shader keyword for darkness
     private const string DARKNESS_FEATURE = "ENABLE_DARKNESS";
@@ -33,20 +41,27 @@ public class DayTimeManager : MonoBehaviour
     // Events for notifying listeners of time changes
     public System.Action<TimeOfDay> OnTimeOfDayChanged;
     public System.Action<float> OnTimeUpdated; // Passes normalized time (0-1)
+    public System.Action<float> OnBeaconDistanceChanged; // Passes distance from beacon
     
     private void Awake()
     {
         cycleDuration = dayDuration + nightDuration;
+        beaconLayer = 1 << 9; // 9th layer (Beacon)
+        previousBeaconDistance = maxBeaconDistance;
     }
     
     private void OnEnable()
     {
         // Notify all listeners of initial state
         NotifyTimeUpdate();
+        NotifyBeaconDistanceUpdate();
     }
     
     private void Update()
     {
+        // Update distance from beacon
+        UpdateBeaconDistance();
+        
         // Manual time control overrides automatic cycle
         if (useManualTimeControl)
         {
@@ -74,6 +89,58 @@ public class DayTimeManager : MonoBehaviour
         else
         {
             Shader.DisableKeyword(DARKNESS_FEATURE);
+        }
+    }
+    
+    private void UpdateBeaconDistance()
+    {
+        if (playerTransform == null)
+        {
+            distanceFromBeacon = maxBeaconDistance;
+            NotifyBeaconDistanceUpdate();
+            return;
+        }
+        
+        // Perform overlap sphere check at player position
+        Collider[] beacons = Physics.OverlapSphere(playerTransform.position, maxBeaconDistance, beaconLayer);
+        
+        if (beacons.Length == 0)
+        {
+            // No beacons nearby
+            distanceFromBeacon = maxBeaconDistance;
+            NotifyBeaconDistanceUpdate();
+            return;
+        }
+        
+        // Find the closest beacon
+        float closestDistance = float.MaxValue;
+        
+        foreach (Collider beacon in beacons)
+        {
+            // Get closest point on beacon collider to player
+            Vector3 closestPoint = beacon.ClosestPoint(playerTransform.position);
+            float distanceToEdge = Vector3.Distance(playerTransform.position, closestPoint);
+            
+            // If player is inside the collider, ClosestPoint returns the player position
+            // So distance will be 0 or very close to 0
+            if (distanceToEdge < closestDistance)
+            {
+                closestDistance = distanceToEdge;
+            }
+        }
+        
+        // Update distance, clamped to max range
+        distanceFromBeacon = Mathf.Clamp(closestDistance, 0f, maxBeaconDistance);
+        NotifyBeaconDistanceUpdate();
+    }
+    
+    private void NotifyBeaconDistanceUpdate()
+    {
+        // Only notify if the distance has changed beyond threshold
+        if (Mathf.Abs(distanceFromBeacon - previousBeaconDistance) >= beaconDistanceChangeThreshold)
+        {
+            previousBeaconDistance = distanceFromBeacon;
+            OnBeaconDistanceChanged?.Invoke(distanceFromBeacon);
         }
     }
     
@@ -136,5 +203,10 @@ public class DayTimeManager : MonoBehaviour
     public TimeOfDay GetCurrentPeriod()
     {
         return currentTimeOfDay;
+    }
+    
+    public float GetDistanceFromBeacon()
+    {
+        return distanceFromBeacon;
     }
 }
