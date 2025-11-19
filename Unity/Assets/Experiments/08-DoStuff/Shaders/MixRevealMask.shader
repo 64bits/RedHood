@@ -51,10 +51,36 @@ Shader "Hidden/MixRevealMask"
                 float _Cutoff;
             CBUFFER_END
             
+            // Global bend parameter
+            float _CelBendAmount;
+
+            float3 CalculateBentPosition(float3 positionOS)
+            {
+                float3 worldPos = TransformObjectToWorld(positionOS);
+                float3 camPos = _WorldSpaceCameraPos;
+                float3 relativePos = worldPos - camPos;
+                float relX = relativePos.x;
+                float relY = relativePos.y; // Note: This wire connects to the Top Add node
+                float relZ = relativePos.z;
+                float curveX = (relX * relX) * -_CelBendAmount; 
+                float curveZ = (relZ * relZ) * -_CelBendAmount;
+                float3 offset = float3(0, curveX + curveZ, 0);
+                float3 bentWorldPos = worldPos + offset;
+                float3 bentObjectPos = TransformWorldToObject(bentWorldPos);
+
+                return bentObjectPos;
+            }
+            
             Varyings vert(Attributes input)
             {
                 Varyings output;
-                output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+                
+                // Call the function to get the new Object Space position
+                float3 modifiedPositionOS = CalculateBentPosition(input.positionOS);
+                
+                VertexPositionInputs vertexInput = GetVertexPositionInputs(modifiedPositionOS);
+                output.positionCS = vertexInput.positionCS;
+
                 output.uv = TRANSFORM_TEX(input.uv, _MainTex);
                 return output;
             }
