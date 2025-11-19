@@ -46,7 +46,8 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
   - {fileID: -8827715412787936732}
-  m_RendererFeatureMap: ad6b866f10d7b46c24c288729aa77d85
+  - {fileID: 8122892401950738316}
+  m_RendererFeatureMap: ad6b866f10d7b46c24c288729aa77d858c47fe469a4fba70
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -101,3 +102,21 @@ MonoBehaviour:
     BlurQuality: 0
     Falloff: 100
     SampleCount: -1
+--- !u!114 &8122892401950738316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13f18d029a213402681eb79d8399cd96, type: 3}
+  m_Name: DitheredVignetteFeature
+  m_EditorClassIdentifier: Assembly-CSharp::DitheredVignetteFeature
+  m_Active: 1
+  settings:
+    renderPassEvent: 550
+    vignetteShader: {fileID: 4800000, guid: e83133b10cfd14ddaacb51b7f12fa2a6, type: 3}
+    intensity: 0
+    vignetteSize: 0
