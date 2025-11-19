@@ -1880,8 +1880,8 @@
     "m_ObjectId": "097f9f8a1b984454978b5bbc64570946",
     "m_Title": "Ramp Texture",
     "m_Position": {
-        "x": -671.9998779296875,
-        "y": 460.999755859375
+        "x": -672.0,
+        "y": 461.0
     }
 }
 
@@ -2340,7 +2340,7 @@
     "m_ObjectId": "146345151fa543cf816e8e34b0ec7e72",
     "m_Title": "Apply Light Colour",
     "m_Position": {
-        "x": -799.0001220703125,
+        "x": -799.0,
         "y": -286.0
     }
 }
@@ -2525,7 +2525,7 @@
     "m_Title": "Apply Albedo (ambient)",
     "m_Position": {
         "x": 570.0,
-        "y": -554.0000610351563
+        "y": -554.0
     }
 }
 
@@ -3059,7 +3059,7 @@
     "m_ObjectId": "276717f8744e4cfd98d6d66b1a471d4c",
     "m_Title": "Combine Diffuse + Specular",
     "m_Position": {
-        "x": 991.0000610351563,
+        "x": 991.0,
         "y": 136.0
     }
 }
@@ -3583,7 +3583,7 @@
     "m_ObjectId": "43c0314510014e509f803de9ec528aa6",
     "m_Title": "Shadows",
     "m_Position": {
-        "x": -1970.9998779296875,
+        "x": -1971.0,
         "y": 514.0
     }
 }
@@ -3694,7 +3694,7 @@
     "m_Title": "+ Additional Lights",
     "m_Position": {
         "x": 1751.0,
-        "y": -96.9998779296875
+        "y": -97.0
     }
 }
 
@@ -4017,8 +4017,8 @@
     "m_ObjectId": "4d0aa012f0144e4b9443106047b1d479",
     "m_Title": "Ramp Texture",
     "m_Position": {
-        "x": -2146.999755859375,
-        "y": -37.9998779296875
+        "x": -2147.0,
+        "y": -38.0
     }
 }
 
@@ -5073,7 +5073,7 @@
     "m_ObjectId": "6a6e6860776c451582de082bfd39f5c7",
     "m_Title": "Combine Ramp with Shadows",
     "m_Position": {
-        "x": -1451.9998779296875,
+        "x": -1452.0,
         "y": -101.0
     }
 }
@@ -6954,8 +6954,8 @@
     "m_ObjectId": "99647d98b1ec4cffbfc011ee5e4f48ab",
     "m_Title": "Specular",
     "m_Position": {
-        "x": -1154.0001220703125,
-        "y": 460.999755859375
+        "x": -1154.0,
+        "y": 461.0
     }
 }
 
@@ -7256,7 +7256,7 @@
     "m_Title": "Apply Light Color & Shadows",
     "m_Position": {
         "x": -229.0,
-        "y": 369.0000305175781
+        "y": 369.0
     }
 }
 
@@ -7617,8 +7617,8 @@
     "m_ObjectId": "aea121920567437b89dee070c1b3dc0a",
     "m_Title": "Ambient / Baked",
     "m_Position": {
-        "x": -515.9998779296875,
-        "y": -552.0000610351563
+        "x": -516.0,
+        "y": -552.0
     }
 }
 
@@ -8016,7 +8016,7 @@
     "m_ObjectId": "b57f5ced9e504dc8bc6cdb49b3744685",
     "m_Title": "Culling Mask",
     "m_Position": {
-        "x": -978.9998779296875,
+        "x": -979.0,
         "y": -262.0
     }
 }
@@ -9558,7 +9558,7 @@
     "m_ObjectId": "d05ee2f3810f446fbabf30a5e25a65d5",
     "m_Title": "Additional Lights (Toon)",
     "m_Position": {
-        "x": -57.99988555908203,
+        "x": -58.0,
         "y": 814.0
     }
 }
@@ -9807,7 +9807,7 @@
     "m_ObjectId": "d71ec0a8d7894bed8b3e4b37872c3ba7",
     "m_Title": "Main Light Cookie",
     "m_Position": {
-        "x": -1904.0001220703125,
+        "x": -1904.0,
         "y": -399.0
     }
 }
@@ -10497,7 +10497,7 @@
     "m_Title": "Specular Colour",
     "m_Position": {
         "x": 144.0,
-        "y": 369.0000305175781
+        "y": 369.0
     }
 }
 
@@ -10991,7 +10991,7 @@
     "m_ObjectId": "f8709b9010d045249e88f5948d9a686e",
     "m_Title": "Apply Fog",
     "m_Position": {
-        "x": 1899.0001220703125,
+        "x": 1899.0,
         "y": 128.0
     }
 }
