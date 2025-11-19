@@ -21,6 +21,11 @@ public class DayTimeManager : MonoBehaviour
     private int beaconLayer;
     private float previousBeaconDistance = 0f;
     
+    // Time pause/resume variables
+    private bool isTimePaused = false;
+    private float savedCycleTime = 0f;
+    private bool hasNotifiedPause = false;
+    
     // Shader keyword for darkness
     private const string DARKNESS_FEATURE = "ENABLE_DARKNESS";
     
@@ -62,24 +67,31 @@ public class DayTimeManager : MonoBehaviour
         // Update distance from beacon
         UpdateBeaconDistance();
         
-        // Manual time control overrides automatic cycle
-        if (useManualTimeControl)
-        {
-            float normalizedManualTime = manualTimeOfDay % 1f;
-            currentCycleTime = normalizedManualTime * cycleDuration;
-        }
-        else
-        {
-            // Automatic time progression
-            currentCycleTime += Time.deltaTime;
-            
-            if (currentCycleTime >= cycleDuration)
-            {
-                currentCycleTime -= cycleDuration;
-            }
-        }
+        // Check for pause/resume conditions
+        CheckPauseResumeConditions();
         
-        NotifyTimeUpdate();
+        // Don't update time if paused
+        if (!isTimePaused)
+        {
+            // Manual time control overrides automatic cycle
+            if (useManualTimeControl)
+            {
+                float normalizedManualTime = manualTimeOfDay % 1f;
+                currentCycleTime = normalizedManualTime * cycleDuration;
+            }
+            else
+            {
+                // Automatic time progression
+                currentCycleTime += Time.deltaTime;
+                
+                if (currentCycleTime >= cycleDuration)
+                {
+                    currentCycleTime -= cycleDuration;
+                }
+            }
+            
+            NotifyTimeUpdate();
+        }
         
         // Update shader darkness keyword based on time of day
         if (GetNormalizedTime() > 0.5f)
@@ -90,6 +102,43 @@ public class DayTimeManager : MonoBehaviour
         {
             Shader.DisableKeyword(DARKNESS_FEATURE);
         }
+    }
+    
+    private void CheckPauseResumeConditions()
+    {
+        // Pause condition: distance >= 3 and not already paused
+        if (distanceFromBeacon >= 3f && !isTimePaused)
+        {
+            PauseTime();
+        }
+        // Resume condition: distance <= 2 and currently paused
+        else if (distanceFromBeacon <= 2f && isTimePaused)
+        {
+            ResumeTime();
+        }
+    }
+    
+    private void PauseTime()
+    {
+        isTimePaused = true;
+        savedCycleTime = currentCycleTime;
+        hasNotifiedPause = false;
+        
+        // Send one last notification as if it's middle of night (0.75)
+        currentCycleTime = 0.75f * cycleDuration;
+        NotifyTimeUpdate();
+        hasNotifiedPause = true;
+    }
+    
+    private void ResumeTime()
+    {
+        isTimePaused = false;
+        
+        // Restore the saved time
+        currentCycleTime = savedCycleTime;
+        
+        // Send notification with the restored time
+        NotifyTimeUpdate();
     }
     
     private void UpdateBeaconDistance()
@@ -149,6 +198,12 @@ public class DayTimeManager : MonoBehaviour
     
     private void NotifyTimeUpdate()
     {
+        // Don't send notifications if paused (except for the one-time pause notification)
+        if (isTimePaused && hasNotifiedPause)
+        {
+            return;
+        }
+        
         TimeOfDay newTimeOfDay = GetCurrentTimeOfDay();
         
         // Notify if time of day changed
@@ -211,5 +266,10 @@ public class DayTimeManager : MonoBehaviour
     public float GetDistanceFromBeacon()
     {
         return distanceFromBeacon;
+    }
+    
+    public bool IsTimePaused()
+    {
+        return isTimePaused;
     }
 }
