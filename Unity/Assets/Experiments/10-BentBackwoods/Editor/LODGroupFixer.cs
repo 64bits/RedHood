@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System.Text.RegularExpressions; // Added for cleaner Regex usage
 
 public class LODGroupFixer : EditorWindow
 {
@@ -39,8 +40,12 @@ public class LODGroupFixer : EditorWindow
         {
             string objectName = renderer.gameObject.name;
             
-            // Extract base name (remove LOD suffix)
-            string baseName = System.Text.RegularExpressions.Regex.Replace(objectName, @"_LOD\d+$", "");
+            // --- FIX START ---
+            // Original: Replace(objectName, @"_LOD\d+$", "")
+            // New: We remove the $ anchor so it removes _LOD0 regardless of where it is in the string
+            // Example: "T1|t1_LOD0|Dupli|" becomes "T1|t1|Dupli|"
+            string baseName = Regex.Replace(objectName, @"_LOD\d+.*", "");
+            // --- FIX END ---
             
             if (!lodMeshes.ContainsKey(baseName))
                 lodMeshes[baseName] = new List<Renderer>();
@@ -51,6 +56,8 @@ public class LODGroupFixer : EditorWindow
         // Create LOD Groups for each set
         foreach (var lodSet in lodMeshes)
         {
+            // Check if we have legitimate LODs (LOD0, LOD1, etc)
+            // We filter here to ensure we don't group unrelated objects that just happened to match names
             if (lodSet.Value.Count > 1)
             {
                 CreateLODGroup(lodSet.Value, lodSet.Key);
@@ -60,7 +67,7 @@ public class LODGroupFixer : EditorWindow
 
     static void CreateLODGroup(List<Renderer> renderers, string baseName)
     {
-        // Sort by LOD level (assumes naming convention with _LOD0, _LOD1, etc.)
+        // Sort by LOD level
         renderers.Sort((a, b) => 
         {
             int lodA = ExtractLODLevel(a.gameObject.name);
@@ -93,12 +100,17 @@ public class LODGroupFixer : EditorWindow
         lodGroup.SetLODs(lods);
         lodGroup.RecalculateBounds();
         
-        Debug.Log($"Created LOD Group for {baseName} with {renderers.Count} levels");
+        Debug.Log($"Created LOD Group for '{baseName}' with {renderers.Count} levels on object '{parent.name}'");
     }
 
     static int ExtractLODLevel(string gameObjectName)
     {
-        var match = System.Text.RegularExpressions.Regex.Match(gameObjectName, @"_LOD(\d+)$");
+        // --- FIX START ---
+        // Original: Match(gameObjectName, @"_LOD(\d+)$")
+        // New: Removed $ to find _LOD(number) anywhere in the name
+        var match = Regex.Match(gameObjectName, @"_LOD(\d+)");
+        // --- FIX END ---
+        
         return match.Success ? int.Parse(match.Groups[1].Value) : 0;
     }
 
@@ -122,14 +134,27 @@ public class LODGroupFixer : EditorWindow
     {
         if (renderers.Count == 0) return null;
         
-        List<Transform> parents = new List<Transform>();
-        foreach (var renderer in renderers)
+        // Start with the first renderer's parent
+        Transform current = renderers[0].transform.parent;
+        
+        while (current != null)
         {
-            parents.Add(renderer.transform.parent);
+            bool allIsChild = true;
+            foreach(var r in renderers)
+            {
+                if (!r.transform.IsChildOf(current))
+                {
+                    allIsChild = false;
+                    break;
+                }
+            }
+            
+            if(allIsChild) return current;
+            
+            current = current.parent;
         }
         
-        // This is simplified - you might want more sophisticated common parent finding
-        return parents[0];
+        return null;
     }
 
     static float CalculateLODHeight(int lodLevel, int totalLODs)
@@ -137,10 +162,10 @@ public class LODGroupFixer : EditorWindow
         // Customize these values based on your needs
         switch (lodLevel)
         {
-            case 0: return 0.5f; // LOD0: 50% screen height
-            case 1: return 0.3f; // LOD1: 30% screen height  
-            case 2: return 0.15f; // LOD2: 15% screen height
-            case 3: return 0.05f; // LOD3: 5% screen height
+            case 0: return 0.6f; // LOD0 typically visible until 60%
+            case 1: return 0.3f; // LOD1
+            case 2: return 0.1f; // LOD2
+            case 3: return 0.02f; // LOD3
             default: return 1.0f / (lodLevel + 2);
         }
     }
