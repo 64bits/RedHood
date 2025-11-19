@@ -141,6 +141,9 @@ public class DayTimeManager : MonoBehaviour
         {
             previousBeaconDistance = distanceFromBeacon;
             OnBeaconDistanceChanged?.Invoke(distanceFromBeacon);
+            
+            // TODO: Move this somewhere else?
+            Shader.SetGlobalFloat("_VignetteSize", 1f - (0.1f * distanceFromBeacon));
         }
     }
     

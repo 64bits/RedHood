@@ -118,5 +118,5 @@ MonoBehaviour:
   settings:
     renderPassEvent: 550
     vignetteShader: {fileID: 4800000, guid: e83133b10cfd14ddaacb51b7f12fa2a6, type: 3}
-    intensity: 0
-    vignetteSize: 0
+    intensity: 1
+    vignetteSize: 1

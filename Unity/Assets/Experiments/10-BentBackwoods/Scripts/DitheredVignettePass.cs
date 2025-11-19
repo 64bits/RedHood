@@ -65,8 +65,8 @@ public class DitheredVignettePass : ScriptableRenderPass
             builder.SetRenderFunc((PassData data, RasterGraphContext context) =>
             {
                 // Set shader globals
-                context.cmd.SetGlobalFloat(IntensityID, data.intensity);
-                context.cmd.SetGlobalFloat(SizeID, data.size);
+                // context.cmd.SetGlobalFloat(IntensityID, data.intensity);
+                // context.cmd.SetGlobalFloat(SizeID, data.size);
                 
                 Blitter.BlitTexture(context.cmd, data.source, new Vector4(1, 1, 0, 0), 
                     data.material, 0);

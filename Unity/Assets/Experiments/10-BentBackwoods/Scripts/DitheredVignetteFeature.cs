@@ -18,6 +18,9 @@ public class DitheredVignetteFeature : ScriptableRendererFeature
     public Settings settings = new Settings();
     private DitheredVignettePass vignettePass;
     private Material vignetteMaterial;
+    
+    private static readonly int IntensityID = Shader.PropertyToID("_VignetteIntensity");
+    private static readonly int SizeID = Shader.PropertyToID("_VignetteSize");
 
     public override void Create()
     {
@@ -25,6 +28,10 @@ public class DitheredVignetteFeature : ScriptableRendererFeature
         {
             vignetteMaterial = CoreUtils.CreateEngineMaterial(settings.vignetteShader);
             vignettePass = new DitheredVignettePass(vignetteMaterial, settings);
+            
+            // Set initial global shader values
+            Shader.SetGlobalFloat(IntensityID, settings.intensity);
+            Shader.SetGlobalFloat(SizeID, settings.vignetteSize);
         }
     }
 
