@@ -12,9 +12,11 @@ public class DayTimeManager : MonoBehaviour
     
     [Header("Beacon Detection")]
     [SerializeField] private Transform playerTransform;
-    [SerializeField] [Range(0f, 6f)] private float distanceFromBeacon = 0f;
-    [SerializeField] private float maxBeaconDistance = 6f;
+    [SerializeField] [Range(0f, 10f)] private float distanceFromBeacon = 0f;
+    [SerializeField] private float maxBeaconDistance = 10f;
     [SerializeField] private float beaconDistanceChangeThreshold = 0.1f; // Minimum change to trigger event
+    [SerializeField] private float maxPauseLerpDistance = 10f; // Distance at which lerp reaches full night (0.75)
+    [SerializeField] private AnimationCurve pauseLerpCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f); // Curve for pause lerp transition
     
     private float currentCycleTime = 0f;
     private float cycleDuration;
@@ -24,7 +26,7 @@ public class DayTimeManager : MonoBehaviour
     // Time pause/resume variables
     private bool isTimePaused = false;
     private float savedCycleTime = 0f;
-    private bool hasNotifiedPause = false;
+    private float pauseStartTime = 0f; // The time when pause began
     
     // Shader keyword for darkness
     private const string DARKNESS_FEATURE = "ENABLE_DARKNESS";
@@ -92,6 +94,11 @@ public class DayTimeManager : MonoBehaviour
             
             NotifyTimeUpdate();
         }
+        else
+        {
+            // When paused, lerp based on distance from beacon
+            UpdatePausedTimeLerp();
+        }
         
         // Update shader darkness keyword based on time of day
         if (GetNormalizedTime() > 0.5f)
@@ -122,12 +129,7 @@ public class DayTimeManager : MonoBehaviour
     {
         isTimePaused = true;
         savedCycleTime = currentCycleTime;
-        hasNotifiedPause = false;
-        
-        // Send one last notification as if it's middle of night (0.75)
-        currentCycleTime = 0.75f * cycleDuration;
-        NotifyTimeUpdate();
-        hasNotifiedPause = true;
+        pauseStartTime = currentCycleTime; // Store the time when pause began
     }
     
     private void ResumeTime()
@@ -138,6 +140,21 @@ public class DayTimeManager : MonoBehaviour
         currentCycleTime = savedCycleTime;
         
         // Send notification with the restored time
+        NotifyTimeUpdate();
+    }
+    
+    private void UpdatePausedTimeLerp()
+    {
+        // Calculate lerp factor based on distance from beacon
+        // At distance 3 (pause threshold), lerp = 0
+        // At distance 10 (maxPauseLerpDistance), lerp = 1
+        float lerpFactor = Mathf.Clamp01((distanceFromBeacon - 3f) / (maxPauseLerpDistance - 3f));
+        
+        // Lerp from pause start time to night time (0.75)
+        float targetTime = 0.75f * cycleDuration;
+        currentCycleTime = Mathf.Lerp(pauseStartTime, targetTime, lerpFactor);
+        
+        // Notify listeners of the lerped time
         NotifyTimeUpdate();
     }
     
@@ -192,18 +209,12 @@ public class DayTimeManager : MonoBehaviour
             OnBeaconDistanceChanged?.Invoke(distanceFromBeacon);
             
             // TODO: Move this somewhere else?
-            Shader.SetGlobalFloat("_VignetteSize", 1f - (0.1f * distanceFromBeacon));
+            Shader.SetGlobalFloat("_VignetteSize", 1f - (0.1f * (distanceFromBeacon / 2f - 1f)));
         }
     }
     
     private void NotifyTimeUpdate()
     {
-        // Don't send notifications if paused (except for the one-time pause notification)
-        if (isTimePaused && hasNotifiedPause)
-        {
-            return;
-        }
-        
         TimeOfDay newTimeOfDay = GetCurrentTimeOfDay();
         
         // Notify if time of day changed
