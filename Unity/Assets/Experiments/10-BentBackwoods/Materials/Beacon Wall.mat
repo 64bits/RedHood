@@ -97,7 +97,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FogAmount: 20
+    - _FogAmount: 60
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -107,7 +107,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: -50
     - _ReceiveShadows: 1
-    - _Scale: 0.3
+    - _Scale: 1.55
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
