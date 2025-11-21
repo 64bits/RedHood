@@ -84,6 +84,10 @@ public class InputMapSwitcher : MonoBehaviour
         {
             SwitchToMapMode();
         }
+        else if (currentMode == InputMode.Map)
+        {
+            SwitchToPlayerMap();
+        }
     }
 
     public void OnCancel()
