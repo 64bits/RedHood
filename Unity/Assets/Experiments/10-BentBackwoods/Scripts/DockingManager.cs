@@ -1,22 +1,29 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using Unity.Cinemachine;
 
 /// <summary>
 /// Manages a docking station where players can interact to enter a docked UI state.
+/// Subscribes to the Interact action from PlayerInput to trigger docking.
 /// 
 /// SETUP:
 /// 1. Attach to a GameObject with a trigger Collider.
-/// 2. Assign the prompt canvas (Canvas A) - shown when player is nearby.
-/// 3. Assign the docked canvas (Canvas B) - children enabled when docked.
-/// 4. Assign the Cinemachine virtual camera to activate when docked.
-/// 5. Add "Dock" action to your Player input map, and call OnDock from InputMapSwitcher.
+/// 2. Assign the InputMapSwitcher reference (or it will auto-find).
+/// 3. Assign the prompt canvas (Canvas A) - shown when player is nearby.
+/// 4. Assign the docked canvas (Canvas B) - children enabled when docked.
+/// 5. Assign the Cinemachine virtual camera to activate when docked.
+/// 6. Ensure your Player action map has an "Interact" action.
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class DockingManager : MonoBehaviour
 {
     [Header("Player Detection")]
     [SerializeField] private string playerTag = "Player";
+    
+    [Header("Input")]
+    [Tooltip("Reference to the InputMapSwitcher. Will auto-find if not set.")]
+    [SerializeField] private InputMapSwitcher inputMapSwitcher;
     
     [Header("Canvases")]
     [Tooltip("World-space canvas shown when player is in proximity (e.g., 'Press E to dock')")]
@@ -43,9 +50,7 @@ public class DockingManager : MonoBehaviour
     private bool isDocked;
     private int originalCameraPriority;
     private Collider triggerCollider;
-    
-    // Singleton-like reference for InputMapSwitcher to find the active docking manager
-    private static DockingManager currentActiveManager;
+    private InputAction interactAction;
     
     /// <summary>
     /// Returns true if the player is currently docked at this station.
@@ -75,6 +80,30 @@ public class DockingManager : MonoBehaviour
 
     private void Start()
     {
+        // Auto-find InputMapSwitcher if not assigned
+        if (inputMapSwitcher == null)
+        {
+            inputMapSwitcher = FindFirstObjectByType<InputMapSwitcher>();
+        }
+        
+        if (inputMapSwitcher == null)
+        {
+            Debug.LogError($"{gameObject.name}: InputMapSwitcher not found. Docking will not work.", this);
+            return;
+        }
+        
+        // Get the Interact action from PlayerInput
+        var playerInput = inputMapSwitcher.PlayerInput;
+        if (playerInput != null)
+        {
+            interactAction = playerInput.actions?.FindAction("Interact");
+            
+            if (interactAction == null)
+            {
+                Debug.LogError($"{gameObject.name}: 'Interact' action not found in PlayerInput actions.", this);
+            }
+        }
+        
         // Initialize canvases to correct state
         SetPromptCanvasVisible(false);
         SetDockedCanvasChildrenActive(false);
@@ -87,18 +116,13 @@ public class DockingManager : MonoBehaviour
 
     private void OnEnable()
     {
-        // Subscribe to Dock mode exit to handle forced undocking
+        // Subscribe to Dock mode exit to handle forced undocking (e.g., Cancel pressed)
         InputMapSwitcher.OnExitDockMode += HandleDockModeClosed;
     }
 
     private void OnDisable()
     {
         InputMapSwitcher.OnExitDockMode -= HandleDockModeClosed;
-        
-        if (currentActiveManager == this)
-        {
-            currentActiveManager = null;
-        }
         
         // Clean up state if disabled while docked
         if (isDocked)
@@ -107,13 +131,21 @@ public class DockingManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        // Check for interact input when player is in range and not already docked
+        if (playerInRange && !isDocked && interactAction != null && interactAction.WasPressedThisFrame())
+        {
+            Dock();
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag(playerTag)) return;
-        if (isDocked) return; // Don't show prompt if already docked
+        if (isDocked) return;
         
         playerInRange = true;
-        currentActiveManager = this;
         SetPromptCanvasVisible(true);
         onPlayerEnterProximity?.Invoke();
     }
@@ -124,11 +156,6 @@ public class DockingManager : MonoBehaviour
         
         playerInRange = false;
         
-        if (currentActiveManager == this && !isDocked)
-        {
-            currentActiveManager = null;
-        }
-        
         // Only hide prompt if not docked
         if (!isDocked)
         {
@@ -138,18 +165,7 @@ public class DockingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Called by InputMapSwitcher when the Dock action is triggered.
-    /// Attempts to dock if player is in range.
-    /// </summary>
-    public void TryDock()
-    {
-        if (!playerInRange || isDocked) return;
-        
-        Dock();
-    }
-
-    /// <summary>
-    /// Enters the docked state. Call this from InputMapSwitcher.OnDock().
+    /// Enters the docked state.
     /// </summary>
     public void Dock()
     {
@@ -167,11 +183,10 @@ public class DockingManager : MonoBehaviour
             dockedCamera.Priority = originalCameraPriority + dockedCameraPriorityBoost;
         }
         
-        // Switch to Dock input mode (uses UI map but tracks as Dock mode)
-        var inputSwitcher = FindFirstObjectByType<InputMapSwitcher>();
-        if (inputSwitcher != null)
+        // Switch to Dock input mode
+        if (inputMapSwitcher != null)
         {
-            inputSwitcher.SwitchToDockMode();
+            inputMapSwitcher.SwitchToDockMode();
         }
         
         onDocked?.Invoke();
@@ -197,10 +212,9 @@ public class DockingManager : MonoBehaviour
         }
         
         // Switch back to Player input map
-        var inputSwitcher = FindFirstObjectByType<InputMapSwitcher>();
-        if (inputSwitcher != null)
+        if (inputMapSwitcher != null)
         {
-            inputSwitcher.SwitchToPlayerMap();
+            inputMapSwitcher.SwitchToPlayerMap();
         }
         
         // Show prompt again if player is still in range
@@ -234,7 +248,7 @@ public class DockingManager : MonoBehaviour
     {
         if (isDocked)
         {
-            // UI mode was closed, so we need to undock without re-triggering input switch
+            // Dock mode was closed externally, clean up without re-triggering input switch
             isDocked = false;
             SetDockedCanvasChildrenActive(false);
             
@@ -267,17 +281,6 @@ public class DockingManager : MonoBehaviour
         foreach (Transform child in dockedCanvas.transform)
         {
             child.gameObject.SetActive(active);
-        }
-    }
-
-    /// <summary>
-    /// Static method for InputMapSwitcher to call when Dock action is triggered.
-    /// </summary>
-    public static void TryDockAtCurrentStation()
-    {
-        if (currentActiveManager != null)
-        {
-            currentActiveManager.TryDock();
         }
     }
 }

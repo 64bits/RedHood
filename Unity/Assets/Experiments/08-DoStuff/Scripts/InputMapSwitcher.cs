@@ -13,7 +13,7 @@ using Unity.Cinemachine;
 /// 3. Your InputActions asset must have two Action Maps:
 ///    - One named "Player".
 ///    - One named "UI".
-/// 4. The "Player" map must have actions named "Inventory", "Map", and "Dock".
+/// 4. The "Player" map must have actions named "Inventory" and "Map".
 /// 5. The "UI" map must have an action named "Cancel" (or "Escape").
 /// </summary>
 [RequireComponent(typeof(PlayerInput))]
@@ -57,6 +57,11 @@ public class InputMapSwitcher : MonoBehaviour
     /// Gets whether the game is currently in Dock mode.
     /// </summary>
     public bool IsInDock => currentMode == InputMode.Dock;
+    
+    /// <summary>
+    /// Gets the PlayerInput component for other systems to subscribe to actions.
+    /// </summary>
+    public PlayerInput PlayerInput => playerInput;
 
     private void Awake()
     {
@@ -96,19 +101,6 @@ public class InputMapSwitcher : MonoBehaviour
         else if (currentMode == InputMode.Map)
         {
             SwitchToPlayerMap();
-        }
-    }
-    
-    /// <summary>
-    /// Called by PlayerInput when the Dock action is triggered.
-    /// This delegates to the DockingManager to handle the actual docking logic.
-    /// </summary>
-    public void OnDock()
-    {
-        if (currentMode == InputMode.Player)
-        {
-            // Try to dock at the current station (if player is in range of one)
-            DockingManager.TryDockAtCurrentStation();
         }
     }
 
