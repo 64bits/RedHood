@@ -2157,8 +2157,8 @@
     "m_ShaderOutputName": "MarkerSize",
     "m_StageCapability": 3,
     "m_Value": {
-        "x": 0.10499999672174454,
-        "y": 0.11999999731779099
+        "x": 0.10000000149011612,
+        "y": 0.10000000149011612
     },
     "m_DefaultValue": {
         "x": 0.0,
