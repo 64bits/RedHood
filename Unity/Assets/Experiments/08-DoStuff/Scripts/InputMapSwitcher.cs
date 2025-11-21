@@ -13,81 +13,82 @@ using Unity.Cinemachine;
 /// 3. Your InputActions asset must have two Action Maps:
 ///    - One named "Player".
 ///    - One named "UI".
-/// 4. The "Player" map must have an action named "Inventory".
+/// 4. The "Player" map must have actions named "Inventory" and "Map".
 /// 5. The "UI" map must have an action named "Cancel" (or "Escape").
 /// </summary>
 [RequireComponent(typeof(PlayerInput))]
 public class InputMapSwitcher : MonoBehaviour
 {
-    // Static events that other components can subscribe to.
-    public static event Action OnEnterUIMode; // Fired when switching to UI map
-    public static event Action OnExitUIMode;  // Fired when switching back to Player map
+    // Static events for UI mode (inventory)
+    public static event Action OnEnterUIMode;
+    public static event Action OnExitUIMode;
+    
+    // Static events for Map mode
+    public static event Action OnEnterMapMode;
+    public static event Action OnExitMapMode;
 
     private string playerMapName = "Player";
     private string uiMapName = "UI";
 
     [Header("Component References")]
-    
-    [Tooltip("The CinemachineInputAxisController component, usually on the same GameObject. This will be disabled when in UI mode.")]
+    [Tooltip("The CinemachineInputAxisController component. This will be disabled when in UI or Map mode.")]
     [SerializeField] private CinemachineInputAxisController cinemachineAxisController;
 
     private PlayerInput playerInput;
+    
+    private enum InputMode { Player, UI, Map }
+    private InputMode currentMode = InputMode.Player;
 
     /// <summary>
     /// Gets whether the game is currently in UI mode (e.g., inventory is open).
     /// </summary>
-    public bool IsInUI { get; private set; }
+    public bool IsInUI => currentMode == InputMode.UI;
+    
+    /// <summary>
+    /// Gets whether the game is currently in Map mode.
+    /// </summary>
+    public bool IsInMap => currentMode == InputMode.Map;
 
     private void Awake()
     {
-        // Get the PlayerInput component on this GameObject
         playerInput = GetComponent<PlayerInput>();
-        // Try to find the CinemachineInputAxisController if it wasn't assigned in the inspector
         if (cinemachineAxisController == null)
         {
-            // Updated to get CinemachineInputAxisController
             cinemachineAxisController = GetComponent<CinemachineInputAxisController>();
         }
 
-        // Log a warning if it's still not found, as camera look won't be disabled.
         if (cinemachineAxisController == null)
         {
-            Debug.LogWarning("CinemachineInputAxisController not found. Camera controls will not be disabled in UI mode.", this);
+            Debug.LogWarning("CinemachineInputAxisController not found. Camera controls will not be disabled in UI/Map mode.", this);
         }
     }
 
     private void Start()
     {
-        // Ensure we start in the correct state: Player controls active.
         SwitchToPlayerMap();
     }
 
     // --- Message Handlers (Called by PlayerInput) ---
 
-    /// <summary>
-    /// This method is called by the PlayerInput component (using Send Messages)
-    /// when the "Inventory" action in the "Player" map is performed.
-    /// 
-    /// FIX: Removed (InputAction.CallbackContext context) to satisfy Send Messages.
-    /// </summary>
     public void OnInventory()
     {
-        // Since Send Messages only calls on 'performed', we only need the IsInUI check.
-        if (!IsInUI)
+        if (currentMode == InputMode.Player)
         {
             SwitchToUIMap();
         }
     }
 
-    /// <summary>
-    /// This method is called by the PlayerInput component (using Send Messages)
-    /// when the "Cancel" action (or your "Escape" action) in the "UI" map is performed.
-    /// 
-    /// FIX: Removed (InputAction.CallbackContext context) to satisfy Send Messages.
-    /// </summary>
+    public void OnMap()
+    {
+        if (currentMode == InputMode.Player)
+        {
+            SwitchToMapMode();
+        }
+    }
+
     public void OnCancel()
     {
-        if (IsInUI)
+        if (currentMode != InputMode.Player)
         {
             SwitchToPlayerMap();
         }
@@ -95,42 +96,46 @@ public class InputMapSwitcher : MonoBehaviour
 
     // --- Public Control Methods ---
 
-    /// <summary>
-    /// Activates the UI map, frees the cursor,
-    /// and disables Cinemachine camera controls.
-    /// </summary>
     public void SwitchToUIMap()
     {
-        if (IsInUI) return; // Already in UI mode
+        if (currentMode == InputMode.UI) return;
 
         playerInput.SwitchCurrentActionMap(uiMapName);
-        IsInUI = true;
+        currentMode = InputMode.UI;
 
-        // Disable Cinemachine input
         if (cinemachineAxisController != null)
         {
-            // Updated to disable the Axis Controller
             cinemachineAxisController.enabled = false;
         }
 
-        // Unlock and show cursor
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
         OnEnterUIMode?.Invoke();
     }
 
-    /// <summary>
-    /// Activates the Player map, locks the cursor,
-    /// and re-enables Cinemachine camera controls.
-    /// </summary>
+    public void SwitchToMapMode()
+    {
+        if (currentMode == InputMode.Map) return;
+
+        playerInput.SwitchCurrentActionMap(uiMapName);
+        currentMode = InputMode.Map;
+
+        if (cinemachineAxisController != null)
+        {
+            cinemachineAxisController.enabled = false;
+        }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        OnEnterMapMode?.Invoke();
+    }
+
     public void SwitchToPlayerMap()
     {
-        // Check if we are already in player mode. (This check also runs on Start)
-        // This check is simplified as we no longer care about the inventory panel state.
-        if (!IsInUI && playerInput.currentActionMap != null && playerInput.currentActionMap.name == playerMapName)
+        if (currentMode == InputMode.Player && playerInput.currentActionMap?.name == playerMapName)
         {
-             // Exception for Start(): ensure cursor is locked if we're not in UI
             if (Cursor.lockState != CursorLockMode.Locked)
             {
                 Cursor.lockState = CursorLockMode.Locked;
@@ -139,20 +144,27 @@ public class InputMapSwitcher : MonoBehaviour
             return;
         }
 
+        InputMode previousMode = currentMode;
+        
         playerInput.SwitchCurrentActionMap(playerMapName);
-        IsInUI = false;
+        currentMode = InputMode.Player;
 
-        // Re-enable Cinemachine input
         if (cinemachineAxisController != null)
         {
-            // Updated to re-enable the Axis Controller
             cinemachineAxisController.enabled = true;
         }
 
-        // Lock and hide cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        OnExitUIMode?.Invoke();
+        // Fire the appropriate exit event based on what mode we were in
+        if (previousMode == InputMode.UI)
+        {
+            OnExitUIMode?.Invoke();
+        }
+        else if (previousMode == InputMode.Map)
+        {
+            OnExitMapMode?.Invoke();
+        }
     }
 }
