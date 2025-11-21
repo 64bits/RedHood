@@ -13,7 +13,7 @@ using Unity.Cinemachine;
 /// 3. Your InputActions asset must have two Action Maps:
 ///    - One named "Player".
 ///    - One named "UI".
-/// 4. The "Player" map must have actions named "Inventory" and "Map".
+/// 4. The "Player" map must have actions named "Inventory", "Map", and "Dock".
 /// 5. The "UI" map must have an action named "Cancel" (or "Escape").
 /// </summary>
 [RequireComponent(typeof(PlayerInput))]
@@ -26,6 +26,10 @@ public class InputMapSwitcher : MonoBehaviour
     // Static events for Map mode
     public static event Action OnEnterMapMode;
     public static event Action OnExitMapMode;
+    
+    // Static events for Dock mode
+    public static event Action OnEnterDockMode;
+    public static event Action OnExitDockMode;
 
     private string playerMapName = "Player";
     private string uiMapName = "UI";
@@ -36,7 +40,7 @@ public class InputMapSwitcher : MonoBehaviour
 
     private PlayerInput playerInput;
     
-    private enum InputMode { Player, UI, Map }
+    private enum InputMode { Player, UI, Map, Dock }
     private InputMode currentMode = InputMode.Player;
 
     /// <summary>
@@ -48,6 +52,11 @@ public class InputMapSwitcher : MonoBehaviour
     /// Gets whether the game is currently in Map mode.
     /// </summary>
     public bool IsInMap => currentMode == InputMode.Map;
+    
+    /// <summary>
+    /// Gets whether the game is currently in Dock mode.
+    /// </summary>
+    public bool IsInDock => currentMode == InputMode.Dock;
 
     private void Awake()
     {
@@ -89,6 +98,19 @@ public class InputMapSwitcher : MonoBehaviour
             SwitchToPlayerMap();
         }
     }
+    
+    /// <summary>
+    /// Called by PlayerInput when the Dock action is triggered.
+    /// This delegates to the DockingManager to handle the actual docking logic.
+    /// </summary>
+    public void OnDock()
+    {
+        if (currentMode == InputMode.Player)
+        {
+            // Try to dock at the current station (if player is in range of one)
+            DockingManager.TryDockAtCurrentStation();
+        }
+    }
 
     public void OnCancel()
     {
@@ -116,6 +138,28 @@ public class InputMapSwitcher : MonoBehaviour
         Cursor.visible = true;
 
         OnEnterUIMode?.Invoke();
+    }
+    
+    /// <summary>
+    /// Switches to dock mode. Called by DockingManager when docking.
+    /// Uses UI action map but tracks as Dock mode for proper exit events.
+    /// </summary>
+    public void SwitchToDockMode()
+    {
+        if (currentMode == InputMode.Dock) return;
+
+        playerInput.SwitchCurrentActionMap(uiMapName);
+        currentMode = InputMode.Dock;
+
+        if (cinemachineAxisController != null)
+        {
+            cinemachineAxisController.enabled = false;
+        }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        OnEnterDockMode?.Invoke();
     }
 
     public void SwitchToMapMode()
@@ -162,13 +206,17 @@ public class InputMapSwitcher : MonoBehaviour
         Cursor.visible = false;
 
         // Fire the appropriate exit event based on what mode we were in
-        if (previousMode == InputMode.UI)
+        switch (previousMode)
         {
-            OnExitUIMode?.Invoke();
-        }
-        else if (previousMode == InputMode.Map)
-        {
-            OnExitMapMode?.Invoke();
+            case InputMode.UI:
+                OnExitUIMode?.Invoke();
+                break;
+            case InputMode.Map:
+                OnExitMapMode?.Invoke();
+                break;
+            case InputMode.Dock:
+                OnExitDockMode?.Invoke();
+                break;
         }
     }
 }
