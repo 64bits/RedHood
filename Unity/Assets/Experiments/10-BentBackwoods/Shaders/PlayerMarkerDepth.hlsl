@@ -35,7 +35,7 @@ void PlayerMarkerDepth_float(
     float2 playerUV = padding + playerNormalized * usableRange;
     
     // Calculate player depth from Y position (normalized 0-1)
-    float normalizedPlayerDepth = 1 - (playerNormalized.y) - padding * 2;
+    float normalizedPlayerDepth = 1 - playerNormalized.y - 0.15;
     
     // Calculate UV offset from player position
     float2 offsetFromPlayer = UV - playerUV;
