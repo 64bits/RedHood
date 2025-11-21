@@ -36,9 +36,6 @@ public class DockingManager : MonoBehaviour
     [Tooltip("Virtual camera to enable when docked")]
     [SerializeField] private CinemachineCamera dockedCamera;
     
-    [Tooltip("Priority boost for the docked camera when active")]
-    [SerializeField] private int dockedCameraPriorityBoost = 10;
-    
     [Header("Events")]
     public UnityEvent onPlayerEnterProximity;
     public UnityEvent onPlayerExitProximity;
@@ -48,7 +45,6 @@ public class DockingManager : MonoBehaviour
     // State
     private bool playerInRange;
     private bool isDocked;
-    private int originalCameraPriority;
     private Collider triggerCollider;
     private InputAction interactAction;
     
@@ -70,11 +66,6 @@ public class DockingManager : MonoBehaviour
         {
             Debug.LogWarning($"{gameObject.name}: Collider is not set as trigger. Setting isTrigger to true.");
             triggerCollider.isTrigger = true;
-        }
-        
-        if (dockedCamera != null)
-        {
-            originalCameraPriority = dockedCamera.Priority.Value;
         }
     }
 
@@ -110,7 +101,7 @@ public class DockingManager : MonoBehaviour
         
         if (dockedCamera != null)
         {
-            dockedCamera.Priority = originalCameraPriority;
+            dockedCamera.gameObject.SetActive(false);
         }
     }
 
@@ -180,7 +171,7 @@ public class DockingManager : MonoBehaviour
         // Enable docked camera
         if (dockedCamera != null)
         {
-            dockedCamera.Priority = originalCameraPriority + dockedCameraPriorityBoost;
+            dockedCamera.gameObject.SetActive(true);
         }
         
         // Switch to Dock input mode
@@ -205,10 +196,10 @@ public class DockingManager : MonoBehaviour
         // Hide docked UI
         SetDockedCanvasChildrenActive(false);
         
-        // Restore camera priority
+        // Restore camera
         if (dockedCamera != null)
         {
-            dockedCamera.Priority = originalCameraPriority;
+            dockedCamera.gameObject.SetActive(false);
         }
         
         // Switch back to Player input map
@@ -237,7 +228,7 @@ public class DockingManager : MonoBehaviour
         
         if (dockedCamera != null)
         {
-            dockedCamera.Priority = originalCameraPriority;
+            dockedCamera.gameObject.SetActive(false);
         }
     }
 
@@ -254,7 +245,7 @@ public class DockingManager : MonoBehaviour
             
             if (dockedCamera != null)
             {
-                dockedCamera.Priority = originalCameraPriority;
+                dockedCamera.gameObject.SetActive(false);
             }
             
             if (playerInRange)
