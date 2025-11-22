@@ -1,0 +1,11 @@
+﻿title: Start
+---
+Player: Hello there!
+NPC: Welcome, traveler! What brings you here?
+-> I'm looking for adventure.
+    NPC: Then you've come to the right place!
+-> Just passing through.
+    NPC: Safe travels, friend.
+-> I need information.
+    NPC: I might be able to help. What do you need?
+===
