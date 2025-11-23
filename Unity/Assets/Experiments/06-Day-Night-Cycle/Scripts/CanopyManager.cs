@@ -66,10 +66,10 @@ public class CanopyManager : MonoBehaviour
 
     private void CalculateCanopy()
     {
-        // Normalize distance inverted: 
-        // Distance 0 = Canopy 1.0
-        // Distance Max = Canopy 0.0
-        float rawCanopy = 1f - (currentDistance / maxBeaconDistance);
+        // Normalize distance: 
+        // Distance 0 = Canopy 0.0
+        // Distance Max = Canopy 1.0
+        float rawCanopy = currentDistance / maxBeaconDistance;
         currentCanopy = Mathf.Clamp01(rawCanopy);
 
         // Check for changes
