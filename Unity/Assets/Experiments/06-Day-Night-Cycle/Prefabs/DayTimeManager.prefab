@@ -197,9 +197,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5115630454188640427}
   - component: {fileID: 2598449308920174092}
+  - component: {fileID: 1369125418777473448}
   - component: {fileID: 3258314614195314237}
   - component: {fileID: 115851613652356068}
-  - component: {fileID: 6132952796409724475}
   m_Layer: 0
   m_Name: DayTimeManager
   m_TagString: Untagged
@@ -239,8 +239,23 @@ MonoBehaviour:
   dayDuration: 180
   nightDuration: 180
   transitionDuration: 3
-  useManualTimeControl: 0
+  useManualTimeControl: 1
   manualTimeOfDay: 0
+--- !u!114 &1369125418777473448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086637825554186252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d4d2c7820fd9471385600c8795002ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CanopyManager
+  playerTransform: {fileID: 0}
+  maxBeaconDistance: 10
+  canopyChangeThreshold: 0.01
 --- !u!114 &3258314614195314237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299,22 +314,6 @@ MonoBehaviour:
   controlSkyboxIntensity: 1
   daySkyboxIntensity: 0.24
   nightSkyboxIntensity: 0
-  timeManager: {fileID: 2598449308920174092}
---- !u!114 &6132952796409724475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5086637825554186252}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a2e13c662c514c029dabd78ad60d363, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DayTimeUIUpdater
-  radialFillImage: {fileID: 6599747441938233329}
-  arcRadius: 100
-  timeText: {fileID: 865405060395308971}
   timeManager: {fileID: 2598449308920174092}
 --- !u!1 &5424773147864477769
 GameObject:
