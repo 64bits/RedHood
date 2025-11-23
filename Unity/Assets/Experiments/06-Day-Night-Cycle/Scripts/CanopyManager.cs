@@ -11,7 +11,7 @@ public class CanopyManager : MonoBehaviour
     
     // State
     private float currentDistance = 0f;
-    private float currentCanopy = 0f; // Normalized 0 to 1 (0 = no canopy, 1 = full canopy)
+    [SerializeField] [Range(0f, 1f)] private float currentCanopy = 0f; // Normalized 0 to 1 (0 = no canopy, 1 = full canopy)
     private float previousCanopy = 0f;
     private int beaconLayer;
 
