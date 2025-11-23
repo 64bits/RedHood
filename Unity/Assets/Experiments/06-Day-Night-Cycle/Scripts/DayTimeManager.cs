@@ -7,30 +7,18 @@ public class DayTimeManager : MonoBehaviour
     [SerializeField] private float dayDuration = 180f; // Day duration in seconds
     [SerializeField] private float nightDuration = 180f; // Night duration in seconds
     [SerializeField] private float transitionDuration = 3f; // Dawn/Dusk duration
+    
+    [Header("Debug / Manual Control")]
     [SerializeField] private bool useManualTimeControl = false;
     [SerializeField] [Range(0f, 2f)] private float manualTimeOfDay = 0f;
-    
-    [Header("Beacon Detection")]
-    [SerializeField] private Transform playerTransform;
-    [SerializeField] [Range(0f, 10f)] private float distanceFromBeacon = 0f;
-    [SerializeField] private float maxBeaconDistance = 10f;
-    [SerializeField] private float beaconDistanceChangeThreshold = 0.1f; // Minimum change to trigger event
-    [SerializeField] private float maxPauseLerpDistance = 10f; // Distance at which lerp reaches full night (0.75)
-    [SerializeField] private AnimationCurve pauseLerpCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f); // Curve for pause lerp transition
-    
+
+    // Time State
     private float currentCycleTime = 0f;
     private float cycleDuration;
-    private int beaconLayer;
-    private float previousBeaconDistance = 0f;
-    
-    // Time pause/resume variables
-    private bool isTimePaused = false;
-    private float savedCycleTime = 0f;
-    private float pauseStartTime = 0f; // The time when pause began
     
     // Shader keyword for darkness
     private const string DARKNESS_FEATURE = "ENABLE_DARKNESS";
-    
+
     // Time periods (calculated properties)
     public float DayStart => 0f;
     public float DuskStart => dayDuration - transitionDuration;
@@ -38,69 +26,54 @@ public class DayTimeManager : MonoBehaviour
     public float NightStart => DuskEnd;
     public float DawnStart => dayDuration + nightDuration - transitionDuration;
     public float DawnEnd => cycleDuration;
-    public float DayEnd => cycleDuration;
-    public float TransitionDuration => transitionDuration;
     public float CycleDuration => cycleDuration;
-    
+
     public enum TimeOfDay { Day, Dusk, Night, Dawn }
     private TimeOfDay currentTimeOfDay = TimeOfDay.Day;
-    
-    // Events for notifying listeners of time changes
+
+    // Events
     public System.Action<TimeOfDay> OnTimeOfDayChanged;
     public System.Action<float> OnTimeUpdated; // Passes normalized time (0-1)
-    public System.Action<float> OnBeaconDistanceChanged; // Passes distance from beacon
-    
+
     private void Awake()
     {
         cycleDuration = dayDuration + nightDuration;
-        beaconLayer = 1 << 9; // 9th layer (Beacon)
-        previousBeaconDistance = maxBeaconDistance;
     }
-    
+
     private void OnEnable()
     {
-        // Notify all listeners of initial state
         NotifyTimeUpdate();
-        NotifyBeaconDistanceUpdate();
     }
-    
+
     private void Update()
     {
-        // Update distance from beacon
-        UpdateBeaconDistance();
-        
-        // Check for pause/resume conditions
-        CheckPauseResumeConditions();
-        
-        // Don't update time if paused
-        if (!isTimePaused)
+        // 1. Calculate Time
+        if (useManualTimeControl)
         {
-            // Manual time control overrides automatic cycle
-            if (useManualTimeControl)
-            {
-                float normalizedManualTime = manualTimeOfDay % 1f;
-                currentCycleTime = normalizedManualTime * cycleDuration;
-            }
-            else
-            {
-                // Automatic time progression
-                currentCycleTime += Time.deltaTime;
-                
-                if (currentCycleTime >= cycleDuration)
-                {
-                    currentCycleTime -= cycleDuration;
-                }
-            }
-            
-            NotifyTimeUpdate();
+            float normalizedManualTime = manualTimeOfDay % 1f;
+            currentCycleTime = normalizedManualTime * cycleDuration;
         }
         else
         {
-            // When paused, lerp based on distance from beacon
-            UpdatePausedTimeLerp();
+            currentCycleTime += Time.deltaTime;
+
+            if (currentCycleTime >= cycleDuration)
+            {
+                currentCycleTime -= cycleDuration;
+            }
         }
-        
+
+        // 2. Notify Listeners
+        NotifyTimeUpdate();
+
+        // 3. Update Shader Visuals
+        UpdateShaderKeywords();
+    }
+
+    private void UpdateShaderKeywords()
+    {
         // Update shader darkness keyword based on time of day
+        // Night starts after 0.5 normalized time in this setup
         if (GetNormalizedTime() > 0.5f)
         {
             Shader.EnableKeyword(DARKNESS_FEATURE);
@@ -110,177 +83,43 @@ public class DayTimeManager : MonoBehaviour
             Shader.DisableKeyword(DARKNESS_FEATURE);
         }
     }
-    
-    private void CheckPauseResumeConditions()
-    {
-        // Pause condition: distance >= 3 and not already paused
-        if (distanceFromBeacon >= 3f && !isTimePaused)
-        {
-            PauseTime();
-        }
-        // Resume condition: distance <= 2 and currently paused
-        else if (distanceFromBeacon <= 2f && isTimePaused)
-        {
-            ResumeTime();
-        }
-    }
-    
-    private void PauseTime()
-    {
-        isTimePaused = true;
-        savedCycleTime = currentCycleTime;
-        pauseStartTime = currentCycleTime; // Store the time when pause began
-    }
-    
-    private void ResumeTime()
-    {
-        isTimePaused = false;
-        
-        // Restore the saved time
-        currentCycleTime = savedCycleTime;
-        
-        // Send notification with the restored time
-        NotifyTimeUpdate();
-    }
-    
-    private void UpdatePausedTimeLerp()
-    {
-        // Calculate lerp factor based on distance from beacon
-        // At distance 3 (pause threshold), lerp = 0
-        // At distance 10 (maxPauseLerpDistance), lerp = 1
-        float lerpFactor = Mathf.Clamp01((distanceFromBeacon - 3f) / (maxPauseLerpDistance - 3f));
-        
-        // Lerp from pause start time to night time (0.75)
-        float targetTime = 0.75f * cycleDuration;
-        currentCycleTime = Mathf.Lerp(pauseStartTime, targetTime, lerpFactor);
-        
-        // Notify listeners of the lerped time
-        NotifyTimeUpdate();
-    }
-    
-    private void UpdateBeaconDistance()
-    {
-        if (playerTransform == null)
-        {
-            distanceFromBeacon = maxBeaconDistance;
-            NotifyBeaconDistanceUpdate();
-            return;
-        }
-        
-        // Perform overlap sphere check at player position
-        Collider[] beacons = Physics.OverlapSphere(playerTransform.position, maxBeaconDistance, beaconLayer);
-        
-        if (beacons.Length == 0)
-        {
-            // No beacons nearby
-            distanceFromBeacon = maxBeaconDistance;
-            NotifyBeaconDistanceUpdate();
-            return;
-        }
-        
-        // Find the closest beacon
-        float closestDistance = float.MaxValue;
-        
-        foreach (Collider beacon in beacons)
-        {
-            // Get closest point on beacon collider to player
-            Vector3 closestPoint = beacon.ClosestPoint(playerTransform.position);
-            float distanceToEdge = Vector3.Distance(playerTransform.position, closestPoint);
-            
-            // If player is inside the collider, ClosestPoint returns the player position
-            // So distance will be 0 or very close to 0
-            if (distanceToEdge < closestDistance)
-            {
-                closestDistance = distanceToEdge;
-            }
-        }
-        
-        // Update distance, clamped to max range
-        distanceFromBeacon = Mathf.Clamp(closestDistance, 0f, maxBeaconDistance);
-        NotifyBeaconDistanceUpdate();
-    }
-    
-    private void NotifyBeaconDistanceUpdate()
-    {
-        // Only notify if the distance has changed beyond threshold
-        if (Mathf.Abs(distanceFromBeacon - previousBeaconDistance) >= beaconDistanceChangeThreshold)
-        {
-            previousBeaconDistance = distanceFromBeacon;
-            OnBeaconDistanceChanged?.Invoke(distanceFromBeacon);
-            
-            // TODO: Move this somewhere else?
-            Shader.SetGlobalFloat("_VignetteSize", 1f - (0.1f * (distanceFromBeacon / 2f - 1f)));
-        }
-    }
-    
+
     private void NotifyTimeUpdate()
     {
         TimeOfDay newTimeOfDay = GetCurrentTimeOfDay();
-        
-        // Notify if time of day changed
+
         if (newTimeOfDay != currentTimeOfDay)
         {
             currentTimeOfDay = newTimeOfDay;
             OnTimeOfDayChanged?.Invoke(newTimeOfDay);
         }
-        
-        // Always notify of time update
+
         OnTimeUpdated?.Invoke(GetNormalizedTime());
     }
-    
+
+    // --- Getters & Helpers ---
+
     public TimeOfDay GetCurrentTimeOfDay()
     {
-        if (currentCycleTime >= DayStart && currentCycleTime < DuskStart)
-        {
-            return TimeOfDay.Day;
-        }
-        else if (currentCycleTime >= DuskStart && currentCycleTime < DuskEnd)
-        {
-            return TimeOfDay.Dusk;
-        }
-        else if (currentCycleTime >= NightStart && currentCycleTime < DawnStart)
-        {
-            return TimeOfDay.Night;
-        }
-        else
-        {
-            return TimeOfDay.Dawn;
-        }
+        if (currentCycleTime >= DayStart && currentCycleTime < DuskStart) return TimeOfDay.Day;
+        else if (currentCycleTime >= DuskStart && currentCycleTime < DuskEnd) return TimeOfDay.Dusk;
+        else if (currentCycleTime >= NightStart && currentCycleTime < DawnStart) return TimeOfDay.Night;
+        else return TimeOfDay.Dawn;
+    }
+
+    public float GetNormalizedTime()
+    {
+        return currentCycleTime / cycleDuration;
+    }
+
+    public float GetCurrentCycleTime()
+    {
+        return currentCycleTime;
     }
     
     public void SetTimeOfDay(float normalizedTime)
     {
         currentCycleTime = Mathf.Clamp01(normalizedTime) * cycleDuration;
         NotifyTimeUpdate();
-    }
-    
-    public float GetNormalizedTime()
-    {
-        return currentCycleTime / cycleDuration;
-    }
-    
-    public float GetCurrentCycleTime()
-    {
-        return currentCycleTime;
-    }
-    
-    public string GetTimeOfDayString()
-    {
-        return currentTimeOfDay.ToString();
-    }
-    
-    public TimeOfDay GetCurrentPeriod()
-    {
-        return currentTimeOfDay;
-    }
-    
-    public float GetDistanceFromBeacon()
-    {
-        return distanceFromBeacon;
-    }
-    
-    public bool IsTimePaused()
-    {
-        return isTimePaused;
     }
 }
