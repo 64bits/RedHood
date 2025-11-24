@@ -20,9 +20,9 @@ public class CompassController : MonoBehaviour
     [Tooltip("Which world axis represents North")]
     public NorthAxis northDirection = NorthAxis.PositiveZ;
     
-    [Tooltip("Size of icons on compass (0.0 - 1.0 in UV space)")]
-    [Range(0.05f, 0.5f)]
-    public float iconSize = 0.5f;
+    [Tooltip("Size of icons on compass (Relative to full height). 0.4 fits well in the top half.")]
+    [Range(0.1f, 0.5f)]
+    public float iconSize = 0.4f;
     
     [Tooltip("Number of columns in icon atlas")]
     public int atlasColumns = 4;
@@ -31,14 +31,11 @@ public class CompassController : MonoBehaviour
     public int atlasRows = 4;
     
     [Header("Distance Fade")]
-    [Tooltip("Distance at which icons become invisible")]
+    [Tooltip("Distance at which icons become completely invisible")]
     public float maxDistance = 80f;
     
-    [Tooltip("Distance at which icons start to fade")]
+    [Tooltip("Distance at which icons start to fade out")]
     public float fadeStartDistance = 50f;
-    
-    [Tooltip("Distance at which icons are fully opaque")]
-    public float fullOpacityDistance = 20f;
     
     private Material compassMat;
     private int headingID;
@@ -47,6 +44,12 @@ public class CompassController : MonoBehaviour
     private int atlasColumnsID;
     private int atlasRowsID;
     private int iconAtlasID;
+    // New IDs for fade
+    private int maxDistID;
+    private int fadeStartID;
+
+    private int aspectRatioID;
+    private RectTransform rectTrans;
     
     private List<CompassMarker> discoveredMarkers = new List<CompassMarker>();
     private Vector4[] iconDataArray = new Vector4[32]; // Max 32 icons
@@ -61,6 +64,9 @@ public class CompassController : MonoBehaviour
             // Create instance to avoid modifying shared material
             compassMat = Instantiate(compassImage.material);
             compassImage.material = compassMat;
+
+            rectTrans = compassImage.GetComponent<RectTransform>(); // Get the Rect
+            aspectRatioID = Shader.PropertyToID("_AspectRatio"); // Cache ID
             
             // Cache shader property IDs
             headingID = Shader.PropertyToID("_Heading");
@@ -70,14 +76,21 @@ public class CompassController : MonoBehaviour
             atlasRowsID = Shader.PropertyToID("_AtlasRows");
             iconAtlasID = Shader.PropertyToID("_IconAtlas");
             
+            // Cache fade IDs
+            maxDistID = Shader.PropertyToID("_MaxDistance");
+            fadeStartID = Shader.PropertyToID("_FadeStartDistance");
+            
             // Set icon atlas properties
             if (iconAtlas != null)
             {
                 compassMat.SetTexture(iconAtlasID, iconAtlas);
             }
-            compassMat.SetFloat(iconSizeID, iconSize);
             compassMat.SetInt(atlasColumnsID, atlasColumns);
             compassMat.SetInt(atlasRowsID, atlasRows);
+            
+            // Send initial fade settings
+            compassMat.SetFloat(maxDistID, maxDistance);
+            compassMat.SetFloat(fadeStartID, fadeStartDistance);
         }
         
         // Find all discoverable objects in scene
@@ -91,7 +104,20 @@ public class CompassController : MonoBehaviour
     void Update()
     {
         if (target == null || compassMat == null) return;
+
+        // TOOD: Probably not needed every update
+        if (rectTrans != null)
+        {
+            // Calculate Width / Height
+            float aspect = rectTrans.rect.width / Mathf.Max(1f, rectTrans.rect.height);
+            compassMat.SetFloat(aspectRatioID, aspect);
+        }
         
+        // Update runtime settings (in case you tweak them in Inspector)
+        compassMat.SetFloat(iconSizeID, iconSize);
+        compassMat.SetFloat(maxDistID, maxDistance);
+        compassMat.SetFloat(fadeStartID, fadeStartDistance);
+
         // Get forward direction projected onto horizontal plane
         Vector3 forward = target.forward;
         forward.y = 0;
