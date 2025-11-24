@@ -3,6 +3,7 @@ Shader "UI/SliderCompass"
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+        _IconAtlas ("Icon Atlas", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
         _Heading ("Heading", Range(0, 360)) = 0
         _BGColor ("Background Color", Color) = (0.1, 0.1, 0.1, 0.8)
@@ -73,6 +74,8 @@ Shader "UI/SliderCompass"
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
+            TEXTURE2D(_IconAtlas);
+            SAMPLER(sampler_IconAtlas);
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _MainTex_ST;
@@ -82,6 +85,14 @@ Shader "UI/SliderCompass"
                 half4 _TickColor;
                 half4 _CardinalColor;
                 half4 _CenterMarkerColor;
+                
+                // Icon data arrays (max 32 icons)
+                // x = angle, y = distance, z = iconIndex, w = enabled
+                float4 _IconData[32];
+                int _IconCount;
+                float _IconSize;
+                int _AtlasColumns;
+                int _AtlasRows;
             CBUFFER_END
 
             Varyings vert(Attributes input)
@@ -211,6 +222,70 @@ Shader "UI/SliderCompass"
                                 col = lerp(col, i == 0 ? _CardinalColor : _TickColor, 0.9);
                             }
                         }
+                    }
+                }
+                
+                // Draw icons
+                float iconY = 0.25; // Vertical position of icons
+                float iconHalfSize = _IconSize * 0.5;
+                
+                for (int j = 0; j < _IconCount; j++)
+                {
+                    float4 iconData = _IconData[j];
+                    float iconAngle = iconData.x;
+                    float iconDist = iconData.y;
+                    int iconIndex = (int)iconData.z;
+                    float enabled = iconData.w;
+                    
+                    if (enabled < 0.5) continue;
+                    
+                    // Calculate alpha based on distance
+                    float alpha = 1.0;
+                    if (iconDist > 50.0)
+                        alpha = 0.0;
+                    else if (iconDist > 25.0)
+                        alpha = smoothstep(50.0, 25.0, iconDist) * 0.4;
+                    else if (iconDist > 10.0)
+                        alpha = 0.4 + smoothstep(25.0, 10.0, iconDist) * 0.6;
+                    
+                    if (alpha < 0.01) continue;
+                    
+                    // Calculate icon position on compass
+                    float angleDiff = iconAngle - _Heading;
+                    
+                    // Normalize to -180 to 180
+                    if (angleDiff > 180.0) angleDiff -= 360.0;
+                    if (angleDiff < -180.0) angleDiff += 360.0;
+                    
+                    // Only draw if within visible range
+                    if (abs(angleDiff) > 90.0) continue;
+                    
+                    float iconX = 0.5 + angleDiff / degreesPerUnit;
+                    
+                    // Check if current UV is within icon bounds
+                    float2 iconUV = float2(
+                        (uv.x - iconX) / _IconSize + 0.5,
+                        (uv.y - iconY) / _IconSize + 0.5
+                    );
+                    
+                    if (iconUV.x >= 0.0 && iconUV.x <= 1.0 && 
+                        iconUV.y >= 0.0 && iconUV.y <= 1.0)
+                    {
+                        // Calculate atlas UV
+                        int col_idx = iconIndex % _AtlasColumns;
+                        int row_idx = iconIndex / _AtlasColumns;
+                        
+                        float2 atlasUV = float2(
+                            (col_idx + iconUV.x) / (float)_AtlasColumns,
+                            1.0 - (row_idx + iconUV.y) / (float)_AtlasRows
+                        );
+                        
+                        half4 iconColor = SAMPLE_TEXTURE2D(_IconAtlas, sampler_IconAtlas, atlasUV);
+                        iconColor.a *= alpha;
+                        
+                        // Blend icon over compass
+                        col.rgb = lerp(col.rgb, iconColor.rgb, iconColor.a);
+                        col.a = max(col.a, iconColor.a);
                     }
                 }
                 
