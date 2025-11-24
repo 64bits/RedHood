@@ -22,6 +22,16 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Flax bush.001
+    second: {fileID: 2100000, guid: 4c16a99dd65ab4ea98375945925dd0b4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pods.001
+    second: {fileID: 2100000, guid: d091f0442dfd440d2b7ab03ccb4178c4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: tree_simpleBark01.003
     second: {fileID: 2100000, guid: 6b85900110d0640b68bbf17bb43e8e86, type: 2}
   - first:
