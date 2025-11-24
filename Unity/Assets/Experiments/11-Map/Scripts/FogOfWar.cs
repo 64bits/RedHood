@@ -10,9 +10,12 @@ public class FogOfWar : MonoBehaviour
     private Vector3 lastPlayerPosition;
     
     private const int TEXTURE_SIZE = 2048;
-    private const float WORLD_MIN = -210f;
-    private const float WORLD_MAX = 225f;
-    private const float WORLD_SIZE = WORLD_MAX - WORLD_MIN; // 435
+    private const float WORLD_MIN_X = -117f;
+    private const float WORLD_MAX_X = 113f;
+    private const float WORLD_MIN_Z = -113f;
+    private const float WORLD_MAX_Z = 117f;
+    private const float WORLD_SIZE_X = WORLD_MAX_X - WORLD_MIN_X; // 230
+    private const float WORLD_SIZE_Z = WORLD_MAX_Z - WORLD_MIN_Z; // 230
     private const int BRUSH_RADIUS = 40;
     private const float UPDATE_INTERVAL = 0.25f;
     
@@ -62,8 +65,8 @@ public class FogOfWar : MonoBehaviour
     {
         // Convert world position to texture coordinates
         Vector2 normalizedPos = new Vector2(
-            (player.position.x - WORLD_MIN) / WORLD_SIZE,
-            (player.position.z - WORLD_MIN) / WORLD_SIZE
+            (player.position.x - WORLD_MIN_X) / WORLD_SIZE_X,
+            (player.position.z - WORLD_MIN_Z) / WORLD_SIZE_Z
         );
         
         int texX = Mathf.RoundToInt(normalizedPos.x * TEXTURE_SIZE);
