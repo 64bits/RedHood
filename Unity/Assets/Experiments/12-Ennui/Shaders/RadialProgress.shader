@@ -4,8 +4,13 @@ Shader "UI/RadialProgress"
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
+        _ProgressColor ("Progress Color", Color) = (0.816, 0.667, 0.475, 1)
         _FillAmount ("Fill Amount", Range(0, 1)) = 0
+        
+        // Added Outer Radius Property
+        _OuterRadius ("Outer Radius", Range(0, 0.5)) = 0.48
         _InnerRadius ("Inner Radius", Range(0, 0.5)) = 0.3
+        
         _StartAngle ("Start Angle", Range(0, 360)) = 0
         
         _StencilComp ("Stencil Comparison", Float) = 8
@@ -78,11 +83,12 @@ Shader "UI/RadialProgress"
             
             sampler2D _MainTex;
             fixed4 _Color;
-            fixed4 _TextureSampleAdd;
+            fixed4 _ProgressColor;
             float4 _ClipRect;
             float4 _MainTex_ST;
             float _FillAmount;
             float _InnerRadius;
+            float _OuterRadius; // Variable declaration
             float _StartAngle;
             
             v2f vert(appdata_t v)
@@ -101,31 +107,31 @@ Shader "UI/RadialProgress"
             
             fixed4 frag(v2f IN) : SV_Target
             {
-                // Sample the texture
-                half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
-                
-                // Convert UV to centered coordinates (-0.5 to 0.5)
                 float2 centered = IN.texcoord - 0.5;
-                
-                // Calculate distance from center
                 float dist = length(centered);
                 
-                // Calculate angle (0 to 1, starting from top and going clockwise)
-                float angle = atan2(centered.y, centered.x);
-                angle = (angle / (3.14159265 * 2.0)) + 0.5; // Normalize to 0-1
-                angle = frac(angle + 0.25 - (_StartAngle / 360.0)); // Rotate to start from top
+                // Clockwise logic (atan2(x,y))
+                float angle = atan2(centered.x, centered.y);
+                angle = angle / (3.14159265 * 2.0);
+                angle = frac(angle - (_StartAngle / 360.0));
                 
-                // Create donut shape
-                float outerEdge = smoothstep(0.5, 0.48, dist);
+                // --- OUTER RADIUS LOGIC ---
+                // We use _OuterRadius as the hard edge, and subtract 0.02 to create a soft fade inward.
+                // This smoothstep returns 0 if dist >= _OuterRadius (transparent)
+                // and 1 if dist <= (_OuterRadius - 0.02) (opaque)
+                float outerEdge = smoothstep(_OuterRadius, _OuterRadius - 0.02, dist);
+                
                 float innerEdge = smoothstep(_InnerRadius - 0.02, _InnerRadius, dist);
                 float donut = outerEdge * innerEdge;
                 
-                // Apply radial fill
                 float fill = step(angle, _FillAmount);
                 
-                // Combine everything
-                color.a *= donut * fill;
+                fixed4 color = fixed4(0, 0, 0, 0);
+                float progressMask = donut * fill;
                 
+                color.rgb = _ProgressColor.rgb * progressMask;
+                color.a = progressMask * _ProgressColor.a;
+
                 #ifdef UNITY_UI_CLIP_RECT
                 color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
                 #endif
