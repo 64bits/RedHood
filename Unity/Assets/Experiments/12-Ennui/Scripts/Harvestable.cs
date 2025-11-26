@@ -9,6 +9,7 @@ public class Harvestable : MonoBehaviour
     [SerializeField] private float fillDuration = 2f;
     [SerializeField] private ProximityInteractionTrigger trigger;
     [SerializeField] private InteractableObject interactable;
+    [SerializeField] private InventoryItem item;
     
     private Material originalMaterial;
     private Material instanceMaterial;
@@ -69,6 +70,12 @@ public class Harvestable : MonoBehaviour
         
         // Switch back to original material
         progressImage.material = originalMaterial;
+
+        // Give me the item
+        if (InventoryManager.Instance.AddItem(item, 1))
+        {
+            Debug.Log($"Picked up 1x {item.itemName}");
+        }
         
         // Reset for next use
         instanceMaterial.SetFloat(FillAmount, 0f);
