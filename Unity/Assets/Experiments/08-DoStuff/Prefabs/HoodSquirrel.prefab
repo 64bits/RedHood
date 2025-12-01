@@ -1086,7 +1086,7 @@ GameObject:
   - component: {fileID: 932916193861058540}
   - component: {fileID: 4251178359513281280}
   m_Layer: 0
-  m_Name: Squirrel
+  m_Name: HoodSquirrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
