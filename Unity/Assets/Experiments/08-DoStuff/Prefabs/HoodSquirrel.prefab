@@ -42,6 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4542134785710898271}
   - component: {fileID: 759824892313069937}
+  - component: {fileID: 4966589603707998065}
   m_Layer: 0
   m_Name: Squirrel_Model
   m_TagString: Untagged
@@ -145,6 +146,18 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.000037759542, y: 0.06450635, z: 0}
     m_Extent: {x: 0.8131212, y: 0.78574896, z: 0.27942136}
   m_DirtyAABB: 0
+--- !u!114 &4966589603707998065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64823022351449459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b95bb35d083478695da6559903cb4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Highlightable
 --- !u!1 &979761336992912991
 GameObject:
   m_ObjectHideFlags: 0
