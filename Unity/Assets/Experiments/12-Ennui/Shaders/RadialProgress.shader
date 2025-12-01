@@ -13,6 +13,10 @@ Shader "UI/RadialProgress"
         
         _StartAngle ("Start Angle", Range(0, 360)) = 0
         
+        // X Mark Image
+        _XMarkTex ("X Mark Texture", 2D) = "white" {}
+        _ShowXMark ("Show X Mark", Range(0, 1)) = 0
+        
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
         _StencilOp ("Stencil Operation", Float) = 0
@@ -82,14 +86,16 @@ Shader "UI/RadialProgress"
             };
             
             sampler2D _MainTex;
+            sampler2D _XMarkTex;
             fixed4 _Color;
             fixed4 _ProgressColor;
             float4 _ClipRect;
             float4 _MainTex_ST;
             float _FillAmount;
             float _InnerRadius;
-            float _OuterRadius; // Variable declaration
+            float _OuterRadius;
             float _StartAngle;
+            float _ShowXMark;
             
             v2f vert(appdata_t v)
             {
@@ -107,30 +113,37 @@ Shader "UI/RadialProgress"
             
             fixed4 frag(v2f IN) : SV_Target
             {
-                float2 centered = IN.texcoord - 0.5;
-                float dist = length(centered);
-                
-                // Clockwise logic (atan2(x,y))
-                float angle = atan2(centered.x, centered.y);
-                angle = angle / (3.14159265 * 2.0);
-                angle = frac(angle - (_StartAngle / 360.0));
-                
-                // --- OUTER RADIUS LOGIC ---
-                // We use _OuterRadius as the hard edge, and subtract 0.02 to create a soft fade inward.
-                // This smoothstep returns 0 if dist >= _OuterRadius (transparent)
-                // and 1 if dist <= (_OuterRadius - 0.02) (opaque)
-                float outerEdge = smoothstep(_OuterRadius, _OuterRadius - 0.02, dist);
-                
-                float innerEdge = smoothstep(_InnerRadius - 0.02, _InnerRadius, dist);
-                float donut = outerEdge * innerEdge;
-                
-                float fill = step(angle, _FillAmount);
-                
                 fixed4 color = fixed4(0, 0, 0, 0);
-                float progressMask = donut * fill;
                 
-                color.rgb = _ProgressColor.rgb * progressMask;
-                color.a = progressMask * _ProgressColor.a;
+                // Show X Mark if enabled
+                if (_ShowXMark > 0.5)
+                {
+                    fixed4 xMarkColor = tex2D(_XMarkTex, IN.texcoord);
+                    color.rgb = fixed3(1, 0, 0) * xMarkColor.a; // Red tint
+                    color.a = xMarkColor.a;
+                }
+                else
+                {
+                    // Normal radial progress logic
+                    float2 centered = IN.texcoord - 0.5;
+                    float dist = length(centered);
+                    
+                    // Clockwise logic (atan2(x,y))
+                    float angle = atan2(centered.x, centered.y);
+                    angle = angle / (3.14159265 * 2.0);
+                    angle = frac(angle - (_StartAngle / 360.0));
+                    
+                    float outerEdge = smoothstep(_OuterRadius, _OuterRadius - 0.02, dist);
+                    float innerEdge = smoothstep(_InnerRadius - 0.02, _InnerRadius, dist);
+                    float donut = outerEdge * innerEdge;
+                    
+                    float fill = step(angle, _FillAmount);
+                    
+                    float progressMask = donut * fill;
+                    
+                    color.rgb = _ProgressColor.rgb * progressMask;
+                    color.a = progressMask * _ProgressColor.a;
+                }
 
                 #ifdef UNITY_UI_CLIP_RECT
                 color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
