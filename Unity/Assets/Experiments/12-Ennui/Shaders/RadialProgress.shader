@@ -113,37 +113,43 @@ Shader "UI/RadialProgress"
             
             fixed4 frag(v2f IN) : SV_Target
             {
-                fixed4 color = fixed4(0, 0, 0, 0);
-                
                 // Show X Mark if enabled
                 if (_ShowXMark > 0.5)
                 {
                     fixed4 xMarkColor = tex2D(_XMarkTex, IN.texcoord);
-                    color.rgb = fixed3(1, 0, 0) * xMarkColor.a; // Red tint
-                    color.a = xMarkColor.a;
+                    xMarkColor.rgb = fixed3(1, 0, 0); // Red tint
+                    
+                    #ifdef UNITY_UI_CLIP_RECT
+                    xMarkColor.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
+                    #endif
+                    
+                    #ifdef UNITY_UI_ALPHACLIP
+                    clip (xMarkColor.a - 0.001);
+                    #endif
+                    
+                    return xMarkColor;
                 }
-                else
-                {
-                    // Normal radial progress logic
-                    float2 centered = IN.texcoord - 0.5;
-                    float dist = length(centered);
-                    
-                    // Clockwise logic (atan2(x,y))
-                    float angle = atan2(centered.x, centered.y);
-                    angle = angle / (3.14159265 * 2.0);
-                    angle = frac(angle - (_StartAngle / 360.0));
-                    
-                    float outerEdge = smoothstep(_OuterRadius, _OuterRadius - 0.02, dist);
-                    float innerEdge = smoothstep(_InnerRadius - 0.02, _InnerRadius, dist);
-                    float donut = outerEdge * innerEdge;
-                    
-                    float fill = step(angle, _FillAmount);
-                    
-                    float progressMask = donut * fill;
-                    
-                    color.rgb = _ProgressColor.rgb * progressMask;
-                    color.a = progressMask * _ProgressColor.a;
-                }
+                
+                // Normal radial progress logic
+                float2 centered = IN.texcoord - 0.5;
+                float dist = length(centered);
+                
+                // Clockwise logic (atan2(x,y))
+                float angle = atan2(centered.x, centered.y);
+                angle = angle / (3.14159265 * 2.0);
+                angle = frac(angle - (_StartAngle / 360.0));
+                
+                float outerEdge = smoothstep(_OuterRadius, _OuterRadius - 0.02, dist);
+                float innerEdge = smoothstep(_InnerRadius - 0.02, _InnerRadius, dist);
+                float donut = outerEdge * innerEdge;
+                
+                float fill = step(angle, _FillAmount);
+                
+                fixed4 color = fixed4(0, 0, 0, 0);
+                float progressMask = donut * fill;
+                
+                color.rgb = _ProgressColor.rgb * progressMask;
+                color.a = progressMask * _ProgressColor.a;
 
                 #ifdef UNITY_UI_CLIP_RECT
                 color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
