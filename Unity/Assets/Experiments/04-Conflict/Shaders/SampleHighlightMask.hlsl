@@ -1,5 +1,8 @@
+#ifndef COMBINED_MASK_DEFINED
+#define COMBINED_MASK_DEFINED
 TEXTURE2D(_CombinedMaskTex);
 SAMPLER(sampler_CombinedMaskTex);
+#endif
 
 void SampleHighlightMask_float(float4 ScreenPos, out float Mask)
 {
