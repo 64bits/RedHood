@@ -160,9 +160,12 @@ public class VisibilityUpdater : MonoBehaviour
             // 1. Get Time-based Color
             Color timeColor = Color.Lerp(nightFogColor, dayFogColor, dayFactor);
 
-            // 2. Blend towards Canopy Tint based on canopy amount
-            // If currentCanopyAmount is 1, we blend heavily towards canopy tint
-            RenderSettings.fogColor = Color.Lerp(timeColor, canopyFogTint, currentCanopyAmount);
+            // 2. Calculate canopy influence based on time of day
+            // Canopy tint effect is strongest during day (dayFactor = 1), zero at night (dayFactor = 0)
+            float canopyInfluence = currentCanopyAmount * dayFactor;
+
+            // 3. Blend towards Canopy Tint based on canopy influence
+            RenderSettings.fogColor = Color.Lerp(timeColor, canopyFogTint, canopyInfluence);
         }
     }
 

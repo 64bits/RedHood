@@ -856,7 +856,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.56
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -864,23 +864,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.26
+      value: 7.2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1998,7 +1998,7 @@ MonoBehaviour:
   lanternObject: {fileID: 4904888701158226720}
   regularDomeObject: {fileID: 7811474445379674282}
   lanternDomeObject: {fileID: 322858412490452685}
-  lanternLayerIndex: 1
+  lanternLayerIndex: 2
   transitionSpeed: 5
 --- !u!114 &325143514450771035
 MonoBehaviour:
@@ -2007,7 +2007,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4787488530426266539}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce3b2ea1788b84aa2a752271de93ba34, type: 3}
   m_Name: 
@@ -2044,16 +2044,22 @@ MonoBehaviour:
   commands:
   - direction: {x: 0, y: 0, z: -1}
     duration: 3
+    commit: 0
   - direction: {x: 0, y: 0, z: 1}
     duration: 3
+    commit: 0
   - direction: {x: 1, y: 0, z: 1}
     duration: 3
+    commit: 0
   - direction: {x: 1, y: 0, z: -1}
     duration: 3
+    commit: 0
   - direction: {x: -1, y: 0, z: 1}
     duration: 3
+    commit: 0
   - direction: {x: -1, y: 0, z: -1}
     duration: 3
+    commit: 0
   showDebugArrow: 1
   arrowLength: 2
 --- !u!114 &704219880663227739
@@ -2068,7 +2074,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb24923c65ecd4b5483ff78b35d6ec31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UserInputSource
-  commitThreshold: 0.05
+  commitThreshold: 0.1
+  showDebugArrow: 1
+  arrowLength: 2
 --- !u!114 &3127766533027389318
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: b4214638cdb03479d89dab78550a9afd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 33.63
+      value: 3.228485
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b4214638cdb03479d89dab78550a9afd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00009918213
+      value: -0.09
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b4214638cdb03479d89dab78550a9afd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -45.86
+      value: -20.45
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b4214638cdb03479d89dab78550a9afd, type: 3}
       propertyPath: m_LocalRotation.w
@@ -63,5 +63,36 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b4214638cdb03479d89dab78550a9afd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8861675702180220585}
   m_SourcePrefab: {fileID: 100100000, guid: b4214638cdb03479d89dab78550a9afd, type: 3}
+--- !u!1 &528841514431313241 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b4214638cdb03479d89dab78550a9afd, type: 3}
+  m_PrefabInstance: {fileID: 835342276189571080}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8861675702180220585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528841514431313241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c92607d65a5d8428881974c7dae30069, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterController
+  playerController: {fileID: 0}
+  playerTransform: {fileID: 0}
+  viewDistance: 15
+  viewAngle: 45
+  stopAndAttackDistance: 1.5
+  rotationSpeed: 5
+  rotationDeadZone: 2
+  patrolWalkTime: 10
+  patrolIdleTime: 3
+  searchWalkTime: 10
+  searchLookTime: 3
