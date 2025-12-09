@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: BrambleBush
+    second: {fileID: 2100000, guid: c73e0c439ca42414f97cc7b2bd3da8f1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Child.png_128x128.003
     second: {fileID: 2100000, guid: 0983732f601bb4e7a966c36f558e07c1, type: 2}
   - first:
