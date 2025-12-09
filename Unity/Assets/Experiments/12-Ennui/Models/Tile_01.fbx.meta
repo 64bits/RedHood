@@ -37,6 +37,16 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: magicBark
+    second: {fileID: 2100000, guid: bd7a80f842d424e6aaed2fad6af56476, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: magicLeaves
+    second: {fileID: 2100000, guid: 5938362db08ce4e2381061fc76115b4d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: stylized bush.001
     second: {fileID: 2100000, guid: cfd07de8b76214e72816b5617ebbda42, type: 2}
   - first:
