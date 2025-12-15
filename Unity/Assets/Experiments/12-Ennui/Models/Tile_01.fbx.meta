@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: BrambleBush
+    second: {fileID: 2100000, guid: c73e0c439ca42414f97cc7b2bd3da8f1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Child.png_128x128.003
     second: {fileID: 2100000, guid: 0983732f601bb4e7a966c36f558e07c1, type: 2}
   - first:
@@ -34,6 +39,16 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: lambert1_albedo.jpg_128x128.001
     second: {fileID: 2100000, guid: 711e6d64586ac470c97f5f8fcacd69e2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: magicBark
+    second: {fileID: 2100000, guid: bd7a80f842d424e6aaed2fad6af56476, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: magicLeaves
+    second: {fileID: 2100000, guid: 5938362db08ce4e2381061fc76115b4d, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
