@@ -200,6 +200,8 @@ GameObject:
   - component: {fileID: 1369125418777473448}
   - component: {fileID: 3258314614195314237}
   - component: {fileID: 115851613652356068}
+  - component: {fileID: 1486328919503412296}
+  - component: {fileID: 7436333414790752278}
   m_Layer: 0
   m_Name: DayTimeManager
   m_TagString: Untagged
@@ -236,10 +238,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eef9ad47656654dc68986647d88c1d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DayNightCycle
-  dayDuration: 180
+  dayDuration: 1
   nightDuration: 180
-  transitionDuration: 3
-  useManualTimeControl: 1
+  transitionDuration: 1
+  useManualTimeControl: 0
   manualTimeOfDay: 0
 --- !u!114 &1369125418777473448
 MonoBehaviour:
@@ -256,6 +258,7 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   maxBeaconDistance: 10
   canopyChangeThreshold: 0.01
+  currentCanopy: 0
 --- !u!114 &3258314614195314237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299,8 +302,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb24873782711412c8cc979ec064e09b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DayTimeLightUpdater
+  timeManager: {fileID: 2598449308920174092}
+  canopyManager: {fileID: 1369125418777473448}
   sunLight: {fileID: 6214027729726353932}
   dayIntensity: 1
+  nightIntensity: 0
+  controlFog: 1
+  maxFogDensity: 0.049
+  dayFogColor: {r: 0.8, g: 0.9, b: 1, a: 1}
+  nightFogColor: {r: 0.1, g: 0.1, b: 0.15, a: 1}
+  controlSkyboxIntensity: 1
+  daySkyboxIntensity: 0.24
+  nightSkyboxIntensity: 0
+  canopyLightDampening: 0.25
+  canopyFogGain: 0.1
+  canopyFogTint: {r: 0.41960785, g: 0.47843137, b: 0.70980394, a: 1}
+--- !u!114 &1486328919503412296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086637825554186252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a71721c38092409faeedf230b69eddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DayTimeLightUpdater
+  timeManager: {fileID: 2598449308920174092}
+  sunLight: {fileID: 6214027729726353932}
   dayTemperature: 7000
   nightTemperature: 3000
   useSkyboxTint: 1
@@ -309,12 +339,24 @@ MonoBehaviour:
   maxTemperature: 10000
   dayStartRotation: {x: 150, y: 380, z: 85}
   dayEndRotation: {x: 28, y: 380, z: 85}
-  controlFog: 1
-  maxFogDensity: 0.049
-  controlSkyboxIntensity: 1
-  daySkyboxIntensity: 0.24
-  nightSkyboxIntensity: 0
-  timeManager: {fileID: 2598449308920174092}
+--- !u!114 &7436333414790752278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086637825554186252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41d5e98294034440eb6c096e50733862, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NightStartUpdater
+  dayTimeManager: {fileID: 0}
+  spawnManager: {fileID: 0}
+  prefabToSpawn: {fileID: 7797262813761470966, guid: db808f590aadd4771884f44da26d5ce0, type: 3}
+  numberOfSpawns: 2
+  minDistanceBetweenSpawns: 2
+  spawnedObjects: []
 --- !u!1 &5424773147864477769
 GameObject:
   m_ObjectHideFlags: 0
