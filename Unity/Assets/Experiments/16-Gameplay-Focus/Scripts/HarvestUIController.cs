@@ -42,7 +42,6 @@ public class HarvestUIController : MonoBehaviour
             instanceMaterial = new Material(progressImage.material);
             progressImage.material = instanceMaterial;
             instanceMaterial.SetFloat(Progress, 0f);
-            progressImage.enabled = false;
         }
         else
         {
@@ -96,7 +95,6 @@ public class HarvestUIController : MonoBehaviour
         }
 
         isHarvesting = true;
-        progressImage.enabled = true;
         
         // Reset progress
         instanceMaterial.SetFloat(Progress, 0f);
@@ -148,11 +146,6 @@ public class HarvestUIController : MonoBehaviour
         if (instanceMaterial != null)
         {
             instanceMaterial.SetFloat(Progress, 0f);
-        }
-        
-        if (progressImage != null)
-        {
-            progressImage.enabled = false;
         }
     }
 
