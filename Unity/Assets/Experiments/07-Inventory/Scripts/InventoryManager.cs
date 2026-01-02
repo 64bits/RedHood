@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem; // Added for the New Input System
+using UnityEngine.InputSystem;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -10,8 +10,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private InventorySlot[] slots;
     [SerializeField] private RectTransform floatingIconTransform; 
     [SerializeField] private Image floatingIconImage;           
-    [SerializeField] private float snapDistance = 50f;           
-    [SerializeField] private Canvas parentCanvas; // Assign your Main Canvas here
+    [SerializeField] private float snapDistance = 50f;
 
     [Header("Current State")]
     private InventoryItem heldItem;
@@ -23,25 +22,55 @@ public class InventoryManager : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        floatingIconImage.gameObject.SetActive(false);
+        
+        // Ensure floating icon is hidden initially
+        if (floatingIconImage != null)
+            floatingIconImage.gameObject.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        InputMapSwitcher.OnEnterUIMode += SetSlotChildrenActive;
+        InputMapSwitcher.OnExitUIMode += SetSlotChildrenInactive;
+    }
+
+    private void OnDisable()
+    {
+        InputMapSwitcher.OnEnterUIMode -= SetSlotChildrenActive;
+        InputMapSwitcher.OnExitUIMode -= SetSlotChildrenInactive;
     }
 
     private void Update()
     {
         if (!isHoldingItem) return;
 
-        // NEW INPUT SYSTEM: Reading mouse position
         Vector2 mousePosition = Mouse.current.position.ReadValue();
-
         UpdateFloatingIcon(mousePosition);
         CheckForSnapping(mousePosition);
 
-        // NEW INPUT SYSTEM: Checking for click
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             HandlePlacement();
         }
     }
+
+    // --- Visibility Logic (Your Original Code) ---
+
+    private void SetSlotChildrenActive() => ToggleSlotChildren(true);
+    private void SetSlotChildrenInactive() => ToggleSlotChildren(false);
+
+    private void ToggleSlotChildren(bool state)
+    {
+        foreach (var slot in slots)
+        {
+            for (int i = 0; i < slot.transform.childCount; i++)
+            {
+                slot.transform.GetChild(i).gameObject.SetActive(state);
+            }
+        }
+    }
+
+    // --- Manual Placement Logic ---
 
     public bool AddItem(InventoryItem item, int amount = 1)
     {
@@ -60,15 +89,9 @@ public class InventoryManager : MonoBehaviour
     private void UpdateFloatingIcon(Vector2 mousePosition)
     {
         if (snappedSlot != null)
-        {
-            // Snap to the slot center
             floatingIconTransform.position = snappedSlot.transform.position;
-        }
         else
-        {
-            // Follow the mouse position
             floatingIconTransform.position = mousePosition;
-        }
     }
 
     private void CheckForSnapping(Vector2 mousePosition)
@@ -78,7 +101,6 @@ public class InventoryManager : MonoBehaviour
 
         foreach (var slot in slots)
         {
-            // Measure distance between mouse and slot in screen space
             float dist = Vector2.Distance(mousePosition, slot.transform.position);
             if (dist < closestDist)
             {
@@ -92,6 +114,8 @@ public class InventoryManager : MonoBehaviour
     {
         if (snappedSlot != null)
         {
+            // Note: Ensure your InventorySlot.AddItem() method 
+            // also handles the visual "Show Icon" logic internally!
             if (snappedSlot.IsEmpty() || (snappedSlot.GetItem() == heldItem && !snappedSlot.IsFull()))
             {
                 snappedSlot.AddItem(heldItem, heldAmount);
