@@ -6578,6 +6578,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Char_Hood
       objectReference: {fileID: 0}
+    - target: {fileID: 5229645108524548928, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: cinemachineAxisController
+      value: 
+      objectReference: {fileID: 1618639275}
     - target: {fileID: 5276885986018646289, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.16
