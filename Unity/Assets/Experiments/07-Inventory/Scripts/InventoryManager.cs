@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
+using UnityEngine.InputSystem; // Added for the New Input System
 
 public class InventoryManager : MonoBehaviour
 {
@@ -8,22 +8,21 @@ public class InventoryManager : MonoBehaviour
     
     [Header("Configuration")]
     [SerializeField] private InventorySlot[] slots;
-    [SerializeField] private RectTransform floatingIconTransform; // The UI element following mouse
-    [SerializeField] private Image floatingIconImage;           // The Image component of the floating icon
-    [SerializeField] private float snapDistance = 50f;           // Distance to trigger snapping
+    [SerializeField] private RectTransform floatingIconTransform; 
+    [SerializeField] private Image floatingIconImage;           
+    [SerializeField] private float snapDistance = 50f;           
+    [SerializeField] private Canvas parentCanvas; // Assign your Main Canvas here
 
     [Header("Current State")]
     private InventoryItem heldItem;
     private int heldAmount;
     private bool isHoldingItem = false;
-    private InventorySlot snappedSlot; // The slot we are currently hovering over
+    private InventorySlot snappedSlot;
 
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        
-        // Hide floating icon on start
         floatingIconImage.gameObject.SetActive(false);
     }
 
@@ -31,54 +30,56 @@ public class InventoryManager : MonoBehaviour
     {
         if (!isHoldingItem) return;
 
-        UpdateFloatingIcon();
-        CheckForSnapping();
+        // NEW INPUT SYSTEM: Reading mouse position
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
 
-        if (Input.GetMouseButtonDown(0))
+        UpdateFloatingIcon(mousePosition);
+        CheckForSnapping(mousePosition);
+
+        // NEW INPUT SYSTEM: Checking for click
+        if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             HandlePlacement();
         }
     }
 
-    // This replaces your old AddItem logic
     public bool AddItem(InventoryItem item, int amount = 1)
     {
-        // If already holding something, we could either block this or swap (let's block for simplicity)
         if (isHoldingItem) return false;
 
         heldItem = item;
         heldAmount = amount;
         isHoldingItem = true;
 
-        // Setup the visual "cursor"
-        floatingIconImage.sprite = item.icon; // Assuming your InventoryItem has an 'icon' sprite
+        floatingIconImage.sprite = item.icon;
         floatingIconImage.gameObject.SetActive(true);
         
         return true;
     }
 
-    private void UpdateFloatingIcon()
+    private void UpdateFloatingIcon(Vector2 mousePosition)
     {
-        // If snapped to a slot, lock the icon to that slot's position
         if (snappedSlot != null)
         {
+            // Snap to the slot center
             floatingIconTransform.position = snappedSlot.transform.position;
         }
         else
         {
-            // Otherwise, follow the mouse exactly
-            floatingIconTransform.position = Input.mousePosition;
+            // Follow the mouse position
+            floatingIconTransform.position = mousePosition;
         }
     }
 
-    private void CheckForSnapping()
+    private void CheckForSnapping(Vector2 mousePosition)
     {
         snappedSlot = null;
         float closestDist = snapDistance;
 
         foreach (var slot in slots)
         {
-            float dist = Vector2.Distance(Input.mousePosition, slot.transform.position);
+            // Measure distance between mouse and slot in screen space
+            float dist = Vector2.Distance(mousePosition, slot.transform.position);
             if (dist < closestDist)
             {
                 closestDist = dist;
@@ -91,17 +92,14 @@ public class InventoryManager : MonoBehaviour
     {
         if (snappedSlot != null)
         {
-            // Try to place in the snapped slot
             if (snappedSlot.IsEmpty() || (snappedSlot.GetItem() == heldItem && !snappedSlot.IsFull()))
             {
                 snappedSlot.AddItem(heldItem, heldAmount);
                 ClearHeldItem();
             }
-            // If slot is occupied/full, we do nothing (keep holding it)
         }
         else
         {
-            // Clicked outside any slot - Item is lost!
             Debug.Log($"{heldItem.name} dropped and lost.");
             ClearHeldItem();
         }
