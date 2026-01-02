@@ -133,10 +133,10 @@ public class HarvestUIController : MonoBehaviour
         ResetProgress();
         
         // Exit harvest interaction
-        if (HarvestManager.Instance != null)
-        {
-            HarvestManager.Instance.ExitInteraction();
-        }
+        // if (HarvestManager.Instance != null)
+        // {
+        //     HarvestManager.Instance.ExitInteraction();
+        // }
         
         isHarvesting = false;
     }

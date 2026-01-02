@@ -1,115 +1,118 @@
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }
     
+    [Header("Configuration")]
     [SerializeField] private InventorySlot[] slots;
-    
+    [SerializeField] private RectTransform floatingIconTransform; // The UI element following mouse
+    [SerializeField] private Image floatingIconImage;           // The Image component of the floating icon
+    [SerializeField] private float snapDistance = 50f;           // Distance to trigger snapping
+
+    [Header("Current State")]
+    private InventoryItem heldItem;
+    private int heldAmount;
+    private bool isHoldingItem = false;
+    private InventorySlot snappedSlot; // The slot we are currently hovering over
+
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+        
+        // Hide floating icon on start
+        floatingIconImage.gameObject.SetActive(false);
     }
 
-    private void OnEnable()
+    private void Update()
     {
-        // Subscribe to the static events
-        InputMapSwitcher.OnEnterUIMode += SetSlotChildrenActive;
-        InputMapSwitcher.OnExitUIMode += SetSlotChildrenInactive;
-    }
+        if (!isHoldingItem) return;
 
-    private void OnDisable()
-    {
-        // IMPORTANT: Always unsubscribe when the object is disabled or destroyed
-        InputMapSwitcher.OnEnterUIMode -= SetSlotChildrenActive;
-        InputMapSwitcher.OnExitUIMode -= SetSlotChildrenInactive;
-    }
-    
-    // --- New Methods to Control Slot Child Visibility ---
+        UpdateFloatingIcon();
+        CheckForSnapping();
 
-    private void SetSlotChildrenActive()
-    {
-        // Inventory is open (InputMapSwitcher.OnEnterUIMode fired)
-        ToggleSlotChildren(true);
-        Debug.Log("InventoryManager: Setting all slot children active.");
-    }
-
-    private void SetSlotChildrenInactive()
-    {
-        // Inventory is closed (InputMapSwitcher.OnExitUIMode fired)
-        ToggleSlotChildren(false);
-        Debug.Log("InventoryManager: Setting all slot children inactive.");
-    }
-
-    private void ToggleSlotChildren(bool state)
-    {
-        // Iterate through all slots and set the active state of their children
-        foreach (var slot in slots)
+        if (Input.GetMouseButtonDown(0))
         {
-            // You might need to adjust how you get the children based on your InventorySlot setup.
-            // Assuming the children are the visual elements you want to hide/show.
-            
-            // This is the common way to get children of a transform.
-            for (int i = 0; i < slot.transform.childCount; i++)
-            {
-                slot.transform.GetChild(i).gameObject.SetActive(state);
-            }
+            HandlePlacement();
         }
     }
-    
+
+    // This replaces your old AddItem logic
     public bool AddItem(InventoryItem item, int amount = 1)
     {
-        int remaining = amount;
-        
-        // First, try to add to existing stacks of the same item
-        foreach (var slot in slots)
-        {
-            if (slot.GetItem() == item && !slot.IsFull())
-            {
-                if (slot.AddItem(item, remaining))
-                {
-                    return true; // All items added
-                }
-                else
-                {
-                    // Partial add, calculate remaining
-                    int added = Mathf.Min(remaining, 9 - slot.GetQuantity());
-                    remaining -= added;
-                }
-            }
-        }
-        
-        // Then, try to add to empty slots
-        while (remaining > 0)
-        {
-            bool foundSlot = false;
-            
-            foreach (var slot in slots)
-            {
-                if (slot.IsEmpty())
-                {
-                    int addAmount = Mathf.Min(remaining, 9);
-                    slot.SetItem(item, addAmount);
-                    remaining -= addAmount;
-                    foundSlot = true;
-                    break;
-                }
-            }
-            
-            if (!foundSlot)
-            {
-                Debug.Log("Inventory is full! Could not add all items.");
-                return false;
-            }
-        }
+        // If already holding something, we could either block this or swap (let's block for simplicity)
+        if (isHoldingItem) return false;
+
+        heldItem = item;
+        heldAmount = amount;
+        isHoldingItem = true;
+
+        // Setup the visual "cursor"
+        floatingIconImage.sprite = item.icon; // Assuming your InventoryItem has an 'icon' sprite
+        floatingIconImage.gameObject.SetActive(true);
         
         return true;
+    }
+
+    private void UpdateFloatingIcon()
+    {
+        // If snapped to a slot, lock the icon to that slot's position
+        if (snappedSlot != null)
+        {
+            floatingIconTransform.position = snappedSlot.transform.position;
+        }
+        else
+        {
+            // Otherwise, follow the mouse exactly
+            floatingIconTransform.position = Input.mousePosition;
+        }
+    }
+
+    private void CheckForSnapping()
+    {
+        snappedSlot = null;
+        float closestDist = snapDistance;
+
+        foreach (var slot in slots)
+        {
+            float dist = Vector2.Distance(Input.mousePosition, slot.transform.position);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                snappedSlot = slot;
+            }
+        }
+    }
+
+    private void HandlePlacement()
+    {
+        if (snappedSlot != null)
+        {
+            // Try to place in the snapped slot
+            if (snappedSlot.IsEmpty() || (snappedSlot.GetItem() == heldItem && !snappedSlot.IsFull()))
+            {
+                snappedSlot.AddItem(heldItem, heldAmount);
+                ClearHeldItem();
+            }
+            // If slot is occupied/full, we do nothing (keep holding it)
+        }
+        else
+        {
+            // Clicked outside any slot - Item is lost!
+            Debug.Log($"{heldItem.name} dropped and lost.");
+            ClearHeldItem();
+        }
+    }
+
+    private void ClearHeldItem()
+    {
+        heldItem = null;
+        heldAmount = 0;
+        isHoldingItem = false;
+        floatingIconImage.gameObject.SetActive(false);
     }
     
     public bool RemoveItem(InventoryItem item, int amount = 1)
