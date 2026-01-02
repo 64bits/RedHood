@@ -972,6 +972,9 @@ PrefabInstance:
       addedObject: {fileID: 1224461144958643322}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 4457375839863438876}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 561551092863457602}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c3e1a89cf06d45fb86986480bd3428f, type: 3}
       insertIndex: -1
@@ -1966,6 +1969,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraTarget
   cameraTarget: {fileID: 0}
+--- !u!114 &4457375839863438876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4787488530426266539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 374eba87766a648a5ba2dec5ab83b773, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RainMover
+  rainFX: {fileID: 0}
 --- !u!114 &561551092863457602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1973,15 +1989,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4787488530426266539}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9db70ea90beb5439d99bf1d1f73838c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrouchController
   animator: {fileID: 2295550532835410795}
-  crouchAction: {fileID: 7040659881675835329, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  crouchBoolName: isCrouching
-  crouchTriggerName: crouch
+  crouchLayerIndex: 1
+  transitionSpeed: 5
+  hideDistanceThreshold: 1.5
+  showDebugGUI: 1
 --- !u!114 &2023827769491960594
 MonoBehaviour:
   m_ObjectHideFlags: 0
