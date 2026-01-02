@@ -2561,6 +2561,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1981493343}
   - component: {fileID: 1981493342}
+  - component: {fileID: 1981493344}
   m_Layer: 0
   m_Name: Harvest Manager
   m_TagString: Untagged
@@ -2604,6 +2605,23 @@ Transform:
   - {fileID: 540853058}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1981493344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981493341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fb10286aba9a4829a9d999e5fd7bf1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HarvestUIController
+  progressImage: {fileID: 1524960468}
+  progressMaterial: {fileID: 2100000, guid: c1e44ed53bd924c95aaa2a69190fc7d1, type: 2}
+  fillDuration: 2
+  item: {fileID: 11400000, guid: d8a6634a7a0e9409386e5e20f9ef772f, type: 2}
+  interactAction: {fileID: 2352266103087141585, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1 &1999331431
 GameObject:
   m_ObjectHideFlags: 0
