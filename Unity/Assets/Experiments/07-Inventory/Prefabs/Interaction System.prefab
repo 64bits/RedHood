@@ -3250,6 +3250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7c1eb0fc3ddd4b6d98b04bbee0527ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryManager
+  containerImage: {fileID: 3331443965139128892}
   slots:
   - {fileID: 7086155336582457278}
   - {fileID: 198011097159770221}
@@ -3300,7 +3301,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7856081949122170333}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 

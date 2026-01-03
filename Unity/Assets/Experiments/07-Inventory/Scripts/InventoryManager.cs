@@ -7,6 +7,7 @@ public class InventoryManager : MonoBehaviour
     public static InventoryManager Instance { get; private set; }
     
     [Header("Configuration")]
+    [SerializeField] private Image containerImage;
     [SerializeField] private InventorySlot[] slots;
     [SerializeField] private RectTransform floatingIconTransform; 
     [SerializeField] private Image floatingIconImage;           
@@ -61,6 +62,7 @@ public class InventoryManager : MonoBehaviour
 
     private void ToggleSlotChildren(bool state)
     {
+        containerImage.enabled = state;
         foreach (var slot in slots)
         {
             for (int i = 0; i < slot.transform.childCount; i++)
