@@ -4,7 +4,7 @@ Shader "UI/BavarianBorder_Fixed"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _BorderThickness ("Stripe Thickness", Range(0.0, 0.5)) = 0.08
-        _OuterInset ("Outer Inset", Range(0.0, 0.2)) = 0.02
+        _OuterInset ("Outer Inset", Range(0.0, 0.5)) = 0.02
         _StripeScale ("Stripe Density", Float) = 10
         _ColorA ("Stripe Color A (Corner)", Color) = (0.15, 0.45, 0.8, 1)
         _ColorB ("Stripe Color B", Color) = (1, 1, 1, 1)
@@ -93,11 +93,14 @@ Shader "UI/BavarianBorder_Fixed"
                 float d = min(dists.x, dists.y);
 
                 // 2. Define our zones
-                float stripeStart = _OuterInset;
-                float stripeEnd = _OuterInset + _BorderThickness;
+                float stripeStart = 0;
+                float stripeEnd = _BorderThickness;
                 
                 // Mask for the stripe area
                 float isStripe = step(stripeStart, d) * step(d, stripeEnd);
+                
+                // Mask for outer border
+                float isOuterBorder = step(d, _OuterInset);
                 
                 // 3. Mitered Coordinate System for Stripes
                 // This ensures stripes "turn the corner" correctly.
@@ -114,8 +117,14 @@ Shader "UI/BavarianBorder_Fixed"
                 float4 stripeCol = lerp(_ColorA, _ColorB, patternMask);
                 
                 // 4. Final Color Composition
-                // If in stripe zone, use stripeCol. Otherwise, use _BackgroundColor.
-                float4 finalColor = lerp(_BackgroundColor, stripeCol, isStripe);
+                // Start with background
+                float4 finalColor = _BackgroundColor;
+                
+                // Apply Bavarian stripes (inset border)
+                finalColor = lerp(finalColor, stripeCol, isStripe);
+
+                // Apply outer border
+                finalColor = lerp(finalColor, _BackgroundColor, isOuterBorder);
                 
                 // Standard UI Alpha handling
                 fixed4 tex = tex2D(_MainTex, uv);
