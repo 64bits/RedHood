@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Basic Shears
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItem
   itemName: Basic Shears
-  description: Good enough for soft, thin branches
+  description: Good enough for cutting thin stalks
   icon: {fileID: 21300000, guid: 5e389a4a19d1e42888a3c92b54245f18, type: 3}
