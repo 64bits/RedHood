@@ -87,7 +87,7 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _BorderThickness: 2
+    - _BorderThickness: 1.5
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -105,7 +105,7 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _OuterBorderThickness: 0.232
-    - _OuterInset: 89.7
+    - _OuterInset: 88.77
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _Radius: 0
@@ -122,7 +122,7 @@ Material:
     - _StencilWriteMask: 255
     - _StripeAngle: 45
     - _StripeScale: 44.4
-    - _StripeWidth: 15
+    - _StripeWidth: 8.19
     - _Surface: 0
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1

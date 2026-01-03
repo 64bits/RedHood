@@ -70,11 +70,11 @@ Shader "UI/BavarianBorder"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float2 halfSize = _RectSize.xy * 0.5;
-                
-                // 1. Calculate Distance to Edge in Pixels
-                // Positive inside, negative outside
-                float2 edgeDist2d = halfSize - abs(i.pixelPos);
+                float aspect = _RectSize.x / _RectSize.y;
+                float2 p = i.pixelPos;
+                p.x /= aspect;             // “unsquash” x so shapes are computed in a square metric
+                float2 halfSize = float2(_RectSize.y * 0.5, _RectSize.y * 0.5);
+                float2 edgeDist2d = halfSize - abs(p);
                 float d = min(edgeDist2d.x, edgeDist2d.y);
 
                 // 2. Define Zones (in pixels)
