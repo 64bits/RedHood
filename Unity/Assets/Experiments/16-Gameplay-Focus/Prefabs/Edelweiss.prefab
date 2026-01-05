@@ -26,14 +26,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6005661092939643190}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.5000001, y: 0.49999997, z: 0.5000001, w: -0.49999997}
+  m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: 4.5428686, y: -0.24915415, z: 5.9433913}
   m_LocalScale: {x: 100.00004, y: 100.00004, z: 100.000015}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4879298148322557907}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: -90}
 --- !u!33 &3555939686727968730
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -108,7 +108,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: harvestableDuringDay
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: invalidHarvestSprite
@@ -120,14 +120,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: harvestableDuringDawn
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: harvestableDuringDusk
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: harvestableDuringNight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119874820305851312, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
+      propertyPath: m_Radius
+      value: 0.014
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119874820305851312, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
+      propertyPath: m_Center.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119874820305851312, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
+      propertyPath: m_Center.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119874820305851312, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
+      propertyPath: m_Center.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4958519787903156239, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
@@ -136,11 +152,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6181807236615365988, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.01
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6181807236615365988, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6181807236615365988, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -173,6 +189,18 @@ PrefabInstance:
     - target: {fileID: 6181807236615365988, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271371734007188781, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
+      propertyPath: onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271371734007188781, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
+      propertyPath: onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EnterInteraction
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271371734007188781, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
+      propertyPath: onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: HarvestManager, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
