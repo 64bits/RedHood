@@ -1,7 +1,15 @@
 using UnityEngine;
 
+[RequireComponent(typeof(SphereCollider))]
 public class HarvestPopulation : MonoBehaviour
 {
+    [Header("Prefab Settings")]
+    [SerializeField] private GameObject prefabToSpawn;
+    [SerializeField] private float radiusOffset = 0f;
+    [Tooltip("Amount subtracted from radius at the poles (max height), 0 at the equator.")]
+    [SerializeField] private float insetFactor = 0f;
+
+    [Header("Height Settings")]
     [SerializeField] private float cardinalHeight = 0f;
     [SerializeField] private float intermediateHeight = 0f;
     [SerializeField] private float ultraIntermediateHeight = 0f;
@@ -11,118 +19,106 @@ public class HarvestPopulation : MonoBehaviour
     private void Awake()
     {
         sphereCollider = GetComponent<SphereCollider>();
-        if (sphereCollider == null)
+    }
+
+    private void Start()
+    {
+        if (prefabToSpawn == null) return;
+        SpawnAllPoints();
+    }
+
+    private void SpawnAllPoints()
+    {
+        Vector3 center = transform.TransformPoint(sphereCollider.center);
+        float baseRadius = sphereCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+        float totalRadius = baseRadius + radiusOffset;
+
+        SpawnGroup(center, totalRadius, GetCardinalDirections(), cardinalHeight);
+        SpawnGroup(center, totalRadius, GetIntermediateDirections(), intermediateHeight);
+        SpawnGroup(center, totalRadius, GetUltraIntermediateDirections(), ultraIntermediateHeight);
+    }
+
+    private void SpawnGroup(Vector3 center, float totalRadius, Vector3[] directions, float heightOffset)
+    {
+        foreach (Vector3 dir in directions)
         {
-            Debug.LogError("SphereCollider component not found on " + gameObject.name);
+            Vector3 spawnPos = CalculatePosition(center, totalRadius, dir, heightOffset);
+            
+            // Rotation: Forward faces directly away from the sphere's center
+            Vector3 lookDirection = (spawnPos - center).normalized;
+            Quaternion rotation = (lookDirection != Vector3.zero) ? Quaternion.LookRotation(lookDirection) : Quaternion.identity;
+
+            Instantiate(prefabToSpawn, spawnPos, rotation, transform);
         }
     }
+
+    private Vector3 CalculatePosition(Vector3 center, float totalRadius, Vector3 direction, float heightOffset)
+    {
+        // 1. Calculate the interpolation factor (0 at equator, 1 at poles)
+        // We use the absolute height relative to the total radius
+        float t = Mathf.Abs(heightOffset) / totalRadius;
+        t = Mathf.Clamp01(t); 
+
+        // 2. Calculate the effective radius for this specific height
+        float effectiveRadius = totalRadius - (t * insetFactor);
+
+        // 3. Ensure the height doesn't exceed the effective radius (Pythagorean safety)
+        float clampedHeight = Mathf.Clamp(heightOffset, -effectiveRadius, effectiveRadius);
+        
+        // 4. Solve for horizontal distance: r^2 = h^2 + xz^2 -> xz = sqrt(r^2 - h^2)
+        float horizontalRadius = Mathf.Sqrt(Mathf.Max(0, (effectiveRadius * effectiveRadius) - (clampedHeight * clampedHeight)));
+
+        return center + (direction * horizontalRadius) + (Vector3.up * clampedHeight);
+    }
+
+    #region Direction Definitions
+    private Vector3[] GetCardinalDirections() => new Vector3[] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
+
+    private Vector3[] GetIntermediateDirections() => new Vector3[] {
+        (Vector3.forward + Vector3.right).normalized, (Vector3.back + Vector3.right).normalized,
+        (Vector3.back + Vector3.left).normalized, (Vector3.forward + Vector3.left).normalized
+    };
+
+    private Vector3[] GetUltraIntermediateDirections()
+    {
+        Vector3 n = Vector3.forward; Vector3 e = Vector3.right;
+        Vector3 s = Vector3.back; Vector3 w = Vector3.left;
+        Vector3 ne = (n + e).normalized; Vector3 se = (s + e).normalized;
+        Vector3 sw = (s + w).normalized; Vector3 nw = (n + w).normalized;
+        return new Vector3[] {
+            (n + ne).normalized, (e + ne).normalized, (e + se).normalized, (s + se).normalized,
+            (s + sw).normalized, (w + sw).normalized, (w + nw).normalized, (n + nw).normalized
+        };
+    }
+    #endregion
 
     private void OnDrawGizmos()
     {
-        if (sphereCollider == null)
-        {
-            sphereCollider = GetComponent<SphereCollider>();
-            if (sphereCollider == null) return;
-        }
+        if (sphereCollider == null) sphereCollider = GetComponent<SphereCollider>();
+        if (sphereCollider == null) return;
 
-        // Get the center of the sphere collider in world space
         Vector3 center = transform.TransformPoint(sphereCollider.center);
-        float radius = sphereCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+        float baseRadius = sphereCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+        float totalRadius = baseRadius + radiusOffset;
 
-        // Define the 16 cardinal and intermediate directions on the X-Z plane
-        // Primary directions (N, E, S, W)
-        Vector3 n = Vector3.forward;
-        Vector3 e = Vector3.right;
-        Vector3 s = Vector3.back;
-        Vector3 w = Vector3.left;
-
-        // First-level intermediates (NE, SE, SW, NW)
-        Vector3 ne = (n + e).normalized;
-        Vector3 se = (s + e).normalized;
-        Vector3 sw = (s + w).normalized;
-        Vector3 nw = (n + w).normalized;
-
-        // Second-level intermediates (NNE, ENE, ESE, SSE, SSW, WSW, WNW, NNW)
-        Vector3 nne = (n + ne).normalized;
-        Vector3 ene = (e + ne).normalized;
-        Vector3 ese = (e + se).normalized;
-        Vector3 sse = (s + se).normalized;
-        Vector3 ssw = (s + sw).normalized;
-        Vector3 wsw = (w + sw).normalized;
-        Vector3 wnw = (w + nw).normalized;
-        Vector3 nnw = (n + nw).normalized;
-
-        // Draw cardinal directions (N, E, S, W)
         Gizmos.color = Color.red;
-        Vector3[] cardinals = new Vector3[] { n, e, s, w };
-        DrawDirectionalGizmos(center, radius, cardinals, cardinalHeight);
+        DrawDirectionalGizmos(center, totalRadius, GetCardinalDirections(), cardinalHeight);
 
-        // Draw intermediate directions (NE, SE, SW, NW)
         Gizmos.color = Color.yellow;
-        Vector3[] intermediates = new Vector3[] { ne, se, sw, nw };
-        DrawDirectionalGizmos(center, radius, intermediates, intermediateHeight);
+        DrawDirectionalGizmos(center, totalRadius, GetIntermediateDirections(), intermediateHeight);
 
-        // Draw ultra-intermediate directions (NNE, ENE, ESE, SSE, SSW, WSW, WNW, NNW)
         Gizmos.color = Color.cyan;
-        Vector3[] ultraIntermediates = new Vector3[] { nne, ene, ese, sse, ssw, wsw, wnw, nnw };
-        DrawDirectionalGizmos(center, radius, ultraIntermediates, ultraIntermediateHeight);
-
-        // Optional: Draw the sphere collider outline for reference
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(center, radius);
+        DrawDirectionalGizmos(center, totalRadius, GetUltraIntermediateDirections(), ultraIntermediateHeight);
         
-        // Optional: Draw circles at each height to show the contours
-        DrawContourCircle(center, radius, cardinalHeight, new Color(1f, 0f, 0f, 0.3f));
-        DrawContourCircle(center, radius, intermediateHeight, new Color(1f, 1f, 0f, 0.3f));
-        DrawContourCircle(center, radius, ultraIntermediateHeight, new Color(0f, 1f, 1f, 0.3f));
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(center, totalRadius);
     }
 
-    private void DrawDirectionalGizmos(Vector3 center, float radius, Vector3[] directions, float heightOffset)
+    private void DrawDirectionalGizmos(Vector3 center, float totalRadius, Vector3[] directions, float heightOffset)
     {
-        float absHeightOffset = Mathf.Abs(heightOffset);
-        
-        // If height offset is greater than radius, clamp it
-        if (absHeightOffset > radius)
-        {
-            heightOffset = Mathf.Sign(heightOffset) * radius;
-            absHeightOffset = radius;
-        }
-
-        // Using Pythagorean theorem: horizontalRadius^2 + height^2 = radius^2
-        float horizontalRadius = Mathf.Sqrt(radius * radius - absHeightOffset * absHeightOffset);
-
-        // Draw gizmos at each direction
         foreach (Vector3 dir in directions)
         {
-            Vector3 gizmoPosition = center + dir * horizontalRadius + Vector3.up * heightOffset;
-            Gizmos.DrawSphere(gizmoPosition, 0.1f);
-        }
-    }
-
-    private void DrawContourCircle(Vector3 center, float radius, float heightOffset, Color color)
-    {
-        float absHeightOffset = Mathf.Abs(heightOffset);
-        
-        // If height offset is greater than radius, don't draw
-        if (absHeightOffset > radius) return;
-
-        float horizontalRadius = Mathf.Sqrt(radius * radius - absHeightOffset * absHeightOffset);
-        
-        Gizmos.color = color;
-        DrawCircle(center + Vector3.up * heightOffset, horizontalRadius, 32);
-    }
-
-    private void DrawCircle(Vector3 center, float radius, int segments)
-    {
-        float angleStep = 360f / segments;
-        Vector3 prevPoint = center + new Vector3(Mathf.Cos(0), 0, Mathf.Sin(0)) * radius;
-
-        for (int i = 1; i <= segments; i++)
-        {
-            float angle = Mathf.Deg2Rad * angleStep * i;
-            Vector3 newPoint = center + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
-            Gizmos.DrawLine(prevPoint, newPoint);
-            prevPoint = newPoint;
+            Gizmos.DrawSphere(CalculatePosition(center, totalRadius, dir, heightOffset), 0.1f);
         }
     }
 }
