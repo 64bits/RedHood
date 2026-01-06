@@ -1,8 +1,13 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(SphereCollider))]
 public class HarvestPopulation : MonoBehaviour
 {
+    [Header("Abundance Settings")]
+    [Range(0, 3)]
+    [SerializeField] public int populationAbundance = 3;
+
     [Header("Prefab Settings")]
     [SerializeField] private GameObject prefabToSpawn;
     [SerializeField] private float radiusOffset = 0f;
@@ -13,8 +18,13 @@ public class HarvestPopulation : MonoBehaviour
     [SerializeField] private float cardinalHeight = 0f;
     [SerializeField] private float intermediateHeight = 0f;
     [SerializeField] private float ultraIntermediateHeight = 0f;
-    
+
     private SphereCollider sphereCollider;
+
+    // Lists to track spawned objects for runtime toggling
+    private List<GameObject> cardinalInstances = new List<GameObject>();
+    private List<GameObject> intermediateInstances = new List<GameObject>();
+    private List<GameObject> ultraInstances = new List<GameObject>();
 
     private void Awake()
     {
@@ -25,6 +35,47 @@ public class HarvestPopulation : MonoBehaviour
     {
         if (prefabToSpawn == null) return;
         SpawnAllPoints();
+        UpdatePopulationVisibility();
+    }
+
+    // Allows the slider to update the scene immediately while the game is running or in editor
+    private void OnValidate()
+    {
+        if (Application.isPlaying && cardinalInstances.Count > 0)
+        {
+            UpdatePopulationVisibility();
+        }
+    }
+
+    public string getPopulationValueText()
+    {
+        return populationAbundance switch
+        {
+            0 => "Depleted",
+            1 => "Sparse",
+            2 => "Abundant",
+            3 => "Flourishing",
+            _ => "Unknown"
+        };
+    }
+
+    public void UpdatePopulationVisibility()
+    {
+        bool showCardinal = populationAbundance >= 1;
+        bool showIntermediate = populationAbundance == 3;
+        bool showUltra = populationAbundance >= 2;
+
+        ToggleGroup(cardinalInstances, showCardinal);
+        ToggleGroup(intermediateInstances, showIntermediate);
+        ToggleGroup(ultraInstances, showUltra);
+    }
+
+    private void ToggleGroup(List<GameObject> instances, bool state)
+    {
+        foreach (var obj in instances)
+        {
+            if (obj != null) obj.SetActive(state);
+        }
     }
 
     private void SpawnAllPoints()
@@ -33,39 +84,29 @@ public class HarvestPopulation : MonoBehaviour
         float baseRadius = sphereCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
         float totalRadius = baseRadius + radiusOffset;
 
-        SpawnGroup(center, totalRadius, GetCardinalDirections(), cardinalHeight);
-        SpawnGroup(center, totalRadius, GetIntermediateDirections(), intermediateHeight);
-        SpawnGroup(center, totalRadius, GetUltraIntermediateDirections(), ultraIntermediateHeight);
+        SpawnGroup(center, totalRadius, GetCardinalDirections(), cardinalHeight, cardinalInstances);
+        SpawnGroup(center, totalRadius, GetIntermediateDirections(), intermediateHeight, intermediateInstances);
+        SpawnGroup(center, totalRadius, GetUltraIntermediateDirections(), ultraIntermediateHeight, ultraInstances);
     }
 
-    private void SpawnGroup(Vector3 center, float totalRadius, Vector3[] directions, float heightOffset)
+    private void SpawnGroup(Vector3 center, float totalRadius, Vector3[] directions, float heightOffset, List<GameObject> registry)
     {
         foreach (Vector3 dir in directions)
         {
             Vector3 spawnPos = CalculatePosition(center, totalRadius, dir, heightOffset);
-            
-            // Rotation: Forward faces directly away from the sphere's center
             Vector3 lookDirection = (spawnPos - center).normalized;
             Quaternion rotation = (lookDirection != Vector3.zero) ? Quaternion.LookRotation(lookDirection) : Quaternion.identity;
 
-            Instantiate(prefabToSpawn, spawnPos, rotation, transform);
+            GameObject instance = Instantiate(prefabToSpawn, spawnPos, rotation, transform);
+            registry.Add(instance);
         }
     }
 
     private Vector3 CalculatePosition(Vector3 center, float totalRadius, Vector3 direction, float heightOffset)
     {
-        // 1. Calculate the interpolation factor (0 at equator, 1 at poles)
-        // We use the absolute height relative to the total radius
-        float t = Mathf.Abs(heightOffset) / totalRadius;
-        t = Mathf.Clamp01(t); 
-
-        // 2. Calculate the effective radius for this specific height
+        float t = Mathf.Clamp01(Mathf.Abs(heightOffset) / totalRadius);
         float effectiveRadius = totalRadius - (t * insetFactor);
-
-        // 3. Ensure the height doesn't exceed the effective radius (Pythagorean safety)
         float clampedHeight = Mathf.Clamp(heightOffset, -effectiveRadius, effectiveRadius);
-        
-        // 4. Solve for horizontal distance: r^2 = h^2 + xz^2 -> xz = sqrt(r^2 - h^2)
         float horizontalRadius = Mathf.Sqrt(Mathf.Max(0, (effectiveRadius * effectiveRadius) - (clampedHeight * clampedHeight)));
 
         return center + (direction * horizontalRadius) + (Vector3.up * clampedHeight);
