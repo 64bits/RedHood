@@ -2548,6 +2548,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HarvestManager
   inputMapSwitcher: {fileID: 1153622623}
   harvestCanvas: {fileID: 540853061}
+  harvestTitle: {fileID: 962350073}
+  harvestIcon: {fileID: 1524960468}
   onEnterInteraction:
     m_PersistentCalls:
       m_Calls: []
@@ -2815,34 +2817,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5957343408995424952, guid: 7c9d3e8473d114e1bb1dc75d19b3dd78, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2013640566}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c9d3e8473d114e1bb1dc75d19b3dd78, type: 3}
---- !u!1 &2013640565 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5957343408995424952, guid: 7c9d3e8473d114e1bb1dc75d19b3dd78, type: 3}
-  m_PrefabInstance: {fileID: 2013640564}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2013640566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2013640565}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f8d64e286f704146937d03e6b87dc60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HarvestPopulation
-  prefabToSpawn: {fileID: 919132149155446097, guid: 24eabf3674cfe4dec9583a3dba11e60f, type: 3}
-  radiusOffset: 0.15
-  insetFactor: 0.5
-  cardinalHeight: 0.99
-  intermediateHeight: 0.6
-  ultraIntermediateHeight: 0.02
 --- !u!43 &2082761662
 Mesh:
   m_ObjectHideFlags: 0

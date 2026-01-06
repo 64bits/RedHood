@@ -1,26 +1,23 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
+using TMPro;
 
 /// <summary>
 /// Singleton manager that handles entering/exiting the harvest interaction state.
-/// Switches to dock input mode and enables a screen-space canvas for the harvest UI.
-/// 
-/// SETUP:
-/// 1. Attach to a GameObject with the harvest canvas as a child.
-/// 2. Assign the InputMapSwitcher reference (or it will auto-find).
-/// 3. Assign the harvest canvas (screen-space) - shown when interaction is active.
+/// Now takes in HarvestPoint data to drive the UI and rewards.
 /// </summary>
 public class HarvestManager : MonoBehaviour
 {
     public static HarvestManager Instance { get; private set; }
     
     [Header("Input")]
-    [Tooltip("Reference to the InputMapSwitcher. Will auto-find if not set.")]
     [SerializeField] private InputMapSwitcher inputMapSwitcher;
     
     [Header("UI")]
-    [Tooltip("Screen-space canvas shown during harvest interaction")]
     [SerializeField] private Canvas harvestCanvas;
+    [SerializeField] private TMP_Text harvestTitle;
+    [SerializeField] private Image harvestIcon;
     
     [Header("Events")]
     public UnityEvent onEnterInteraction;
@@ -28,129 +25,84 @@ public class HarvestManager : MonoBehaviour
     
     // State
     private bool isInteracting;
+    private HarvestPoint currentHarvestPoint;
+
+    public bool IsInteracting => isInteracting;
     
     /// <summary>
-    /// Returns true if currently in harvest interaction mode.
+    /// Provides access to the data of the resource currently being harvested.
     /// </summary>
-    public bool IsInteracting => isInteracting;
+    public HarvestPoint CurrentHarvestPoint => currentHarvestPoint;
 
     private void Awake()
     {
-        // Singleton pattern
         if (Instance != null && Instance != this)
         {
-            Debug.LogWarning($"Multiple HarvestManager instances detected. Destroying duplicate on {gameObject.name}");
             Destroy(this);
             return;
         }
-        
         Instance = this;
     }
 
     private void Start()
     {
-        // Auto-find InputMapSwitcher if not assigned
         if (inputMapSwitcher == null)
-        {
             inputMapSwitcher = FindFirstObjectByType<InputMapSwitcher>();
-        }
         
-        if (inputMapSwitcher == null)
-        {
-            Debug.LogError($"{gameObject.name}: InputMapSwitcher not found. Harvest interaction will not work.", this);
-        }
-        
-        // Initialize canvas to hidden state
         SetHarvestCanvasActive(false);
     }
 
-    private void OnEnable()
-    {
-        // Subscribe to Dock mode exit to handle forced exit (e.g., Cancel pressed)
-        InputMapSwitcher.OnExitUIMode += HandleUIModeClosed;
-    }
-
-    private void OnDisable()
-    {
-        InputMapSwitcher.OnExitUIMode -= HandleUIModeClosed;
-        
-        // Clean up state if disabled while interacting
-        if (isInteracting)
-        {
-            ForceExitInteraction();
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (Instance == this)
-        {
-            Instance = null;
-        }
-    }
+    private void OnEnable() => InputMapSwitcher.OnExitUIMode += HandleUIModeClosed;
+    private void OnDisable() => InputMapSwitcher.OnExitUIMode -= HandleUIModeClosed;
 
     /// <summary>
-    /// Enters the harvest interaction state.
+    /// Enters the harvest interaction state using specific resource data.
     /// </summary>
-    public void EnterInteraction()
+    /// <param name="point">The ScriptableObject containing title, icon, and item data.</param>
+    public void EnterInteraction(HarvestPoint point)
     {
-        if (isInteracting) return;
+        if (isInteracting || point == null) return;
         
         isInteracting = true;
+        currentHarvestPoint = point;
+
+        harvestTitle.text = point.harvestTitle;
+        harvestIcon.sprite = point.harvestIcon;
         
-        // Show harvest UI
         SetHarvestCanvasActive(true);
         
-        // Switch to UI input mode
         if (inputMapSwitcher != null)
         {
             inputMapSwitcher.SwitchToUIMap();
         }
         
         onEnterInteraction?.Invoke();
-        Debug.Log("Entered harvest interaction");
+        Debug.Log($"Started harvesting: {point.harvestTitle}");
     }
 
-    /// <summary>
-    /// Exits the harvest interaction state.
-    /// </summary>
     public void ExitInteraction()
     {
         if (!isInteracting) return;
         
         isInteracting = false;
+        currentHarvestPoint = null; // Clear data on exit
         
-        // Hide harvest UI
         SetHarvestCanvasActive(false);
         
-        // Switch back to Player input map
         if (inputMapSwitcher != null)
         {
             inputMapSwitcher.SwitchToPlayerMap();
         }
         
         onExitInteraction?.Invoke();
-        Debug.Log("Exited harvest interaction");
     }
 
-    /// <summary>
-    /// Forces exit without triggering input map switch (for cleanup scenarios).
-    /// </summary>
-    private void ForceExitInteraction()
-    {
-        isInteracting = false;
-        SetHarvestCanvasActive(false);
-    }
-
-    /// <summary>
-    /// Handles when Dock mode is closed externally (e.g., via Cancel/Escape).
-    /// </summary>
     private void HandleUIModeClosed()
     {
         if (isInteracting)
         {
-            // Dock mode was closed externally, clean up without re-triggering input switch
             isInteracting = false;
+            currentHarvestPoint = null;
             SetHarvestCanvasActive(false);
             onExitInteraction?.Invoke();
         }
@@ -158,9 +110,6 @@ public class HarvestManager : MonoBehaviour
 
     private void SetHarvestCanvasActive(bool active)
     {
-        if (harvestCanvas != null)
-        {
-            harvestCanvas.gameObject.SetActive(active);
-        }
+        if (harvestCanvas != null) harvestCanvas.gameObject.SetActive(active);
     }
 }

@@ -99,6 +99,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 8867836439953845093}
     m_Modifications:
     - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: canHarvestDuringDay
       value: 0
       objectReference: {fileID: 0}
@@ -108,7 +112,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: harvestableDuringDay
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: invalidHarvestSprite
@@ -120,15 +124,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: harvestableDuringDawn
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: harvestableDuringDusk
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1784432639708322776, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: harvestableDuringNight
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2119874820305851312, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: m_Radius
@@ -191,6 +195,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7271371734007188781, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
+      propertyPath: onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271371734007188781, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 0}
@@ -201,6 +209,14 @@ PrefabInstance:
     - target: {fileID: 7271371734007188781, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
       propertyPath: onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: HarvestManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271371734007188781, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
+      propertyPath: onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 11400000, guid: c4c82f43be38644788ec8e6b019bdb0e, type: 2}
+    - target: {fileID: 7271371734007188781, guid: f1a3f4137f3e9442386d29055d06302e, type: 3}
+      propertyPath: onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: HarvestPoint, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
