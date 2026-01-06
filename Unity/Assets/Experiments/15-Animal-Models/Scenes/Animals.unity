@@ -156164,11 +156164,6 @@ LODGroup:
     renderers:
     - renderer: {fileID: 1603461532}
   m_Enabled: 1
---- !u!1 &1585887378 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4787488530426266539, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-  m_PrefabInstance: {fileID: 3639386950323156854}
-  m_PrefabAsset: {fileID: 0}
 --- !u!205 &1586768957
 LODGroup:
   m_ObjectHideFlags: 0
@@ -232120,7 +232115,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5229645108524548928, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
   m_PrefabInstance: {fileID: 3639386950323156854}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1585887378}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9d7a2971c386c4081a7cd6a3e50ce388, type: 3}
@@ -249213,18 +249208,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 561551092863457602, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 561551092863457602, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      propertyPath: crouchLayerIndex
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 561551092863457602, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      propertyPath: hideDistanceThreshold
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 1224461144958643322, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: cameraTarget
       value: 
@@ -249233,6 +249216,10 @@ PrefabInstance:
       propertyPath: m_UIInputModule
       value: 
       objectReference: {fileID: 1631124894}
+    - target: {fileID: 4457375839863438876, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
+      propertyPath: rainFX
+      value: 
+      objectReference: {fileID: 742423920}
     - target: {fileID: 4787488530426266539, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
       propertyPath: m_Name
       value: Char_Hood
@@ -249284,35 +249271,19 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4787488530426266539, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
-      insertIndex: 4
-      addedObject: {fileID: 3639386950323156865}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
 --- !u!114 &3639386950323156855 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3127766533027389318, guid: 052d032a36b6a45cfbddf975f3aa4427, type: 3}
   m_PrefabInstance: {fileID: 3639386950323156854}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1585887378}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
---- !u!114 &3639386950323156865
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1585887378}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 374eba87766a648a5ba2dec5ab83b773, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RainMover
-  rainFX: {fileID: 742423920}
 --- !u!1001 &3974848229161705642
 PrefabInstance:
   m_ObjectHideFlags: 0
