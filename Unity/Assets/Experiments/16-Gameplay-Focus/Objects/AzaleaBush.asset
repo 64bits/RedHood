@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HarvestPoint
   harvestTitle: Azalea Bush
   harvestIcon: {fileID: 21300000, guid: 4556210a789304b6ca28746f882a75be, type: 3}
-  itemToDispense: {fileID: 11400000, guid: d8a6634a7a0e9409386e5e20f9ef772f, type: 2}
+  itemToDispense: {fileID: 11400000, guid: f61d951b9875d4e2aa4450a616ed620d, type: 2}
