@@ -273,5 +273,7 @@ public class DockingManager : MonoBehaviour
         {
             child.gameObject.SetActive(active);
         }
+
+        dockedCanvas.gameObject.SetActive(active);
     }
 }

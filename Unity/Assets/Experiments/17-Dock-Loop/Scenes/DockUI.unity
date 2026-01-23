@@ -1530,6 +1530,10 @@ PrefabInstance:
       propertyPath: m_text
       value: Storage
       objectReference: {fileID: 0}
+    - target: {fileID: 4224628915842639362, guid: f09b32311d6244276ba5cec5d9ef6471, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4849504744977347856, guid: f09b32311d6244276ba5cec5d9ef6471, type: 3}
       propertyPath: m_text
       value: Aunt Marigold
